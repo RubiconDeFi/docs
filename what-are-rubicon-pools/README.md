@@ -29,7 +29,7 @@ Liquidity providers (LPs) receive bathTokens when they deposit crypto assets int
 
 From the beginning, we designed these pools with security parameters that will enable anyone to manage pool liquidity. While the system is still under development, our team acts as managers of pool liquidity. You can learn more on the [Current Pools Strategy](current-pools-strategy.md) page. The next version of the Rubicon liquidity pools is in the research and development phase. We will share updates on [our blog](https://mirror.xyz/rubicon.eth)!
 
-<figure><img src="../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (3) (1).png" alt=""><figcaption></figcaption></figure>
 
 ### Advantages
 

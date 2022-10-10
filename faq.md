@@ -37,7 +37,7 @@ You can purchase ETH (or another token) directly into a wallet on Optimism by us
 The Rubicon order book protocol has liquidity pools. Liquidity providers (LPs) deposit crypto assets into a pool and receive bathTokens, which represent their proportional share of the underlying pool assets. \
 (Ex. LP deposits ETH, receives bathETH)
 
-![](<.gitbook/assets/image (90).png>)
+![](<.gitbook/assets/image (88).png>)
 
 Liquidity pools are used by active market makers (strategists) to provide liquidity on the order books. Yield from market-making goes to LPs (bathToken holders) and strategists earn a performance fee.
 

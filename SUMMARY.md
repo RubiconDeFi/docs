@@ -24,7 +24,7 @@
   * [BathToken](developers/rubicon-pools/bath-token.md)
   * [Strategist](developers/rubicon-pools/strategist-tutorial.md)
   * [Risk Disclaimer](developers/rubicon-pools/risks.md)
-* [🔎 Deployments](developers/deployments.md)
+* [🔎 Deployments](contracts/kovan-deployments.md)
 * [🔒 Audits](developers/audits.md)
 
 ## API

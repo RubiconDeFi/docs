@@ -49,9 +49,9 @@ Note: any existing bathTokens are queried via [tokenToBathToken() on BathHouse](
 \
 **Please note, to receive any of the above tokens for free for testing, simply call faucet().** This can be done by visiting the token in Etherscan > Write Contract > Connect Wallet (Verify on OP Kovan) > call faucet(). This will mint you 1000 tokens once every 5 days. Also, each of the above tokens will have at least 1000 tokens of liquidity in their respective bathToken from the admin deposited for testing purposes.
 
-## Optimism Goerli (BETA)
+## Optimism Goerli
 
-Please see below for live v1 deployments. Contracts are not yet verified on Etherscan due to a lack of support for `chainId` `420` but this should be resolved soon. Please note these addreses could change if something is off but will be maintained here.\
+Please see below for live v1 deployments. Contracts are not yet verified on Etherscan due to a lack of support for `chainId` `420` but this should be resolved soon. Please note these addresses could change if something is off but will be maintained here.\
 \
 **Please note, that the below are proxy contracts whose live implementation can be found via Etherscan** (via Contract > Read as Proxy \* as soon as verification is live which it is not yet)
 
@@ -90,8 +90,10 @@ MarketAid Implementation: 0xba8bFB9B22804Aa29ACdd157af932F396A158da4
 
 **Test ERC-20s with initialized bathTokens and built-in faucets to test** (excluding WETH)**:**
 
-! ERC-20s for testing and GUI soon!\
-\
+[Test OP Coin](https://goerli-optimism.etherscan.io/address/0xCeE7148028Ff1B08163343794E85883174a61393)
+
+[Test USDC Coin\
+](https://goerli-optimism.etherscan.io/address/0x708394f89acd3e0644f774ea6c876bface70e600)\
 **Please note, to receive any of the above tokens for free for testing, simply call faucet().** This can be done by visiting the token in Etherscan > Write Contract > Connect Wallet (Verify on OP Kovan) > call faucet(). This will mint you 1000 tokens once every 5 days. Also, each of the above tokens will have at least 1000 tokens of liquidity in their respective bathToken from the admin deposited for testing purposes.
 
 ## Polygon - Mumbai (v1)

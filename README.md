@@ -50,8 +50,8 @@ APIs for querying market and liquidity pool data:
 
 List of smart contract addresses and protocol deployments:
 
-{% content-ref url="developers/deployments.md" %}
-[deployments.md](developers/deployments.md)
+{% content-ref url="contracts/kovan-deployments.md" %}
+[kovan-deployments.md](contracts/kovan-deployments.md)
 {% endcontent-ref %}
 
 Security audit reports:
