@@ -1,31 +1,34 @@
 # Table of contents
 
-* [🗺 Start Here](README.md)
-  * [👛 Connecting a wallet](master/connecting-your-wallet-to-rubicon.md)
+* [🗺 Overview](README.md)
 * [❓ FAQ](faq.md)
-* [💱 Swap](swap.md)
-* [📈 Trade](trade/README.md)
-  * [🪙 Fees](trade/fees.md)
-  * [Order Types](trade/order-types.md)
-  * [Adding a Trading Pair](trade/adding-a-trading-pair.md)
-* [💧 Liquidity Pools](what-are-rubicon-pools/README.md)
-  * [Growth Rates](what-are-rubicon-pools/pools-growth-rates.md)
-  * [Current Pools Strategy](what-are-rubicon-pools/current-pools-strategy.md)
-* [🌉 Bridge](bridge/README.md)
-  * [Bridging to Optimism](bridge/bridging-to-optimism.md)
 
-## Developers
+## Guides
 
-* [📊 RubiconMarket](developers/rubicon-market/README.md)
-  * [Key Functions](developers/rubicon-market/key-functions.md)
-* [🌊 Rubicon Pools](developers/rubicon-pools/README.md)
-  * [Bath House](developers/rubicon-pools/bathhouse.md)
-  * [Bath Pair](developers/rubicon-pools/bathpair.md)
-  * [BathToken](developers/rubicon-pools/bath-token.md)
-  * [Strategist](developers/rubicon-pools/strategist-tutorial.md)
-  * [Risk Disclaimer](developers/rubicon-pools/risks.md)
-* [🔎 Deployments](contracts/kovan-deployments.md)
-* [🔒 Audits](developers/audits.md)
+* [📈 Trade](guides/trade/README.md)
+  * [🪙 Fees](guides/trade/fees.md)
+  * [Order Types](guides/trade/order-types.md)
+  * [Adding a Trading Pair](guides/trade/adding-a-trading-pair.md)
+* [💱 Swap](guides/swap.md)
+* [💧 Liquidity Pools](guides/liquidity-pools/README.md)
+  * [Growth Rates](guides/liquidity-pools/pools-growth-rates.md)
+  * [Current Pools Strategy](guides/liquidity-pools/current-pools-strategy.md)
+* [🌉 Bridge](guides/bridge/README.md)
+  * [Bridging to Optimism](guides/bridge/bridging-to-optimism.md)
+* [👛 Connecting a wallet](guides/connecting-your-wallet-to-rubicon.md)
+
+## Protocol
+
+* [📊 RubiconMarket](protocol/rubicon-market/README.md)
+  * [Key Functions](protocol/rubicon-market/key-functions.md)
+* [🌊 Rubicon Pools](protocol/rubicon-pools/README.md)
+  * [Bath House](protocol/rubicon-pools/bathhouse.md)
+  * [Bath Pair](protocol/rubicon-pools/bathpair.md)
+  * [BathToken](protocol/rubicon-pools/bath-token.md)
+  * [Strategist](protocol/rubicon-pools/strategist-tutorial.md)
+  * [Risk Disclaimer](protocol/rubicon-pools/risks.md)
+* [🔎 Deployments](protocol/deployments.md)
+* [🔒 Audits](protocol/audits.md)
 
 ## API
 

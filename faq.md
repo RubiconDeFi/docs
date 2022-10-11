@@ -24,20 +24,20 @@ Rollups (both [optimistic](https://ethereum.org/en/developers/docs/scaling/optim
 
 ### How do I move tokens to Optimism?
 
-The Bridge in our App finds the best bridging route to Optimism and other chains. Keep in mind that to pay [network fees (gas)](trade/fees.md), you will need ETH on [Optimism](https://www.optimism.io/) for all transactions.
+The Bridge in our App finds the best bridging route to Optimism and other chains. Keep in mind that to pay [network fees (gas)](guides/trade/fees.md), you will need ETH on [Optimism](https://www.optimism.io/) for all transactions.
 
 You can purchase ETH (or another token) directly into a wallet on Optimism by using **Buy Crypto** on the App sidebar. This fiat on-ramp from [Ramp](https://ramp.network/) supports credit/debit cards, ApplePay, and some bank transfers.
 
 ### What are the fees?
 
-[fees.md](trade/fees.md "mention")
+[fees.md](guides/trade/fees.md "mention")
 
 ### How do the Liquidity Pools work?
 
 The Rubicon order book protocol has liquidity pools. Liquidity providers (LPs) deposit crypto assets into a pool and receive bathTokens, which represent their proportional share of the underlying pool assets. \
 (Ex. LP deposits ETH, receives bathETH)
 
-![](<.gitbook/assets/image (88).png>)
+![](<.gitbook/assets/image (90).png>)
 
 Liquidity pools are used by active market makers (strategists) to provide liquidity on the order books. Yield from market-making goes to LPs (bathToken holders) and strategists earn a performance fee.
 
@@ -47,7 +47,7 @@ View bathTokens holdings (Pools LP positions) under [Portfolio](https://app.rubi
 
 The Rubicon protocol is permissionless: the order books support trading of any ERC-20 token!
 
-Follow this [guide](trade/adding-a-trading-pair.md) to add a new token/trading pair **locally** on the App, keep in mind liquidity can be low on new trading pairs.
+Follow this [guide](guides/trade/adding-a-trading-pair.md) to add a new token/trading pair **locally** on the App, keep in mind liquidity can be low on new trading pairs.
 
 ### Where can I get support?
 

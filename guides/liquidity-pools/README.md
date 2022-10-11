@@ -8,14 +8,14 @@ description: Everything you need to know about Rubicon liquidity pools
 
 Read the liquidity pool contract ([BathToken.sol](https://github.com/RubiconDeFi/rubicon-protocol-v1/blob/master/contracts/rubiconPools/BathToken.sol)) on GitHub.
 
-Also, check out the pool [contracts docs](../developers/rubicon-pools/) and the bathToken [API docs](../api/subgraphs/bathtoken-api.md):
+Also, check out the pool [contracts docs](../../protocol/rubicon-pools/) and the bathToken [API docs](../../api/subgraphs/bathtoken-api.md):
 
-{% content-ref url="../developers/rubicon-pools/" %}
-[rubicon-pools](../developers/rubicon-pools/)
+{% content-ref url="../../protocol/rubicon-pools/" %}
+[rubicon-pools](../../protocol/rubicon-pools/)
 {% endcontent-ref %}
 
-{% content-ref url="../api/subgraphs/bathtoken-api.md" %}
-[bathtoken-api.md](../api/subgraphs/bathtoken-api.md)
+{% content-ref url="../../api/subgraphs/bathtoken-api.md" %}
+[bathtoken-api.md](../../api/subgraphs/bathtoken-api.md)
 {% endcontent-ref %}
 
 ### What are liquidity pools?
@@ -29,7 +29,7 @@ Liquidity providers (LPs) receive bathTokens when they deposit crypto assets int
 
 From the beginning, we designed these pools with security parameters that will enable anyone to manage pool liquidity. While the system is still under development, our team acts as managers of pool liquidity. You can learn more on the [Current Pools Strategy](current-pools-strategy.md) page. The next version of the Rubicon liquidity pools is in the research and development phase. We will share updates on [our blog](https://mirror.xyz/rubicon.eth)!
 
-<figure><img src="../.gitbook/assets/image (3) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
 
 ### Advantages
 

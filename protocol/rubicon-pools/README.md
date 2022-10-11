@@ -15,7 +15,7 @@ BathTokens adhere to the [ERC-4626 standard](https://ethereum.org/en/developers/
 
 The core structure of this product revolves around _single-asset_ liquidity pools. Users who want passive market-making yield on their assets can deposit into these liquidity pools. From there, these pools are then utilized by strategists, on a pair basis, to perform high-frequency market making for the given pair (asset/quote). Please see below for a diagram of how the core pieces of Rubicon Pools interact with the Rubicon Market.
 
-![Rubicon Smart Contract Infrastructure](<../../.gitbook/assets/image (40).png>)
+![Rubicon Smart Contract Infrastructure](<../../.gitbook/assets/image (83).png>)
 
 Rubicon Pools is comprised of four smart contracts that are detailed in these docs:
 
@@ -40,7 +40,7 @@ A key security feature of Rubicon Pools is that supplied liquidity must be place
 
       * Shape parameter = -0.005 and qt represents the delta between the target ratio and the actual asset/quote ratio that exists across the liquidity pools.
 
-![Optimal High-Frequency Market Making; Fushimi et. al 2018](<../../.gitbook/assets/image (52).png>)
+![Optimal High-Frequency Market Making; Fushimi et. al 2018](<../../.gitbook/assets/image (32).png>)
 
 ### Key Security Considerations
 

@@ -12,12 +12,12 @@ Liquidity pools can rebalance internally between themselves, or use an external 
 
 Filled orders can be rebalanced internally between pools. Internal rebalancing is always the target because it is cheaper, but the pool takes on some amount of inventory risk.
 
-![](<../.gitbook/assets/Rubicon v1\_ Internal Rebalancing - Option 1.png>)
+![](<../../.gitbook/assets/Rubicon v1\_ Internal Rebalancing - Option 1.png>)
 
 ### External Rebalance
 
 Filled orders can also be rebalanced on an external liquidity venue, typically an AMM. External rebalances are more expensive because they pay gas fees and the AMM fee, but they allow pools to instantly derisk and realize yield.
 
-![](<../.gitbook/assets/Rubicon v1\_ Internal Rebalancing - Option 2 (1).png>)
+![](<../../.gitbook/assets/Rubicon v1\_ Internal Rebalancing - Option 2 (1).png>)
 
 For more questions about liquidity management or to get involved, visit the #marketmakers channel in the Rubicon Discord
