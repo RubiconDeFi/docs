@@ -10,7 +10,7 @@ description: >-
 
 Guides for connecting Mobile wallets and Desktop/Browser wallets to the Rubicon App.
 
-(If you need to bridge ETH or other tokens to [Optimism](https://www.optimism.io/), check out our [Bridge guide](bridge/bridging-to-optimism.md))
+(If you need to bridge ETH or other tokens to [Optimism](https://www.optimism.io/), check out our [Bridge guide](../bridge/bridging-to-optimism.md))
 
 ### Mobile/Smartphone wallet
 

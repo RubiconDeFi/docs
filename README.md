@@ -16,12 +16,12 @@ New to Rubicon? Visit our Frequently Asked Questions:
 
 Use the Rubicon protocol to trade ERC-20 tokens with Limit and Market Orders. Visit the guides for the Swap and Trade interfaces on the [Rubicon App](https://app.rubicon.finance/):
 
-{% content-ref url="guides/swap.md" %}
-[swap.md](guides/swap.md)
+{% content-ref url="swap.md" %}
+[swap.md](swap.md)
 {% endcontent-ref %}
 
-{% content-ref url="guides/trade/" %}
-[trade](guides/trade/)
+{% content-ref url="trade/" %}
+[trade](trade/)
 {% endcontent-ref %}
 
 For support, join the [Rubicon Discord](https://discord.com/invite/E7pS24J) server and send a message in the **#support** channel.
@@ -32,14 +32,14 @@ The best way to understand the Rubicon protocol is to [read the code](https://gi
 
 Documentation for the order book contract:
 
-{% content-ref url="protocol/rubicon-market/" %}
-[rubicon-market](protocol/rubicon-market/)
+{% content-ref url="developers/rubicon-market/" %}
+[rubicon-market](developers/rubicon-market/)
 {% endcontent-ref %}
 
 Documentation for the liquidity pool contract(s):
 
-{% content-ref url="protocol/rubicon-pools/" %}
-[rubicon-pools](protocol/rubicon-pools/)
+{% content-ref url="developers/rubicon-pools/" %}
+[rubicon-pools](developers/rubicon-pools/)
 {% endcontent-ref %}
 
 APIs for querying market and liquidity pool data:
@@ -50,14 +50,14 @@ APIs for querying market and liquidity pool data:
 
 List of smart contract addresses and protocol deployments:
 
-{% content-ref url="protocol/deployments.md" %}
-[deployments.md](protocol/deployments.md)
+{% content-ref url="contracts/kovan-deployments.md" %}
+[kovan-deployments.md](contracts/kovan-deployments.md)
 {% endcontent-ref %}
 
 Security audit reports:
 
-{% content-ref url="protocol/audits.md" %}
-[audits.md](protocol/audits.md)
+{% content-ref url="developers/audits.md" %}
+[audits.md](developers/audits.md)
 {% endcontent-ref %}
 
 ## What is Rubicon?
