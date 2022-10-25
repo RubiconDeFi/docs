@@ -4,13 +4,13 @@ pageTitle: Overview
 description: Welcome to Rubicon guides and developer documentation
 ---
 
-Welcome to Rubicon guides and developer documentation {% .lead %}
+Learn how to get CacheAdvance set up in your project in under thirty minutes or it's free. {% .lead %}
 
 {% quick-links %}
 
-{% quick-link title="New to Rubicon?" icon="installation" href="/" description="Visit our Frequently Asked Questions" /%}
+{% quick-link title="Installation" icon="installation" href="/" description="Step-by-step guides to setting up your system and installing the library." /%}
 
-{% quick-link title="Traders" icon="presets" href="/" description="Use the Rubicon protocol to trade ERC-20 tokens with Limit and Market Orders. Visit the guides for the Swap and Trade interfaces" /%}
+{% quick-link title="Architecture guide" icon="presets" href="/" description="Learn how the internals work and contribute." /%}
 
 {% quick-link title="Plugins" icon="plugins" href="/" description="Extend the library with third-party plugins or write your own." /%}
 
