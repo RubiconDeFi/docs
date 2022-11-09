@@ -33,8 +33,8 @@ const navigation = [
         ],
       },
       {
-        title: 'Predicting user behavior',
-        href: '/docs/predicting-user-behavior',
+        title: 'Swap',
+        href: '/docs/guides/swap',
       },
       { title: 'Basics of time-travel', href: '/docs/basics-of-time-travel' },
       {
