@@ -2,7 +2,7 @@
 description: Subgraphs are used to query Rubicon data
 ---
 
-# 💻 Subgraphs
+## 💻 Subgraphs
 
 [The Graph](https://thegraph.com/en/) is a decentralized protocol for indexing and querying data from blockchains, allowing easy access to data that can be difficult to query directly. Rubicon subgraphs are on The Graph's hosted service.
 

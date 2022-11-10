@@ -116,11 +116,22 @@ const navigation = [
     ],
   },
   {
-    title: 'Contributing',
+    title: 'API',
     links: [
-      { title: 'How to contribute', href: '/docs/how-to-contribute' },
-      { title: 'Architecture guide', href: '/docs/architecture-guide' },
-      { title: 'Design principles', href: '/docs/design-principles' },
+      {
+        title: 'Subgraphs',
+        href: '/docs/api/subgraphs/subgraphs',
+        sublinks: [
+          {
+            title: 'RubiconMarket API',
+            href: '/docs/api/subgraphs/rubiconmarket-api',
+          },
+          {
+            title: 'BathToken API',
+            href: '/docs/api/subgraphs/bathtoken-api',
+          },
+        ],
+      },
     ],
   },
 ]
