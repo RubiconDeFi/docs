@@ -105,6 +105,14 @@ const navigation = [
           },
         ],
       },
+      {
+        title: 'Deployments',
+        href: '/docs/protocol/kovan-deployments',
+      },
+      {
+        title: 'Audits',
+        href: '/docs/protocol/audits',
+      },
     ],
   },
   {
