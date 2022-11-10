@@ -4,9 +4,8 @@ description: >-
   wallets and how to add custom networks, you can skip this guide)
 ---
 
-# 👛 Connecting a wallet
 
-### Connect your wallet to Rubicon ⛓️
+## Connect your wallet to Rubicon ⛓️
 
 Guides for connecting Mobile wallets and Desktop/Browser wallets to the Rubicon App.
 
@@ -18,22 +17,22 @@ This guide uses the [MetaMask mobile app](https://metamask.io/download.html), wh
 
 1.  Open MetaMask and tap on the **Menu icon** in the top left
 
-    ![](<../.gitbook/assets/image (110).png>)
+    ![](</assets/image(110).png>)
 
 
 2.  Tap **Settings** in the menu
 
-    ![](<../.gitbook/assets/image (92).png>)
+    ![](</assets/image(92).png>)
 
 
 3.  In the Settings menu, select **Networks** to add a custom network
 
-    ![](<../.gitbook/assets/image (59).png>)
+    ![](</assets/image(59).png>)
 
 
 4.  Tap on the **Add Network** button at the bottom of the screen
 
-    ![](<../.gitbook/assets/image (79).png>)
+    ![](</assets/image(79).png>)
 
 
 5.  The page will ask you for the details of the New RPC Network. To add the Optimism network, type in these network details:
@@ -51,7 +50,7 @@ This guide uses the [MetaMask mobile app](https://metamask.io/download.html), wh
 
 6.  Once you have added the Optimism network, you can exit **Settings** and tap on the **Menu icon**. Then, tap on the **Browser** button
 
-    ![](<../.gitbook/assets/image (73).png>)
+    ![](</assets/image(73).png>)
 
 
 7.  Type in "**app.rubicon.finance**" into the search field and hit **go** to start the search. Make sure the URL is **app.rubicon.finance**! (You can bookmark it by tapping on the **3 dots** icon in the bottom left and tapping **Add to Favorites**.)
@@ -59,12 +58,12 @@ This guide uses the [MetaMask mobile app](https://metamask.io/download.html), wh
     ****
 8.  &#x20;**** The Rubicon app will ask you to connect your wallet. Tap on the **MetaMask** button
 
-    ![](<../.gitbook/assets/image (116).png>)
+    ![](</assets/image(116).png>)
 
 
 9.  Your wallet will ask you to connect to the Rubicon app. Tap **Connect** to connect your wallet to Rubicon
 
-    ![](<../.gitbook/assets/image (78).png>)
+    ![](</assets/image(78).png>)
 
 
 
@@ -74,22 +73,22 @@ This guide uses the [MetaMask mobile app](https://metamask.io/download.html), wh
 
 This guide will use the [MetaMask browser extension](https://metamask.io/download.html) wallet:
 
-![](<../.gitbook/assets/image (13).png>)
+![](</assets/image(13).png>)
 
 Here is the MetaMask home screen, note that the wallet is connected to "Ethereum Mainnet". If you have used Ethereum applications before, this should look normal! This is the main Ethereum blockchain we all know and love.\
 \
 Let's start by connecting our wallet to Rubicon. When you first launch the Rubicon app, you will see this welcome screen:
 
-![](<../.gitbook/assets/image (103).png>)
+![](</assets/image(103).png>)
 
 Once we click on the MetaMask button, the Rubicon app will ask for permission to connect to your wallet. Here is the flow to connect your MetaMask to Rubicon:\
 
 
-![](<../.gitbook/assets/image (51).png>)
+![](</assets/image(51).png>)
 
-![Allow Rubicon to connect to your wallet](<../.gitbook/assets/image (67).png>)
+![Allow Rubicon to connect to your wallet](</assets/image (67).png>)
 
-![You are connected and ready to go!](<../.gitbook/assets/image (43).png>)
+![You are connected and ready to go!](</assets/image (43).png>)
 
 Great, your wallet is connected to Rubicon! There is only one step left before we can start using Rubicon; we will have to switch networks. \
 \
@@ -97,11 +96,11 @@ Rubicon is built on layer 2 (L2): Ethereum scaling solutions that take transacti
 \
 Rubicon is built on [Optimism](https://optimism.io/). Once you are connected to the Rubicon app, you will be prompted to add the Optimism network to your wallet:
 
-![Approve the new network in MetaMask](<../.gitbook/assets/image (82).png>)
+![Approve the new network in MetaMask](</assets/image (82).png>)
 
 Once you approve the Optimism network, you are connected and ready to use Rubicon! If you need to bridge your tokens to the Optimism network, check out our bridging [guide](https://docs.rubicon.finance/getting-started/using-optimism/bridging-tokens-to-optimism).
 
-![](<../.gitbook/assets/image (61).png>)
+![](</assets/image(61).png>)
 
 Now that your wallet is connected, check out the next guide on placing a trade on Rubicon.\
 \

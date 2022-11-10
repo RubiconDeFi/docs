@@ -4,7 +4,10 @@ description: Understanding the growth rates of Rubicon Pools
 
 # Growth Rates
 
-**Using Rubicon Pools has** [**certain risks**](https://docs.rubicon.finance/rubicon-docs/contracts/rubicon-pools/risks)**. Exercise caution and only deposit what you can afford to lose.**&#x20;
+{% callout type="warning" title="Disclaimer" %}
+Using Rubicon Pools has [**certain risks**](https://docs.rubicon.finance/rubicon-docs/contracts/rubicon-pools/risks). Exercise caution and only deposit what you can afford to lose.
+{% /callout %}
+
 
 [Rubicon Pools](https://docs.rubicon.finance/getting-started/what-are-rubicon-pools) are the native liquidity pools for the Rubicon order books. Liquidity providers deposit tokens into a pool, where pool liquidity is used by active market makers (strategists) to provide liquidity on the order books. The yield from market-making activities goes to the liquidity providers, with a performance fee going to the strategist.
 
@@ -16,7 +19,8 @@ A helpful concept to understand the performance of any given pool is the pool's 
 
 On the [Pools page](https://app.rubicon.finance/pools) in the web app, each liquidity pool has a corresponding estimated APR:
 
-<figure><img src="../.gitbook/assets/image (8).png" alt=""><figcaption><p>DAI APR and Reward Rate on 22.09.22</p></figcaption></figure>
+![](/assets/image(8).png) 
+DAI APR and Reward Rate on 22.09.22
 
 Hovering over this rate will show a tooltip with additional rates for each pool. The main rate is an estimated APY, which is calculated from _the better of trailing weekly or monthly performance for the pool._ Here is an overview of how these rates are calculated:
 
