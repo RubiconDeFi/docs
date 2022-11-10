@@ -10,7 +10,7 @@ Welcome to Rubicon guides and developer documentation {% .lead %}
 
 {% quick-link title="New to Rubicon?" icon="installation" href="/" description="Visit our Frequently Asked Questions" /%}
 
-{% quick-link title="Traders" icon="presets" href="/" description="Use the Rubicon protocol to trade ERC-20 tokens with Limit and Market Orders. Visit the guides for the Swap and Trade interfaces" /%}
+{% quick-link title="Traders" icon="presets" href="/" description="Use the Rubicon protocol to trade ERC-20 tokens with Limit and Market Orders." /%}
 
 {% quick-link title="Plugins" icon="plugins" href="/" description="Extend the library with third-party plugins or write your own." /%}
 
@@ -18,7 +18,6 @@ Welcome to Rubicon guides and developer documentation {% .lead %}
 
 {% /quick-links %}
 
-Possimus saepe veritatis sint nobis et quam eos. Architecto consequatur odit perferendis fuga eveniet possimus rerum cumque. Ea deleniti voluptatum deserunt voluptatibus ut non iste.
 
 ---
 
@@ -31,7 +30,7 @@ Rubicon is built on [Optimism](https://optimism.io/), a low-cost and lightning-f
 
 ### Protocol Overview
 
-The cornerstone of the protocol is the [RubiconMarket](https://docs.rubicon.finance/rubicon-docs/contracts/rubicon-market) contract, which implements order books for the peer-to-peer trading of ERC-20 tokens.
+The cornerstone of the protocol is the [RubiconMarket](/docs/protocol/rubicon-market/rubicon-market) contract, which implements order books for the peer-to-peer trading of ERC-20 tokens.
 
 Rubicon Pools are the native liquidity pools of the Rubicon order books. It is a system of smart contracts that enables passive liquidity providers (LPs) to deposit tokens in a pool, where active market makers (strategists) use the pool assets on the order books. Yield from market-making goes to LPs, and strategists earn a performance fee.
 

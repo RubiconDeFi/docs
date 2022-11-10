@@ -32,11 +32,11 @@ function executeStrategy(
     )
 ```
 
-* `targetStrategy` - the address of the contract executing a market-making strategy with the given inputs. In the current version of Pools the [_only approved strategy is the Pairs Trade_](https://docs.rubicon.finance/contracts/rubicon-pools/pairstrade).
-* `askNumerator` - the exact numerator ([pay\_am](https://docs.rubicon.finance/contracts/rubicon-market/key-functions#offer)[t](https://www.youtube.com/watch?v=dQw4w9WgXcQ)) that will be used to make a trade with LP funds in an asset quantity (e.g. WBTC).
-* `askDenominator` - the exact denominator ([buy\_amt](https://docs.rubicon.finance/contracts/rubicon-market/key-functions#offer)) that will be used to make a trade with LP funds in a quote asset amount (e.g. USDC).
-* `bidNumerator` - the exact numerator ([pay\_am](https://docs.rubicon.finance/contracts/rubicon-market/key-functions#offer)[t](https://www.youtube.com/watch?v=dQw4w9WgXcQ)) that will be used to make a trade with LP funds in a quote asset amount (e.g. USDC).
-* `bidDenominator` - the exact denominator ([buy\_amt](https://docs.rubicon.finance/contracts/rubicon-market/key-functions#offer)) that will be used to make this bid in an asset amount (e.g. WETH).
+* `targetStrategy` - the address of the contract executing a market-making strategy with the given inputs. In the current version of Pools the [_only approved strategy is the Pairs Trade_](/docs/protocol/rubicon-pools/bathpair).
+* `askNumerator` - the exact numerator ([pay\_am](/docs/protocol/rubicon-market/key-functions#offer)[t](https://www.youtube.com/watch?v=dQw4w9WgXcQ)) that will be used to make a trade with LP funds in an asset quantity (e.g. WBTC).
+* `askDenominator` - the exact denominator ([buy\_amt](/docs/protocol/rubicon-market/key-functions#offer)) that will be used to make a trade with LP funds in a quote asset amount (e.g. USDC).
+* `bidNumerator` - the exact numerator ([pay\_am](/docs/protocol/rubicon-market/key-functions#offer)[t](https://www.youtube.com/watch?v=dQw4w9WgXcQ)) that will be used to make a trade with LP funds in a quote asset amount (e.g. USDC).
+* `bidDenominator` - the exact denominator ([buy\_amt](/docs/protocol/rubicon-market/key-functions#offer)) that will be used to make this bid in an asset amount (e.g. WETH).
 
 The strategist should determine off-chain the best bids and asks to make based on market conditions for user funds in order to receive a payout for successful fills.
 

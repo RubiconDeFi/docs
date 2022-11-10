@@ -172,7 +172,7 @@ function Header({ navigation }) {
       </div>
       <div className="relative flex flex-grow basis-0 items-center">
         <Link href="/" aria-label="Home page">
-          <Logomark className="h-9 w-9 lg:hidden" />
+          <Logomark className="h-9 w-9 bg-white p-2 lg:hidden" />
           <Logo className="hidden h-9 w-auto fill-slate-700 dark:fill-sky-100 lg:block" />
         </Link>
       </div>
@@ -253,6 +253,10 @@ export function Layout({ children, title, tableOfContents }) {
     }
     return section.children.findIndex(isActive) > -1
   }
+
+  useEffect(() => {
+    isHomePage && router.replace('/docs/introduction/overview')
+  }, [isHomePage])
 
   return (
     <>

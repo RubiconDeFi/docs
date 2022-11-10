@@ -12,7 +12,7 @@ The BathToken subgraph contains a collection of entities that collect and store 
 
 ### _**LiquidityProvider Entity (ID: Wallet Address)**_
 
-```
+```graphql
 type LiquidityProvider @entity { 
     " <user adddress> "
     id: ID!
@@ -27,12 +27,12 @@ The LiquidityProvider entity acts as a single point of reference to collect all 
 
 | Variable Updated                                                  | Function                                                                                                                                                                                                                                          | Event Emit                                                                                                                                                                                                                                                                                                             | Contract      |
 | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| <p>LiquidityProvider.positions<br>LiquidityProvider.deposits</p>  | <p>function deposit(</p><p>   uint256 _amount</p><p>) </p><p>external returns (</p><p>   uint256 shares</p><p>) </p><p>{ </p><p>   uint256 _pool = underlyingBalance(); </p><p>   uint256 _before = underlyingToken.balanceOf(address(this));</p> | <p>event LogDeposit( </p><p>   uint256 depositedAmt,</p><p>   IERC20 asset, </p><p>   uint256 sharesReceived,</p><p>   address depositor, </p><p>   uint256 underlyingBalance,</p><p>   uint256 outstandingAmount,</p><p>   uint256 totalSupply </p><p>);</p>                                                          | BathToken.sol |
-| <p>LiquidityProvider.positions<br>LiquidityProvider.withdraws</p> | <p>function withdraw(</p><p>   uint256 _shares</p><p>) </p><p>external returns (</p><p>   uint256 amountWithdrawn</p><p>);</p>                                                                                                                    | <p>event LogWithdraw( </p><p>   uint256 amountWithdrawn,</p><p>   IERC20 asset, </p><p>   uint256 sharesWithdrawn, </p><p>   address withdrawer, </p><p>   uint256 fee, </p><p>   address feeTo, </p><p>   uint256 underlyingBalance, </p><p>   uint256 outstandingAmount, </p><p>   uint256 totalSupply </p><p>);</p> | BathToken.sol |
+| LiquidityProvider.positionsLiquidityProvider.deposits  | function deposit(   uint256 _amount) external returns (   uint256 shares) {    uint256 _pool = underlyingBalance();    uint256 _before = underlyingToken.balanceOf(address(this)); | event LogDeposit(    uint256 depositedAmt,   IERC20 asset,    uint256 sharesReceived,   address depositor,    uint256 underlyingBalance,   uint256 outstandingAmount,   uint256 totalSupply );                                                          | BathToken.sol |
+| LiquidityProvider.positionsLiquidityProvider.withdraws | function withdraw(   uint256 _shares) external returns (   uint256 amountWithdrawn);                                                                                                                    | event LogWithdraw(    uint256 amountWithdrawn,   IERC20 asset,    uint256 sharesWithdrawn,    address withdrawer,    uint256 fee,    address feeTo,    uint256 underlyingBalance,    uint256 outstandingAmount,    uint256 totalSupply ); | BathToken.sol |
 
 ### _PoolPosition Entity (ID: \<user address>#\<pool underlying asset address>)_
 
-```
+```graphql
 type PoolPosition @entity {
     " <user address>#<pool underlying asset address> "
     id: ID!
@@ -53,12 +53,12 @@ The PoolPosition entity represents the active state of a user's holdings in a Ru
 
 | Variable Updated                                                   | Function                                                                                                                                                                                                                             | Event Emit                                                                                                                                                                                                      | Contract      |
 | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| <p>PoolPosition.bathTokenAmount<br>PoolPosition.totalDeposited</p> | <p>function deposit(</p><p>uint256 _amount</p><p>) </p><p>external returns(</p><p>uint256 shares</p><p>) </p><p>{ </p><p>uint256 _pool = underlyingBalance(); </p><p>uint256 _before = underlyingToken.balanceOf(address(this));</p> | event LogDeposit( uint256 depositedAmt, IERC20 asset, uint256 sharesReceived, address depositor, uint256 underlyingBalance, uint256 outstandingAmount, uint256 totalSupply );                                   | BathToken.sol |
-| <p>PoolPosition.bathTokenAmount<br>PoolPosition.totalWithdrawn</p> | function withdraw(uint256 \_shares) external returns (uint256 amountWithdrawn)                                                                                                                                                       | event LogWithdraw( uint256 amountWithdrawn, IERC20 asset, uint256 sharesWithdrawn, address withdrawer, uint256 fee, address feeTo, uint256 underlyingBalance, uint256 outstandingAmount, uint256 totalSupply ); | BathToken.sol |
+| PoolPosition.bathTokenAmountPoolPosition.totalDeposited | function deposit(uint256 _amount) external returns(uint256 shares) { uint256 _pool = underlyingBalance(); uint256 _before = underlyingToken.balanceOf(address(this)); | event LogDeposit( uint256 depositedAmt, IERC20 asset, uint256 sharesReceived, address depositor, uint256 underlyingBalance, uint256 outstandingAmount, uint256 totalSupply );                                   | BathToken.sol |
+| PoolPosition.bathTokenAmountPoolPosition.totalWithdrawn | function withdraw(uint256 \_shares) external returns (uint256 amountWithdrawn)                                                                                                                                                       | event LogWithdraw( uint256 amountWithdrawn, IERC20 asset, uint256 sharesWithdrawn, address withdrawer, uint256 fee, address feeTo, uint256 underlyingBalance, uint256 outstandingAmount, uint256 totalSupply ); | BathToken.sol |
 
 ### Pool Entity (ID: \<pool underlying asset address>)
 
-```
+```graphql
 type Pool @entity { 
     " <pool underlying asset address> " 
     id: ID! 
@@ -114,15 +114,15 @@ All values are denominated in the integer value of the underlying ERC-20 token t
 
 | Variable Updated                                                                                                              | Function                                                                                                                                                                  | Event Emit                                                                                                                                                                                                      | Contract          |
 | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| <p>Pool.underlyingBalance<br>Pool.tokenSupply<br>Pool.tokensMinted<br>Pool.totalDeposited<br>Pool.price<br>Pool.Deposits</p>  | function deposit(uint256 \_amount) external returns (uint256 shares) { uint256 \_pool = underlyingBalance(); uint256 \_before = underlyingToken.balanceOf(address(this)); | event LogDeposit( uint256 depositedAmt, IERC20 asset, uint256 sharesReceived, address depositor, uint256 underlyingBalance, uint256 outstandingAmount, uint256 totalSupply );                                   | BathToken.sol     |
-| <p>Pool.underlyingBalance<br>Pool.tokenSupply<br>Pool.tokensBurned<br>Pool.totalWithdrawn<br>Pool.price<br>Pool.Withdraws</p> | function withdraw(uint256 \_shares) external returns (uint256 amountWithdrawn)                                                                                            | event LogWithdraw( uint256 amountWithdrawn, IERC20 asset, uint256 sharesWithdrawn, address withdrawer, uint256 fee, address feeTo, uint256 underlyingBalance, uint256 outstandingAmount, uint256 totalSupply ); | BathToken.sol     |
-| <p>Pool.underlyingBalance<br>Pool.outstandingAmount<br>Pool.totalEarned<br>Pool.PoolBuffers</p>                               | function rebalance( address destination, address filledAssetToRebalance, /\* sister or fill asset \*/ uint256 stratProportion, uint256 rebalAmt )                         | event LogRebalance( IERC20 pool\_asset, address destination, IERC20 transferAsset, uint256 rebalAmt, uint256 stratReward, uint256 underlyingBalance, uint256 outstandingAmount, uint256 totalSupply );          | BathToken.sol     |
-| <p>Pool.underlyingBalance<br>Pool.outstandingAmount<br>Pool.totalEarned<br>Pool.PoolBuffers</p>                               | function placeOffer( uint256 pay\_amt, ERC20 pay\_gem, uint256 buy\_amt, ERC20 buy\_gem )                                                                                 | event LogPoolOffer( uint256 id, IERC20 pool\_asset, uint256 underlyingBalance, uint256 outstandingAmount, uint256 totalSupply );                                                                                | BathToken.sol     |
-| <p>Pool.underlyingBalance<br>Pool.outstandingAmount<br>Pool.totalEarned<br>Pool.PoolBuffers</p>                               | function buy(uint256 id, uint256 quantity) public virtual can\_buy(id) synchronized returns (bool)                                                                        | event LogTake( bytes32 indexed id, bytes32 indexed pair, address maker, ERC20 pay\_gem, ERC20 buy\_gem, address indexed taker, uint128 take\_amt, uint128 give\_amt, uint64 timestamp );                        | RubiconMarket.sol |
+| Pool.underlyingBalancePool.tokenSupplyPool.tokensMintedPool.totalDepositedPool.pricePool.Deposits  | function deposit(uint256 \_amount) external returns (uint256 shares) { uint256 \_pool = underlyingBalance(); uint256 \_before = underlyingToken.balanceOf(address(this)); | event LogDeposit( uint256 depositedAmt, IERC20 asset, uint256 sharesReceived, address depositor, uint256 underlyingBalance, uint256 outstandingAmount, uint256 totalSupply );                                   | BathToken.sol     |
+| Pool.underlyingBalancePool.tokenSupplyPool.tokensBurnedPool.totalWithdrawnPool.pricePool.Withdraws | function withdraw(uint256 \_shares) external returns (uint256 amountWithdrawn)                                                                                            | event LogWithdraw( uint256 amountWithdrawn, IERC20 asset, uint256 sharesWithdrawn, address withdrawer, uint256 fee, address feeTo, uint256 underlyingBalance, uint256 outstandingAmount, uint256 totalSupply ); | BathToken.sol     |
+| Pool.underlyingBalancePool.outstandingAmountPool.totalEarnedPool.PoolBuffers                               | function rebalance( address destination, address filledAssetToRebalance, /\* sister or fill asset \*/ uint256 stratProportion, uint256 rebalAmt )                         | event LogRebalance( IERC20 pool\_asset, address destination, IERC20 transferAsset, uint256 rebalAmt, uint256 stratReward, uint256 underlyingBalance, uint256 outstandingAmount, uint256 totalSupply );          | BathToken.sol     |
+| Pool.underlyingBalancePool.outstandingAmountPool.totalEarnedPool.PoolBuffers                               | function placeOffer( uint256 pay\_amt, ERC20 pay\_gem, uint256 buy\_amt, ERC20 buy\_gem )                                                                                 | event LogPoolOffer( uint256 id, IERC20 pool\_asset, uint256 underlyingBalance, uint256 outstandingAmount, uint256 totalSupply );                                                                                | BathToken.sol     |
+| Pool.underlyingBalancePool.outstandingAmountPool.totalEarnedPool.PoolBuffers                               | function buy(uint256 id, uint256 quantity) public virtual can\_buy(id) synchronized returns (bool)                                                                        | event LogTake( bytes32 indexed id, bytes32 indexed pair, address maker, ERC20 pay\_gem, ERC20 buy\_gem, address indexed taker, uint128 take\_amt, uint128 give\_amt, uint64 timestamp );                        | RubiconMarket.sol |
 
 ### PoolBuffer Entity (ID: \<pool underlying asset address>#\<buffer asset address>)
 
-```
+```graphql
 type PoolBuffer @entity {
     " <pool underlying asset address>#<buffer asset address> "
     id: ID!
@@ -155,7 +155,7 @@ All values are denominated in the integer value of the underlying ERC-20 token t
 
 ### Deposit Entity (ID: \<transaction hash>#\<user address>)
 
-```
+```graphql
 type Deposit @entity {
     " <transaction hash>#<user address> "
     id: ID!
@@ -184,11 +184,11 @@ The Deposit entity corresponds to any deposit placed by a liquidity provider int
 
 | Variable Updated                                                                                                                         | Function                                                                                                                                                                  | Event Emit                                                                                                                                                                    | Contract      |
 | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| <p>Deposit.timestamp<br>Deposit.transaction<br>Deposit.pool<br>Deposit.depositAmount<br>Deposit.bathTokenAmount<br>Deposit.price<br></p> | function deposit(uint256 \_amount) external returns (uint256 shares) { uint256 \_pool = underlyingBalance(); uint256 \_before = underlyingToken.balanceOf(address(this)); | event LogDeposit( uint256 depositedAmt, IERC20 asset, uint256 sharesReceived, address depositor, uint256 underlyingBalance, uint256 outstandingAmount, uint256 totalSupply ); | BathToken.sol |
+| Deposit.timestampDeposit.transactionDeposit.poolDeposit.depositAmountDeposit.bathTokenAmountDeposit.price | function deposit(uint256 \_amount) external returns (uint256 shares) { uint256 \_pool = underlyingBalance(); uint256 \_before = underlyingToken.balanceOf(address(this)); | event LogDeposit( uint256 depositedAmt, IERC20 asset, uint256 sharesReceived, address depositor, uint256 underlyingBalance, uint256 outstandingAmount, uint256 totalSupply ); | BathToken.sol |
 
 ### Withdraw Entity (ID: \<transaction hash>#\<user address>)
 
-```
+```graphql
 type Withdraw @entity {
     " <transaction hash>#<user address> "
     id: ID!
@@ -217,7 +217,7 @@ The Withdraw entity corresponds to any deposit placed by a liquidity provider in
 
 | Variable Updated                                                                                                                            | Function                                                                       | Event Emit                                                                                                                                                                                                      | Contract      |
 | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| <p>Withdraw.timestamp<br>Withdraw.transaction<br>Withdraw.pool<br>Withdraw.withdrawAmount<br>Withdraw.bathTokenBurned<br>Withdraw.price</p> | function withdraw(uint256 \_shares) external returns (uint256 amountWithdrawn) | event LogWithdraw( uint256 amountWithdrawn, IERC20 asset, uint256 sharesWithdrawn, address withdrawer, uint256 fee, address feeTo, uint256 underlyingBalance, uint256 outstandingAmount, uint256 totalSupply ); | BathToken.sol |
+| Withdraw.timestampWithdraw.transactionWithdraw.poolWithdraw.withdrawAmountWithdraw.bathTokenBurnedWithdraw.price | function withdraw(uint256 \_shares) external returns (uint256 amountWithdrawn) | event LogWithdraw( uint256 amountWithdrawn, IERC20 asset, uint256 sharesWithdrawn, address withdrawer, uint256 fee, address feeTo, uint256 underlyingBalance, uint256 outstandingAmount, uint256 totalSupply ); | BathToken.sol |
 
 ## _**Example Queries**_
 

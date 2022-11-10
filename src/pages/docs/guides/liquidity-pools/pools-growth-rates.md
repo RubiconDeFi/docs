@@ -5,11 +5,11 @@ description: Understanding the growth rates of Rubicon Pools
 # Growth Rates
 
 {% callout type="warning" title="Disclaimer" %}
-Using Rubicon Pools has [**certain risks**](https://docs.rubicon.finance/rubicon-docs/contracts/rubicon-pools/risks). Exercise caution and only deposit what you can afford to lose.
+Using Rubicon Pools has [**certain risks**](/docs/protocol/rubicon-pools/risks). Exercise caution and only deposit what you can afford to lose.
 {% /callout %}
 
 
-[Rubicon Pools](https://docs.rubicon.finance/getting-started/what-are-rubicon-pools) are the native liquidity pools for the Rubicon order books. Liquidity providers deposit tokens into a pool, where pool liquidity is used by active market makers (strategists) to provide liquidity on the order books. The yield from market-making activities goes to the liquidity providers, with a performance fee going to the strategist.
+[Rubicon Pools](docs/protocol/rubicon-pools/rubicon-pools) are the native liquidity pools for the Rubicon order books. Liquidity providers deposit tokens into a pool, where pool liquidity is used by active market makers (strategists) to provide liquidity on the order books. The yield from market-making activities goes to the liquidity providers, with a performance fee going to the strategist.
 
 The performance of a pool (i.e. bathTokens, which represent an LP's share of the pool) is determined by the profitability of strategist market-making. Importantly, pool returns are _discrete and not continuous_ as they are generated when trades are filled.&#x20;
 

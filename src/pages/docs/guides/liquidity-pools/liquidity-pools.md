@@ -10,7 +10,7 @@ Also, check out the pool [contracts docs](../developers/rubicon-pools/) and the 
 
 ### What are liquidity pools?
 
-Rubicon liquidity pools have [certain risks](https://docs.rubicon.finance/rubicon-docs/contracts/rubicon-pools/risks). Exercise caution and only deposit what you can afford to lose.
+Rubicon liquidity pools have [certain risks](/docs/protocol/rubicon-pools/risks). Exercise caution and only deposit what you can afford to lose.
 
 Rubicon liquidity pools are a set of smart contracts which enable liquidity providers (LPs) to deposit ERC-20 tokens into a pool. Tokens in the pool are used by active market makers (strategists) to provide liquidity on the Rubicon order books. Yield from market-making goes to the LPs, while strategists earn a management fee.
 
