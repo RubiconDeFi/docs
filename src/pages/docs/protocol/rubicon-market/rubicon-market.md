@@ -8,7 +8,7 @@ The core exchange logic of Rubicon lives in the [RubiconMarket ](https://github.
 
 On-chain, all entities that are trading peer-to-peer through Rubicon call functions that exist on this smart contract. Detailed documentation as to the key functions, interactions, and interfaces of this contract can be found below.
 
-### Key Concepts
+## Key Concepts
 
 #### The Order Book
 

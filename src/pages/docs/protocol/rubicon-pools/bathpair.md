@@ -2,7 +2,7 @@
 description: Pair-specific market-making and strategy execution
 ---
 
-# Bath Pair
+## Bath Pair
 
 The [BathPair contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathPair.sol) represents the heart of Rubicon Pools by allowing strategists, user liquidity, and key security considerations the ability to come together for a given trading pair. This contract allows strategists to deploy user liquidity in order to market make on the Rubicon Market. Moreover, this contract ensures that user funds are safe from potentially malicious actors and stay within the closed-loop system that is Rubicon Pools.
 

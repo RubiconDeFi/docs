@@ -2,7 +2,7 @@
 description: An overview of how to be a strategist for Rubicon Pools
 ---
 
-# Strategist
+## Strategist
 
 Strategists have the ability to place a bid and/or an ask using BathToken liquidity for the purposes of market-making on the Rubicon order book. They utilize off-chain strategies to place trades within the bounds of the Pools system and win rewards.
 

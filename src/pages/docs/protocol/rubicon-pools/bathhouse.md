@@ -2,7 +2,7 @@
 description: The admin contract for Rubicon Pools
 ---
 
-# Bath House
+## Bath House
 
 The [BathHouse contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathHouse.sol) acts as the admin for the Rubicon Pools system while providing key, high-level functions to the system. The most important functions of the BathHouse are to initialize new BathPairs, approve strategies, and manage liquidity pool organization and routing.
 

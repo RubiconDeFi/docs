@@ -4,8 +4,6 @@ description: Risks associated with Rubicon
 
 # Risk Disclaimer
 
-### Risk Disclosure
-
 **The Rubicon protocol is experimental software, and interacting with it has certain risks, including but not limited to smart contract security risks, mechanism risks, and the risks associated with providing liquidity. Only deposit what you can afford to lose, you could lose some or all of your funds. We encourage you to do your own research and read the smart contracts before interacting with them.**
 
 Rubicon Pools is a novel liquidity mechanism. In practice, it is a series of smart contracts which enable passive liquidity providers (LPs) to deposit their assets into a liquidity pool, where assets in the pool are then used by active market makers (strategists) to provide liquidity on the Rubicon order books. Yield from market-making goes to LPs, while strategists earn a performance fee.

@@ -2,7 +2,7 @@
 description: An ERC-20 token that represents user liquidity in Rubicon Pools
 ---
 
-# BathToken
+## BathToken
 
 The [Bath Token contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathToken.sol) represents a single asset pool of liquidity within Rubicon Pools. These pools are named by adding the prefix "bath" to the name of the underlying token (e.g. bathUSDC).&#x20;
 
@@ -12,7 +12,7 @@ BathTokens are essentially a share of the underlying pool.
 
 LPs earn market-making yields while strategists use pool assets to provide liquidity on the Rubicon order books.&#x20;
 
-![](<../../.gitbook/assets/Rubicon v1\_ BathTokens.png>)
+![](</assets/Rubicon v1\_ BathTokens.png>)
 
 ### Key Functions
 

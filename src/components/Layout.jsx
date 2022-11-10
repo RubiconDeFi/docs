@@ -67,16 +67,43 @@ const navigation = [
     ],
   },
   {
-    title: 'Advanced guides',
+    title: 'Protocol',
     links: [
-      { title: 'Writing plugins', href: '/docs/writing-plugins' },
-      { title: 'Neuralink integration', href: '/docs/neuralink-integration' },
-      { title: 'Temporal paradoxes', href: '/docs/temporal-paradoxes' },
-      { title: 'Testing', href: '/docs/testing' },
-      { title: 'Compile-time caching', href: '/docs/compile-time-caching' },
       {
-        title: 'Predictive data generation',
-        href: '/docs/predictive-data-generation',
+        title: 'RubiconMarket',
+        href: '/docs/protocol/rubicon-market/rubicon-market',
+        sublinks: [
+          {
+            title: 'Key Functions',
+            href: '/docs/protocol/rubicon-market/key-functions',
+          },
+        ],
+      },
+      {
+        title: 'Rubicon Pools',
+        href: '/docs/protocol/rubicon-pools/rubicon-pools',
+        sublinks: [
+          {
+            title: 'Bath House',
+            href: '/docs/protocol/rubicon-pools/bathhouse',
+          },
+          {
+            title: 'Bath Pair',
+            href: '/docs/protocol/rubicon-pools/bathpair',
+          },
+          {
+            title: 'Bath Token',
+            href: '/docs/protocol/rubicon-pools/bath-token',
+          },
+          {
+            title: 'Strategist',
+            href: '/docs/protocol/rubicon-pools/strategist-tutorial',
+          },
+          {
+            title: 'Risk Disclaimer',
+            href: '/docs/protocol/rubicon-pools/risks',
+          },
+        ],
       },
     ],
   },

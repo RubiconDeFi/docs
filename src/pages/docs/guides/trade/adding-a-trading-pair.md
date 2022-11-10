@@ -11,19 +11,19 @@ The Rubicon protocol is permissionless: the order book contract supports trading
 You can add a trading pair with a new token locally to the [**Rubicon App**](https://app.rubicon.finance/trade) in just a few steps:
 
 1. Select the **Token Menu** at the top of the **Trade** page:
-   ![Token Menu](</assets/image (15).png>)
+   ![Token Menu](</assets/image(15).png>)
 
 2. Choose the **Quote Token** you want for the new Trading Pair:
-   ![Quote Token](</assets/image (106).png>)
+   ![Quote Token](</assets/image(106).png>)
 
 3. Click **Add Token** and paste the contract address of the new token. Make sure to add the correct address for the token on Optimism, verify this on the [Optimism block explorer](https://optimistic.etherscan.io/tokens):
-   ![Add Token](</assets/image (55).png>)
+   ![Add Token](</assets/image(55).png>)
 
 4. Once you paste the token address and add it, you will see the new trading pair on your menu:
-   ![New Pair](</assets/image (62).png>)
+   ![New Pair](</assets/image(62).png>)
 
 5. Select the new pair to view the new order book and start placing limit orders:
-   ![Select New Pair](</assets/image (33).png>)
+   ![Select New Pair](</assets/image(33).png>)
 
 Building liquidity for a new order book can be difficult. On a new pair, you may need to be the first one to add liquidity by placing limit orders on the book
 

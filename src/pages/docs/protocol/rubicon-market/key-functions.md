@@ -2,7 +2,7 @@
 description: The main entry points and functions of the Rubicon Market contract
 ---
 
-# Key Functions
+## Key Functions
 
 #### Offer
 
