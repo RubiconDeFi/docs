@@ -37,7 +37,9 @@ export function Navigation({ navigation, className }) {
                       role="list"
                       className={clsx(
                         'mt-2 ml-6 space-y-2 border-l-2 border-slate-100 transition duration-200 dark:border-slate-800 lg:mt-4 lg:space-y-4 lg:border-slate-200',
-                        link.href === router.pathname ? 'h-auto' : ''
+                        router.pathname.includes(link.href.split('/').slice(-1))
+                          ? 'h-auto'
+                          : 'hidden h-0'
                       )}
                     >
                       {link.sublinks.map((sublink) => (
