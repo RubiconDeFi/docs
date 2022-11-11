@@ -1,38 +1,11 @@
-# Syntax
+## Welcome to Rubicon guides and developer documentation 
 
-Syntax is a [Tailwind UI](https://tailwindui.com) site template built using [Tailwind CSS](https://tailwindcss.com) and [Next.js](https://nextjs.org).
+[![FAQ](https://img.shields.io/badge/FAQ-2ea44f)](https://docs.rubicon.finance/docs/introduction/faq)
+[![Guides](https://img.shields.io/badge/Guides-2ea44f)](https://docs.rubicon.finance/docs/guides/trade/trade)
+[![API](https://img.shields.io/badge/API-2ea44f?logo=Rust)](https://docs.rubicon.finance/docs/guides/trade/trade)
 
-## Getting started
 
-To get started with this template, first install the npm dependencies:
+Rubicon is an order book protocol for Ethereum. Use it to trade ERC-20 tokens with Swaps, Limit Orders, and Market Orders or provide liquidity in Pools.
+Rubicon is built on Optimism, a low-cost and lightning-fast Ethereum L2 chain.
 
-```bash
-npm install
-cp .env.example .env.local
-```
-
-Next, run the development server:
-
-```bash
-npm run dev
-```
-
-Finally, open [http://localhost:3000](http://localhost:3000) in your browser to view the website.
-
-## Customizing
-
-You can start editing this template by modifying the files in the `/src` folder. The site will auto-update as you edit these files.
-
-## License
-
-This site template is a commercial product and is licensed under the [Tailwind UI license](https://tailwindui.com/license).
-
-## Learn more
-
-To learn more about the technologies used in this site template, see the following resources:
-
-- [Tailwind CSS](https://tailwindcss.com/docs) - the official Tailwind CSS documentation
-- [Next.js](https://nextjs.org/docs) - the official Next.js documentation
-- [Headless UI](https://headlessui.dev) - the official Headless UI documentation
-- [Markdoc](https://markdoc.io) - the official Markdoc documentation
-- [DocSearch](https://docsearch.algolia.com) - the official DocSearch documentation
+![Rubicon_v1_RubiconMarket](https://user-images.githubusercontent.com/17028936/201389403-f1a2f173-67c8-4780-ac2c-775438dfcfcf.png)
