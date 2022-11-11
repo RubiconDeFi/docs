@@ -32,7 +32,7 @@ If you are new to Ethereum and need a wallet, use [this tool](https://ethereum.o
 
 ### What are the fees?
 
-[Fees](href="/docs/guides/trades/fees")
+[Fees](/docs/guides/trades/fees)
 
 ### How do the Liquidity Pools work?
 
