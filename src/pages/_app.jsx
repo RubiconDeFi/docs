@@ -64,7 +64,7 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>{pageTitle}</title>
+        <title>Rubicon - {pageTitle}</title>
         {description && <meta name="description" content={description} />}
       </Head>
       <Layout title={title} tableOfContents={tableOfContents}>
