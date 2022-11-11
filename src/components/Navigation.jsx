@@ -12,7 +12,7 @@ export function Navigation({ navigation, className }) {
       <ul role="list" className="space-y-9">
         {navigation.map((section) => (
           <li key={section.title}>
-            <h2 className="font-medium font-display text-slate-900 dark:text-white">
+            <h2 className="font-display font-medium text-slate-900 dark:text-white">
               {section.title}
             </h2>
             <ul
@@ -29,7 +29,7 @@ export function Navigation({ navigation, className }) {
                         ? 'before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full hover:before:block'
                         : 'flex flex-row items-center justify-between before:hidden',
                       link.href === router.pathname
-                        ? 'font-semibold text-sky-500 before:bg-sky-500'
+                        ? 'font-semibold text-red-500 before:bg-red-500'
                         : 'text-slate-500 before:hidden before:bg-slate-300 hover:text-slate-600  dark:text-slate-400 dark:before:bg-slate-700 dark:hover:text-slate-300'
                     )}
                   >
@@ -41,7 +41,7 @@ export function Navigation({ navigation, className }) {
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className="w-4 h-4"
+                        className="h-4 w-4"
                       >
                         <path
                           strokeLinecap="round"
@@ -77,7 +77,7 @@ export function Navigation({ navigation, className }) {
                               className={clsx(
                                 'block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full',
                                 sublink.href === router.pathname
-                                  ? 'font-normal text-sky-500 before:bg-sky-500'
+                                  ? 'font-normal text-red-500 before:bg-red-500'
                                   : 'text-slate-500 before:hidden before:bg-slate-300 hover:text-slate-600 hover:before:block dark:text-slate-400 dark:before:bg-slate-700 dark:hover:text-slate-300'
                               )}
                             >

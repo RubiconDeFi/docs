@@ -173,7 +173,7 @@ function Header({ navigation }) {
       <div className="relative flex flex-grow basis-0 items-center">
         <Link href="/" aria-label="Home page">
           <Logomark className="h-9 w-9 bg-white p-2 lg:hidden" />
-          <Logo className="hidden h-9 w-auto fill-slate-700 dark:fill-sky-100 lg:block" />
+          <Logo className="hidden h-9 w-auto fill-slate-700 dark:fill-red-100 lg:block" />
         </Link>
       </div>
       <div className="-my-5 mr-6 sm:mr-8 md:mr-0">
@@ -278,7 +278,7 @@ export function Layout({ children, title, tableOfContents }) {
             {(title || section) && (
               <header className="mb-9 space-y-1">
                 {section && (
-                  <p className="font-display text-sm font-medium text-sky-500">
+                  <p className="font-display text-sm font-medium text-red-500">
                     {section.title}
                   </p>
                 )}
@@ -342,7 +342,7 @@ export function Layout({ children, title, tableOfContents }) {
                           href={`#${section.id}`}
                           className={clsx(
                             isActive(section)
-                              ? 'text-sky-500'
+                              ? 'text-red-500'
                               : 'font-normal text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'
                           )}
                         >
@@ -360,7 +360,7 @@ export function Layout({ children, title, tableOfContents }) {
                                 href={`#${subSection.id}`}
                                 className={
                                   isActive(subSection)
-                                    ? 'text-sky-500'
+                                    ? 'text-red-500'
                                     : 'hover:text-slate-600 dark:hover:text-slate-300'
                                 }
                               >
