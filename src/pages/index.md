@@ -1,35 +1,30 @@
 ---
 title: Overview
 pageTitle: Overview
-description: Welcome to Rubicon Guides and Developer Documentation
+description: Welcome to Rubicon guides and developer documentation
 ---
 
-Welcome to Rubicon Guides and Developer Documentation {% .lead %}
+Welcome to Rubicon guides and developer documentation {% .lead %}
 
 {% quick-links %}
 
-{% quick-link title="FAQ" icon="installation" href="/" description="New to Rubicon? Visit our Frequently Asked Questions" /%}
+{% quick-link title="FAQ" icon="installation" href="/docs/introduction/faq" description="New to Rubicon? Visit our Frequently Asked Questions" /%}
 
-{% quick-link title="Guides" icon="presets" href="/" description="Learn how to Trade, Swap, Bridge, and provide liquidity on the Rubicon App!" /%}
+{% quick-link title="Guides" icon="presets" href="/docs/guides/trade/trade" description="Learn how to Trade, Swap, Bridge, and provide liquidity on the Rubicon App!" /%}
 
-{% quick-link title="RubiconMarket" icon="" href="/" description="Documentation for the order book contract." /%}
+{% quick-link title="RubiconMarket" icon="plugins" href="/docs/api/subgraphs/rubiconmarket-api" description="Documentation for the order book contract." /%}
 
-{% quick-link title="APIs" icon="theming" href="/" description="Query market data with Subgraphs or interact with Rubicon using Python and Rust SDKs" /%}
+{% quick-link title="APIs" icon="theming" href="/docs/api/subgraphs/subgraphs" description="Query market data with Subgraphs or interact with Rubicon using Python and Rust SDKs" /%}
 
 {% /quick-links %}
 
----
+What is Rubicon?
+Rubicon is an order book protocol for Ethereum. Use it to trade ERC-20 tokens with Swaps, Limit Orders, and Market Orders or provide liquidity in Pools.
 
+Rubicon is built on Optimism, a low-cost and lightning-fast Ethereum L2 chain.
 
-## What is Rubicon?
-
-Rubicon is an order book protocol for Ethereum. Use it to trade [ERC-20]([url](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/)) tokens with Swaps, Limit Orders, and Market Orders or provide liquidity in Pools.
-
-Rubicon is built on [Optimism](https://optimism.io/), a low-cost and lightning-fast Ethereum L2 chain.
-
-### Protocol Overview
-
-[RubiconMarket.sol](/docs/protocol/rubicon-market/rubicon-market) is the limit order book smart contract. It implements a matching engine and order books for peer-to-peer trading of ERC-20 tokens.
+Protocol Overview
+RubiconMarket.sol is the limit order book smart contract. It implements a matching engine and order books for peer-to-peer trading of ERC-20 tokens.
 
 Rubicon Pools is a system of smart contracts that enables passive liquidity providers (LPs) to deposit tokens in a pool, where active market makers (strategists) use the pool assets on the order books. Yield from market-making goes to LPs, and strategists earn a performance fee.
 

@@ -6,13 +6,15 @@ description: Welcome to Rubicon guides and developer documentation
 
 Welcome to Rubicon guides and developer documentation {% .lead %}
 
-{% quick-link title="FAQ" icon="installation" href="/" description="New to Rubicon? Visit our Frequently Asked Questions" /%}
+{% quick-links %}
 
-{% quick-link title="Guides" icon="presets" href="/" description="Learn how to Trade, Swap, Bridge, and provide liquidity on the Rubicon App!" /%}
+{% quick-link title="FAQ" icon="installation" href="/docs/introduction/faq" description="New to Rubicon? Visit our Frequently Asked Questions" /%}
 
-{% quick-link title="RubiconMarket" icon="" href="/" description="Documentation for the order book contract." /%}
+{% quick-link title="Guides" icon="presets" href="/docs/guides/trade/trade" description="Learn how to Trade, Swap, Bridge, and provide liquidity on the Rubicon App!" /%}
 
-{% quick-link title="APIs" icon="theming" href="/" description="Query market data with Subgraphs or interact with Rubicon using Python and Rust SDKs" /%}
+{% quick-link title="RubiconMarket" icon="plugins" href="/docs/api/subgraphs/rubiconmarket-api" description="Documentation for the order book contract." /%}
+
+{% quick-link title="APIs" icon="theming" href="/docs/api/subgraphs/subgraphs" description="Query market data with Subgraphs or interact with Rubicon using Python and Rust SDKs" /%}
 
 {% /quick-links %}
 
