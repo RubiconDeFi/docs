@@ -70,13 +70,17 @@ const navigation = [
     title: 'Protocol',
     links: [
       {
-        title: 'RubiconMarket',
+        title: 'Rubicon Market',
         href: '/docs/protocol/rubicon-market/rubicon-market',
         sublinks: [
           {
             title: 'Key Functions',
             href: '/docs/protocol/rubicon-market/key-functions',
-          },
+           },
+           {
+            title: 'Market Aid',
+            href: '/docs/protocol/rubicon-market/market-aid'
+           },
         ],
       },
       {
