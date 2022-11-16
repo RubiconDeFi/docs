@@ -98,7 +98,7 @@ Rubicon is built on [Optimism](https://optimism.io/). Once you are connected to 
 
 ![Approve the new network in MetaMask](</assets/image (82).png>)
 
-Once you approve the Optimism network, you are connected and ready to use Rubicon! If you need to bridge your tokens to the Optimism network, check out our bridging [guide](/docs/guides/bridge/bridging-to-optimism).
+Once you approve the Optimism network, you are connected and ready to use Rubicon! If you need to bridge your tokens to the Optimism network, check out our bridging [guide](/guides/bridge/bridging-to-optimism).
 
 ![](</assets/image(61).png>)
 

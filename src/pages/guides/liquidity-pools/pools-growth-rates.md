@@ -5,7 +5,7 @@ description: Understanding the growth rates of Rubicon Pools
 # Growth Rates
 
 {% callout type="warning" title="Disclaimer" %}
-Using Rubicon Pools has [**certain risks**](/docs/protocol/rubicon-pools/risks). Exercise caution and only deposit what you can afford to lose.
+Using Rubicon Pools has [**certain risks**](/protocol/rubicon-pools/risks). Exercise caution and only deposit what you can afford to lose.
 {% /callout %}
 
 
