@@ -133,7 +133,7 @@ const navigation = [
         ],
       },
      {
-        title: 'rubi-rs',
+        title: 'Rust SDK',
         href: '/docs/api/rubi-rs',
       },
     ],
