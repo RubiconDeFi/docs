@@ -19,7 +19,7 @@ The [BathPair contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/ma
           uint256 bidNumerator, // *Quote Amt* / Asset Amt
           uint256 bidDenominator // Quote Amt / *Asset Amt*
       ```
-* `getMaxOrderSize` - this function returns the largest order size for a bid or an ask that a strategist can place with user funds. Moreover, this function ensures that relative order sizing and dynamic [inventory management](/docs/protocol/rubicon-pools/rubicon-pools#constraints-and-risk-parameters) are enforced.
+* `getMaxOrderSize` - this function returns the largest order size for a bid or an ask that a strategist can place with user funds. Moreover, this function ensures that relative order sizing and dynamic [inventory management](/protocol/rubicon-pools/rubicon-pools#constraints-and-risk-parameters) are enforced.
 * `strategistBootyClaim` - this function is called by strategists to automatically return earned yield to them that may have been earned with successful market-making. The key calculation for claiming yield is (Quantity of order fills as a result of this strategist) / (Total quantity of order fills for the given asset) \* (Underlying amount of yield).
 
 ### Key Security Parameters and Execution Flow

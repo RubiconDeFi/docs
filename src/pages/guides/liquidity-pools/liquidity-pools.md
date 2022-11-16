@@ -6,11 +6,11 @@ description: Everything you need to know about Rubicon liquidity pools
 
 Read the liquidity pool contract ([BathToken.sol](https://github.com/RubiconDeFi/rubicon-protocol-v1/blob/master/contracts/rubiconPools/BathToken.sol)) on GitHub.
 
-Also, check out the pool [contracts docs](../developers/rubicon-pools/) and the bathToken [API docs](../api/subgraphs/bathtoken-api.md)
+Also, check out the pool [contracts docs](../developers/rubicon-pools/) and the bathToken [API docs](/devs/api/subgraphs/bathtoken-api.md)
 
 ### What are liquidity pools?
 
-Rubicon liquidity pools have [certain risks](/docs/protocol/rubicon-pools/risks). Exercise caution and only deposit what you can afford to lose.
+Rubicon liquidity pools have [certain risks](/protocol/rubicon-pools/risks). Exercise caution and only deposit what you can afford to lose.
 
 Rubicon liquidity pools are a set of smart contracts which enable liquidity providers (LPs) to deposit ERC-20 tokens into a pool. Tokens in the pool are used by active market makers (strategists) to provide liquidity on the Rubicon order books. Yield from market-making goes to the LPs, while strategists earn a management fee.
 
