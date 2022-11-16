@@ -76,11 +76,11 @@ const navigation = [
           {
             title: 'Key Functions',
             href: '/docs/protocol/rubicon-market/key-functions',
-
+           },
+           {
             title: 'MarketAid',
             href: '/docs/protocol/rubicon-market/market-aid'
-
-          },
+           },
         ],
       },
       {
