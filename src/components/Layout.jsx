@@ -136,6 +136,10 @@ const navigation = [
           },
         ],
       },
+     {
+        title: 'Rust SDK',
+        href: '/docs/api/subgraphs/rubi-rs',
+      },
     ],
   },
 ]
