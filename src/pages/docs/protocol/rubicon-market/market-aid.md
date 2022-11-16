@@ -2,7 +2,7 @@
 description: on-chain high-frequency market making
 ---
 
-## MarketAid
+## Market Aid
 
 `MarketAid.sol` is a helper contract that allows the owner to send batches of limit orders and cancel orders on `RubiconMarket.sol`. It makes it easy for active traders and market-makers to place and cancel many outstanding orders in a single transaction! You can think of MarketAid as a convenient middle-layer contract that allows traders to make larger, more efficient, and more complex transactions on the Rubicon order books.
 
