@@ -132,6 +132,10 @@ const navigation = [
           },
         ],
       },
+     {
+        title: 'Rust SDK',
+        href: '/docs/api/rubi-rs',
+      },
     ],
   },
 ]
