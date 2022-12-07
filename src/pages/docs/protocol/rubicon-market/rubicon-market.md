@@ -4,11 +4,13 @@ description: Overview and documentation for Rubicon's order book contract
 
 # 📊 RubiconMarket
 
+## Overview
+
 The RubiconMarket smart contract implements on-chain order books and a matching engine for peer-to-peer trading of ERC-20 tokens.
 
-An order book is simply a list of buy and sell orders for an asset, organized by price. This contract implements each ERC20/ERC20 order book as two double-linked sorted lists, one for the Buy-side and one for the Sell-side of the given market.
+An order book is a list of buy and sell orders for an asset, sorted by price. This contract implements each ERC20/ERC20 order book as two double-linked sorted lists, one for the Buy-side and one for the Sell-side of the given market.
 
-The contract uses an escrow model for liquidity; when a limit order is placed on the book, those tokens are sent to the contract. If/when the order is filled, the contract matches the traders directly, and the . An order can be canceled and the contract will return the tokens to the sender.
+The contract uses an escrow model for liquidity; when a limit order is placed on the book, those tokens are sent to the contract. If/when the order is filled, the contract matches the traders directly and the tokens are sent. An order can be canceled and the contract will return the tokens to the sender.
 
 RubiconMarket is a derivative work of MakerDAO's [OasisDEX](https://oasisdex.com/) and inherits the open-source AGPL-3.0 license.
 
@@ -31,7 +33,7 @@ RubiconMarket is a derivative work of MakerDAO's [OasisDEX](https://oasisdex.com
 | uint pos               | uint256     | Position in the sorted list to place the order. Set this to 0 unless you know the exact position (closest ID) to insert the order |
 | \[Optional] matching   | bool        | Optional boolean that dictates whether or not the offer should be automatically matched if possible                               |
 
-This is the primary function for placing limit orders on RubiconMarket. The 'pay_amt' quantity of the 'pay_gem' token will be sent to the order book contract, sitting in escrow until it's filled or canceled. Always set pos to 0 unless you know the exact position to insert your order.
+This is the primary function for placing limit orders on Rubicon. The 'pay_amt' quantity of the 'pay_gem' token will be sent to the order book contract, sitting in escrow until it's filled or canceled. Always set pos to 0 unless you know the exact position to insert your order.
 
 #### cancel()
 
@@ -62,10 +64,6 @@ This function cancels an offer on the order book and returns the tokens to the s
 
 This function is used to fill or "cherry pick" a specific order in the book. The caller will pay the taker fee. Alternatively, you can also use the **take()** routing function to achieve the same result and fill a specific offer.
 
-## Routing Functions
-
-These functions are for "Fill-Or-Kill" orders; they will fill completely or the transaction will revert.
-
 #### buyAllAmount()
 
 ```
@@ -82,11 +80,12 @@ These functions are for "Fill-Or-Kill" orders; they will fill completely or the 
 | buy\_gem               | address     | ERC-20 token the taker is buying               |
 | buy\_amt               | uint256     | Quantity of tokens the taker is buying         |
 | pay\_gem               | address     | ERC-20 token the taker is selling              |
-| max\_fill\_amount      | uint256     | Maximum amount of pay tokens received          |
+| max\_fill\_amount      | uint256     | Maximum amount of pay tokens sold              |
 
-Attempts to trade buy\_amt quantity of buy\_gem tokens for at most the max\_fill\_amount quantity of pay\_gem tokens. Transaction will revert if the trader would spend more than the specified maximum amount.
+Attempts to trade `buy\_amt` quantity of `buy\_gem` tokens for at most the `max\_fill\_amount` quantity of `pay\_gem` tokens. Transaction will revert if the trader would spend more than the specified maximum amount. This is a "Fill-or-Kill" buy order.
 
-Ex. Trader attempts to buy...
+Example: 
+A trader wants to buy exactly 10 WETH with USDC. They use the WETH address for `buy\_gem`, `10000000000000000000` for `buy\_amt`, and the USDC address for `pay\_gem`. At most they will pay 15000 USDC for 10 WETH, using `15000000000` for `pay\_gem`. They may end up paying less USDC than this, but the transaction will revert if they would receive less than 10 WETH for 15000 USDC.
 
 #### sellAllAmount()
 
@@ -106,9 +105,10 @@ Ex. Trader attempts to buy...
 | buy\_gem               | address     | ERC-20 token the taker is buying               |
 | min\_fill\_amount      | uint256     | Minimum amount of buy tokens received          |
 
-Attempts to trade sell\_amt quantity of sell\_gem tokens for at least the min\_fill\_amount quantity of pay\_gem tokens. Transaction will revert if the trader would receive less than the specified minimum amount.
+Attempts to trade sell\_amt quantity of sell\_gem tokens for at least the min\_fill\_amount quantity of pay\_gem tokens. Transaction will revert if the trader would receive less than the specified minimum amount. This is a "Fill-or-Kill" sell order.
 
-Ex. Trader attempts to sell...
+Example: 
+A trader wants to sell exactly 10 WETH for USDC. They use the WETH address for `pay\_gem`, `10000000000000000000` for `pay\_amt`, and the USDC address for `buy\_gem`. At least they will receive 15000 USDC for 10 WETH, using `15000000000` for `buy\_gem`. They may end up receiving more USDC than this, but the transaction will revert if they would receive less than 15000 USDC for 10 WETH.
 
 ## View Functions
 
