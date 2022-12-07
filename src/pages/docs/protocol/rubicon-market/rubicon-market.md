@@ -136,6 +136,30 @@ function getWorseOffer(uint256 id)
 
 Returns the next worse offer in the sorted list. The worse offer is the higher one if the target order is an ask, and a lower one if it's a bid. In both cases, it will return a newer one if they are equal.
 
+#### getBuyAmount()
+
+```
+    function getBuyAmount(
+        ERC20 buy_gem,
+        ERC20 pay_gem,
+        uint256 pay_amt
+    ) external view returns (uint256 fill_amt)
+```
+
+Returns the amount of buy\_gem tokens received if a specified amount of pay\_gem tokens are spent. Used to check the current state of the order book.
+
+#### getPayAmount()
+
+```
+function getPayAmount(
+        ERC20 pay_gem,
+        ERC20 buy_gem,
+        uint256 buy_amt
+    ) external view returns (uint256 fill_amt)
+```
+
+Returns the amount of pay\_gem tokens needed to buy a specified amount of buy\_gem tokens. Used to check the current status of the order book.
+
 #### getOfferCount()
 
 ```
