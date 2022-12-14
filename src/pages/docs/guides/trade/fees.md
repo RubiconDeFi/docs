@@ -1,5 +1,5 @@
 ---
-title: Fees
+title: Rubicon | Fees
 pageTitle: Fees
 description: Fees on Rubicon
 ---
