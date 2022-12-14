@@ -12,7 +12,7 @@ An order book is a list of buy and sell orders for an asset, sorted by price. Th
 
 The contract uses an escrow model for liquidity; when a limit order is placed on the book, those tokens are sent to the contract. If/when an order is filled, the contract matches the traders directly and the tokens are sent to each party. An order can be canceled and the contract will return the tokens to the sender.
 
-Rubicon Market is a derivative work of MakerDAO's open-source [OasisDEX](https://oasisdex.com/) and inherits the AGPL-3.0 license.
+Rubicon Market is a derivative work of MakerDAO's open-source [OasisDEX](https://oasisdex.com/) and inherits the Apache 2.0 license.
 
 
 ## Trading Functions
