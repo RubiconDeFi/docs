@@ -5,7 +5,7 @@ import { Layout } from '@/components/Layout'
 
 import 'focus-visible'
 import '@/styles/tailwind.css'
-import {openGraphImage} from 'public/assets/RubiconOpenGraph.jpg';
+import Image from 'next/image'
 
 function getNodeText(node) {
   let text = ''
@@ -65,7 +65,8 @@ export default function App({ Component, pageProps }) {
 
   console.log("THIS DESC", description);
   console.log("This title", title);
-  
+  // const openGraphImage = <Image src="/RubiconOpenGraph.png" alt='OpenGraphImage'></Image>
+
   return (
     <>
       <Head>
@@ -73,7 +74,7 @@ export default function App({ Component, pageProps }) {
         {description && <meta name="description" content={description} />}
         {description && <meta property="og:title" content={title} />}
         {description && <meta property="og:description" content={description} />}
-        {description && <meta property="og:image" content={openGraphImage} />}
+        {description && <meta property="og:image" content={"https://raw.githubusercontent.com/RubiconDeFi/brand-assets/master/openGraph/RubiconOpenGraph.jpg"} />}
       </Head>
       <Layout title={title} tableOfContents={tableOfContents}>
         <Component {...pageProps} />
