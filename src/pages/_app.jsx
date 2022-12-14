@@ -5,6 +5,7 @@ import { Layout } from '@/components/Layout'
 
 import 'focus-visible'
 import '@/styles/tailwind.css'
+import {openGraphImage} from 'public/assets/RubiconOpenGraph.jpg';
 
 function getNodeText(node) {
   let text = ''
@@ -49,6 +50,7 @@ function collectHeadings(nodes, slugify = slugifyWithCounter()) {
 }
 
 export default function App({ Component, pageProps }) {
+  console.log("These page props", pageProps);
   let title = pageProps.markdoc?.frontmatter.title
 
   let pageTitle =
@@ -61,11 +63,17 @@ export default function App({ Component, pageProps }) {
     ? collectHeadings(pageProps.markdoc.content)
     : []
 
+  console.log("THIS DESC", description);
+  console.log("This title", title);
+  
   return (
     <>
       <Head>
         <title>Rubicon - {pageTitle}</title>
         {description && <meta name="description" content={description} />}
+        {description && <meta property="og:title" content={title} />}
+        {description && <meta property="og:description" content={description} />}
+        {description && <meta property="og:image" content={openGraphImage} />}
       </Head>
       <Layout title={title} tableOfContents={tableOfContents}>
         <Component {...pageProps} />
