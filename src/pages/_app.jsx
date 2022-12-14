@@ -5,7 +5,6 @@ import { Layout } from '@/components/Layout'
 
 import 'focus-visible'
 import '@/styles/tailwind.css'
-import Image from 'next/image'
 
 function getNodeText(node) {
   let text = ''
@@ -50,7 +49,6 @@ function collectHeadings(nodes, slugify = slugifyWithCounter()) {
 }
 
 export default function App({ Component, pageProps }) {
-  console.log("These page props", pageProps);
   let title = pageProps.markdoc?.frontmatter.title
 
   let pageTitle =
@@ -62,10 +60,6 @@ export default function App({ Component, pageProps }) {
   let tableOfContents = pageProps.markdoc?.content
     ? collectHeadings(pageProps.markdoc.content)
     : []
-
-  console.log("THIS DESC", description);
-  console.log("This title", title);
-  // const openGraphImage = <Image src="/RubiconOpenGraph.png" alt='OpenGraphImage'></Image>
 
   return (
     <>
