@@ -6,7 +6,7 @@ description: Overview and documentation for Rubicon's order book contract
 
 ## Overview
 
-The Rubicon Market smart contract implements on-chain order books and a matching engine for peer-to-peer trading of ERC-20 tokens.
+The Rubicon Market smart contract implements on-chain order books and a matching engine for peer-to-peer trading of [ERC-20 tokens](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/).
 
 An order book is a list of buy and sell orders for an asset, sorted by price. This contract implements each ERC20/ERC20 order book as two double-linked sorted lists, one for the Buy-side and one for the Sell-side of the given market.
 
@@ -38,7 +38,7 @@ Rubicon Market is a derivative work of MakerDAO's open-source [OasisDEX](https:/
 | uint pos               | uint256     | Position in the sorted list to place the order. Set this to 0 unless you know the exact position (closest ID) to insert the order |
 | \[Optional] matching   | bool        | Optional boolean to determine whether the offer should be automatically matched (placed in the sorted list)                       |
 
-The primary function for placing limit orders on Rubicon. The `pay_amt` quantity of the `pay_gem` token will be sent to the order book contract, sitting in escrow until it is filled or canceled. Always set pos to `0` unless you know the exact position in the sorted lost to insert the order.
+The primary function for placing limit orders on Rubicon. The **pay_amt** quantity of the **pay_gem** token will be sent to the order book contract, sitting in escrow until it is filled or canceled. Always set pos to **0** unless you know the exact position in the sorted lost to insert the order.
 
 ### cancel()
 
@@ -87,7 +87,7 @@ This function is used to fill or "cherry pick" a specific order in the book. The
 | pay\_gem               | address     | ERC-20 token the taker is selling              |
 | max\_fill\_amount      | uint256     | Maximum amount of pay tokens sold              |
 
-Attempts to trade `buy\_amt` quantity of `buy\_gem` tokens for at most the `max\_fill\_amount` quantity of `pay\_gem` tokens. Transaction will revert if the trader would spend more than the specified maximum amount. This is a "Fill-or-Kill" buy order.
+Attempts to trade **buy\_amt** quantity of **buy\_gem** tokens for at most the **max\_fill\_amount** quantity of **pay\_gem** tokens. Transaction will revert if the trader would spend more than the specified maximum amount. This is a "Fill-or-Kill" buy order.
 
 ### sellAllAmount()
 
@@ -107,7 +107,7 @@ Attempts to trade `buy\_amt` quantity of `buy\_gem` tokens for at most the `max\
 | buy\_gem               | address     | ERC-20 token the taker is buying               |
 | min\_fill\_amount      | uint256     | Minimum amount of buy tokens received          |
 
-Attempts to trade `sell\_amt` quantity of `sell\_gem` tokens for at least the `min\_fill\_amount` quantity of `pay\_gem` tokens. Transaction will revert if the trader would receive less than the specified minimum amount. This is a "Fill-or-Kill" sell order.
+Attempts to trade **sell\_amt** quantity of **sell\_gem** tokens for at least the **min\_fill\_amount** quantity of **pay\_gem** tokens. Transaction will revert if the trader would receive less than the specified minimum amount. This is a "Fill-or-Kill" sell order.
 
 ## View Functions
 
@@ -122,7 +122,7 @@ function getBestOffer(ERC20 pay_gem, ERC20 buy_gem)
 
 Returns the ID of the offer at the top of the order book.
 
-Ex. Calling this function with WETH as pay_gem and USDC as buy_gem will return the best ask on WETH/USDC. Switching the tokens will return the best bid.
+Ex. Calling this function with WETH as **pay_gem** and USDC as **buy_gem** will return the best ask on WETH/USDC. Switching the tokens will return the best bid.
 
 ### getWorseOffer()
 
@@ -145,7 +145,7 @@ Returns the next worse offer in the sorted list. The worse offer is the higher o
     ) external view returns (uint256 fill_amt)
 ```
 
-Returns the amount of buy\_gem tokens received if a specified amount of pay\_gem tokens are spent. Used to check the current state of the order book.
+Returns the amount of **buy\_gem** tokens received if a specified amount of **pay\_gem** tokens are spent. Used to check the current state of the order book.
 
 ### getPayAmount()
 
@@ -157,7 +157,7 @@ function getPayAmount(
     ) external view returns (uint256 fill_amt)
 ```
 
-Returns the amount of pay\_gem tokens needed to buy a specified amount of buy\_gem tokens. Used to check the current status of the order book.
+Returns the amount of **pay\_gem** tokens needed to buy a specified amount of **buy\_gem** tokens. Used to check the current status of the order book.
 
 ### getOfferCount()
 
