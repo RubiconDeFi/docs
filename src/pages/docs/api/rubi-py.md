@@ -1,12 +1,16 @@
 ---
-title: rubi-py
-pageTitle: Overview
-description: Welcome to Rubicon's home for all things Python 
+title: Rubicon | Python SDK
+pageTitle: Rubicon Python SDK
+description: Access swaps, limit orders, market orders, and batch orders through with Python
 ---
 
 Rubicon Python SDK  {% .lead %}
 
 **rubi-py** is a Python SDK for interacting with the Rubicon order book protocol. You can use access Token Swaps, Limit Orders, Market Orders, and Batch Orders with Python! 
+
+This SDK is open-source software issued under an Apache 2.0 license. You can open an issue and contribute to the [codebase](https://github.com/RubiconDeFi/rubi-py) on GitHub, here are some good [first issues](https://github.com/RubiconDeFi/rubi-py/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22). 
+
+## Resources
 
 {% quick-links %}
 
@@ -20,4 +24,3 @@ Rubicon Python SDK  {% .lead %}
 
 {% /quick-links %}
 
-This SDK is open-source software issued under an Apache 2.0 license. You can open an issue and contribute to the [codebase](https://github.com/RubiconDeFi/rubi-py) on GitHub, here are some good [first issues](https://github.com/RubiconDeFi/rubi-py/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22). 
