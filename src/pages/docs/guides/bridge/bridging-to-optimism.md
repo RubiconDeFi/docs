@@ -1,4 +1,5 @@
 ---
+title: Rubicon | Bridging to Optimism 
 description: Sending tokens to Optimism and other chains with the Rubicon Bridge
 ---
 

@@ -1,4 +1,5 @@
 ---
+title: Rubicon | Bath Token API
 description: >-
   An overview of the BathToken subgraph's key entities, contract event handlers,
   and example queries for a variety of use cases.

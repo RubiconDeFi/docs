@@ -1,4 +1,5 @@
 ---
+title: Rubicon | Liquidity Pools
 description: Everything you need to know about Rubicon liquidity pools
 ---
 

@@ -66,6 +66,9 @@ export default function App({ Component, pageProps }) {
       <Head>
         <title>Rubicon - {pageTitle}</title>
         {description && <meta name="description" content={description} />}
+        {description && <meta property="og:title" content={title} />}
+        {description && <meta property="og:description" content={description} />}
+        {description && <meta property="og:image" content={"https://raw.githubusercontent.com/RubiconDeFi/brand-assets/master/openGraph/RubiconOpenGraph.jpg"} />}
       </Head>
       <Layout title={title} tableOfContents={tableOfContents}>
         <Component {...pageProps} />

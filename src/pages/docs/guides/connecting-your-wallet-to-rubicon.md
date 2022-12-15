@@ -1,4 +1,5 @@
 ---
+title: Rubicon | Connecting Your Wallet
 description: >-
   Connecting a wallet to Rubicon for the first time. (If you are familiar with
   wallets and how to add custom networks, you can skip this guide)
