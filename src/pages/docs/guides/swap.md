@@ -1,6 +1,7 @@
 ---
-title: Swap
-description: Rubicon Token Swaps
+title: Rubicon | Swap
+pageTitle: Swap
+description: Rubicon Token Swaps using the Rubicon Router
 ---
 
 [Swap](https://app.rubicon.finance/swap) finds the best route for a token swap on the Rubicon order books:

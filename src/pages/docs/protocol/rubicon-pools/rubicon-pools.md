@@ -1,4 +1,6 @@
 ---
+title: Rubicon | Pools
+pageTitle: Pools
 description: Automated yield for users and liquidity for the Rubicon Market
 ---
 

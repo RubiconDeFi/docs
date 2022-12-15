@@ -1,5 +1,7 @@
 ---
-description: on-chain high-frequency market making
+title: Rubicon | Market Aid
+pageTitle: Market Aid
+description: on-chain high-frequency market making contracts and functionality for Rubicon
 ---
 
 ## Market Aid

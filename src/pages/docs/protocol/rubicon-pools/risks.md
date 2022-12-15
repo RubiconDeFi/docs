@@ -1,4 +1,6 @@
 ---
+title: Rubicon | Risks
+pageTitle: Risks
 description: Risks associated with Rubicon
 ---
 

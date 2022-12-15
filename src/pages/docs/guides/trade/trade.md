@@ -1,5 +1,6 @@
 ---
 title: Rubicon | Trade
+pageTitle: Trade
 description: Trading on the Rubicon Web App
 ---
 

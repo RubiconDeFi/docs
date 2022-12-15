@@ -1,7 +1,7 @@
 ---
-title: Deployements
+title: Rubicon | Deployments
 pageTitle: Deployments
-description: Active Rubicon Smart Contract Deployements
+description: Active Rubicon Smart Contract Deployments
 ---
 
 ## Optimism Mainnet (Rubicon v1.3)

@@ -1,5 +1,7 @@
 ---
-title: Frequently Asked Questions
+title: Rubicon | Frequently Asked Questions
+pageTitle: FAQ
+description: Commonly asked questions about the Rubicon Protocol
 ---
 
 ## What is Rubicon?

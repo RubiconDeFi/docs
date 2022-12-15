@@ -1,5 +1,6 @@
 ---
 title: Rubicon | Bridging to Optimism 
+pageTitle: Bridging to Optimism
 description: >-
   Find the optimal route to bridge tokens between Ethereum, Optimism, and more
   chains!

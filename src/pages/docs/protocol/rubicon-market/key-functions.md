@@ -1,4 +1,6 @@
 ---
+title: Rubicon | Market Key Functions
+pageTitle: Market Key Functions
 description: The main entry points and functions of the Rubicon Market contract
 ---
 

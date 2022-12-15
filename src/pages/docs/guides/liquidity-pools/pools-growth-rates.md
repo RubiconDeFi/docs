@@ -1,5 +1,6 @@
 ---
 title: Rubicon | Pools Growth Rates
+pageTitle: Pools Growth Rates
 description: Understanding the growth rates of Rubicon Pools
 ---
 

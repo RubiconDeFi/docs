@@ -1,4 +1,6 @@
 ---
+title: Rubicon | Strategist Tutorial
+pageTitle: Strategist Tutorial
 description: An overview of how to be a strategist for Rubicon Pools
 ---
 

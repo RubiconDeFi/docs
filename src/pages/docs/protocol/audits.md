@@ -1,4 +1,6 @@
 ---
+title: Rubicon | Audits
+pageTitle: Audits
 description: List of Audits performed on the Rubicon protocol
 ---
 

@@ -1,7 +1,7 @@
 ---
-title: Overview
+title: Rubicon | Overview
 pageTitle: Overview
-description: Welcome to Rubicon guides and developer documentation
+description: Welcome to the Rubicon guides and developer documentation
 ---
 
 Welcome to Rubicon guides and developer documentation {% .lead %}
