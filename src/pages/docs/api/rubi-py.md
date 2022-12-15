@@ -1,6 +1,5 @@
 ---
 title: Rubicon | Python SDK
-pageTitle: Rubicon Python SDK
 description: Access swaps, limit orders, market orders, and batch orders through with Python
 ---
 
@@ -11,7 +10,6 @@ Rubicon Python SDK  {% .lead %}
 This SDK is open-source software issued under an Apache 2.0 license. You can open an issue and contribute to the [codebase](https://github.com/RubiconDeFi/rubi-py) on GitHub, here are some good [first issues](https://github.com/RubiconDeFi/rubi-py/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22). 
 
 ## Resources
-
 {% quick-links %}
 
 {% quick-link title="rubi-py" icon="installation" href="https://github.com/RubiconDeFi/rubi-py" description="View the Python SDK on GitHub" /%}
