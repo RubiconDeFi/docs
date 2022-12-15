@@ -9,7 +9,7 @@ Using Rubicon Pools has [**certain risks**](/docs/protocol/rubicon-pools/risks).
 {% /callout %}
 
 
-[Rubicon Pools](docs/protocol/rubicon-pools/rubicon-pools) are the native liquidity pools for the Rubicon order books. Liquidity providers deposit tokens into a pool, where pool liquidity is used by active market makers (strategists) to provide liquidity on the order books. The yield from market-making activities goes to the liquidity providers, with a performance fee going to the strategist.
+[Rubicon Pools](/docs/protocol/rubicon-pools/rubicon-pools) are the native liquidity pools for the Rubicon order books. Liquidity providers deposit tokens into a pool, where pool liquidity is used by active market makers (strategists) to provide liquidity on the order books. The yield from market-making activities goes to the liquidity providers, with a performance fee going to the strategist.
 
 The performance of a pool (i.e. bathTokens, which represent an LP's share of the pool) is determined by the profitability of strategist market-making. Importantly, pool returns are _discrete and not continuous_ as they are generated when trades are filled.&#x20;
 
@@ -20,7 +20,6 @@ A helpful concept to understand the performance of any given pool is the pool's 
 On the [Pools page](https://app.rubicon.finance/pools) in the web app, each liquidity pool has a corresponding estimated APR:
 
 ![](/assets/image(8).png) 
-DAI APR and Reward Rate on 22.09.22
 
 Hovering over this rate will show a tooltip with additional rates for each pool. The main rate is an estimated APY, which is calculated from _the better of trailing weekly or monthly performance for the pool._ Here is an overview of how these rates are calculated:
 

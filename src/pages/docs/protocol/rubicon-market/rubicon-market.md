@@ -4,7 +4,7 @@ description: Overview of RubiconMarket.sol and its key functionalities
 
 # 📊 Rubicon Market
 
-The core exchange logic of Rubicon lives in the [RubiconMarket](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/RubiconMarket.sol)smart contract - the central order book of Rubicon. It is useful to think of this smart contract as a middle layer that facilitates the peer-to-peer exchange of digital assets through an order book.
+The core exchange logic of Rubicon lives in the [RubiconMarket](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/RubiconMarket.sol) smart contract - the central order book of Rubicon. It is useful to think of this smart contract as a middle layer that facilitates the peer-to-peer exchange of digital assets through an order book.
 
 On-chain, all entities that are trading peer-to-peer through Rubicon call functions that exist on this smart contract. Detailed documentation as to the key functions, interactions, and interfaces of this contract can be found below.
 

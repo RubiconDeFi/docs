@@ -14,7 +14,7 @@ Rubicon is built on Ethereum L2 networks that have low fees and near-instant con
 
 ### How do I move tokens to Optimism?
 
-Use the [Bridge]([url](https://app.rubicon.finance/bridge)) in the App to find the best bridging route to Optimism from other blockchains. Keep in mind that to pay network fees (gas), you will need ETH on [Optimism](https://www.optimism.io/) for all transactions.
+Use the [Bridge](https://app.rubicon.finance/bridge) in the App to find the best bridging route to Optimism from other blockchains. Keep in mind that to pay network fees (gas), you will need ETH on [Optimism](https://www.optimism.io/) for all transactions.
 
 You can purchase ETH (or another token) directly into a wallet on Optimism by using **Buy Crypto** on the sidebar. This fiat on-ramp from [Ramp](https://ramp.network/) supports credit/debit cards, ApplePay, and some bank transfers.
 
@@ -22,7 +22,7 @@ You can purchase ETH (or another token) directly into a wallet on Optimism by us
 
 The Rubicon protocol is permissionless: the order book contract enables trading of any ERC-20 token!
 
-Follow this [guide](trade/adding-a-trading-pair.md) to add a new token/trading pair **locally** on the App, keep in mind liquidity can be low on new trading pairs.
+Follow this [guide](/docs/guides/trade/adding-a-trading-pair) to add a new token/trading pair **locally** on the App, keep in mind liquidity can be low on new trading pairs.
 
 ### What wallets are supported?
 
@@ -32,7 +32,7 @@ If you are new to Ethereum and need a wallet, use [this tool](https://ethereum.o
 
 ### What are the fees?
 
-[Fees](/docs/guides/trades/fees)
+[Fees](/docs/guides/trade/fees)
 
 ### How do the Liquidity Pools work?
 

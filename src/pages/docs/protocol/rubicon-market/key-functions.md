@@ -7,8 +7,8 @@ description: The main entry points and functions of the Rubicon Market contract
 #### Offer
 
 ```
-    function offer(uint pay_amt, ERC20 pay_gem, uint buy_amt, ERC20 buy_gem, uint pos) 
-        public returns (uint)
+function offer(uint pay_amt, ERC20 pay_gem, uint buy_amt, ERC20 buy_gem, uint pos) 
+    public returns (uint)
 ```
 
 The **offer** function is the primary function to place a new limit buy or limit sell order on the Rubicon market. This function takes a user's funds for a given _ERC-20 pair_ and places them into the order book of the smart contract. When another user chooses to buy the order or the order is matched with another order, the offer will be filled and the trade executed by the Rubicon Market.
@@ -27,8 +27,8 @@ It is important to note that the offer function has a few representations in the
 #### Buy
 
 ```
-    function buy(uint id, uint amount) public can_buy(id) 
-        returns (bool)
+function buy(uint id, uint amount) public can_buy(id) 
+    returns (bool)
 ```
 
 | Parameter   | Use                                                          |
@@ -41,10 +41,10 @@ The buy function allows a user to buy a given order in the order book and ultima
 #### Cancel
 
 ```
-    function cancel(uint id)
-        public
-        can_cancel(id)
-        returns (bool success)
+function cancel(uint id)
+    public
+    can_cancel(id)
+    returns (bool success)
 ```
 
 | Parameter | Use                                          |
@@ -58,12 +58,12 @@ This function allows a user to cancel an offer and returns funds to the user. Th
 #### BuyAllAmount
 
 ```
-     function buyAllAmount(
-        ERC20 buy_gem,
-        uint256 buy_amt,
-        ERC20 pay_gem,
-        uint256 max_fill_amount
-    ) external returns (uint256 fill_amt)
+    function buyAllAmount(
+    ERC20 buy_gem,
+    uint256 buy_amt,
+    ERC20 pay_gem,
+    uint256 max_fill_amount
+) external returns (uint256 fill_amt)
 ```
 
 | Parameter | Use                                          |
@@ -75,7 +75,7 @@ This function allows a user to buy any amount of an asset (buy\_gem) through mul
 #### Take
 
 ```
-    function take(bytes32 id, uint128 maxTakeAmount) public
+function take(bytes32 id, uint128 maxTakeAmount) public
 ```
 
 | Parameter          | Use                                                          |

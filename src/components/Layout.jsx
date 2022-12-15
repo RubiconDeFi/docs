@@ -111,7 +111,7 @@ const navigation = [
       },
       {
         title: 'Deployments',
-        href: '/docs/protocol/kovan-deployments',
+        href: '/docs/protocol/deployments',
       },
       {
         title: 'Audits',

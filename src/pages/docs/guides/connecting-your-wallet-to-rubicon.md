@@ -86,9 +86,9 @@ Once we click on the MetaMask button, the Rubicon app will ask for permission to
 
 ![](</assets/image(51).png>)
 
-![Allow Rubicon to connect to your wallet](</assets/image (67).png>)
+![Allow Rubicon to connect to your wallet](</assets/image(67).png>)
 
-![You are connected and ready to go!](</assets/image (43).png>)
+![You are connected and ready to go!](</assets/image(43).png>)
 
 Great, your wallet is connected to Rubicon! There is only one step left before we can start using Rubicon; we will have to switch networks. \
 \
@@ -96,7 +96,7 @@ Rubicon is built on layer 2 (L2): Ethereum scaling solutions that take transacti
 \
 Rubicon is built on [Optimism](https://optimism.io/). Once you are connected to the Rubicon app, you will be prompted to add the Optimism network to your wallet:
 
-![Approve the new network in MetaMask](</assets/image (82).png>)
+![Approve the new network in MetaMask](</assets/image(82).png>)
 
 Once you approve the Optimism network, you are connected and ready to use Rubicon! If you need to bridge your tokens to the Optimism network, check out our bridging [guide](/docs/guides/bridge/bridging-to-optimism).
 

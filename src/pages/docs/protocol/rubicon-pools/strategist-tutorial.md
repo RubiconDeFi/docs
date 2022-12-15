@@ -6,8 +6,6 @@ description: An overview of how to be a strategist for Rubicon Pools
 
 Strategists have the ability to place a bid and/or an ask using BathToken liquidity for the purposes of market-making on the Rubicon order book. They utilize off-chain strategies to place trades within the bounds of the Pools system and win rewards.
 
-For a link to an example javascript file and bot, please see [this provided example.](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/strategist/kovanPoolsStrategist.js)
-
 ### Strategist Entry Points and Levers
 
 The strategist in the Pools system has three key functions that they can utilize to market make on Rubicon. The strategist enjoys the benefit of winning a proportion of all fills they create while market-making (see `strategistBootyClaim`) with `bathToken` funds. The three main functions are as follows:
@@ -39,10 +37,3 @@ function executeStrategy(
 * `bidDenominator` - the exact denominator ([buy\_amt](/docs/protocol/rubicon-market/key-functions#offer)) that will be used to make this bid in an asset amount (e.g. WETH).
 
 The strategist should determine off-chain the best bids and asks to make based on market conditions for user funds in order to receive a payout for successful fills.
-
-### Walkthrough Tutorial
-
-**Coming soon! For now, check out** [**this example bot**](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/strategist/kovanPoolsStrategist.js)**.**
-
-###
-

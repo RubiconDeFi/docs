@@ -6,8 +6,7 @@ description: Automated yield for users and liquidity for the Rubicon Market
 
 Rubicon Pools is a system of smart contracts that allow users to capture passive yield from active market making. Users deposit assets into a liquidity pool, in return, they receive a liquid LP token denoted by the prefix "bath" (ex. bathETH, bathUSDC). These bath tokens signify the user's proportional ownership of the underlying liquidity pool as well as their proportional claim on future yield from the pool. The assets in the liquidity pools are used by strategists to provide liquidity on the Rubicon open order books; strategists can use custom market-making strategies that pass all the security requirements from the protocol. In the end, the yield from market-making is split between the strategist and the users providing liquidity (LPs).
 
-The Rubicon order book protocol has liquidity pools. Liquidity providers (LPs) deposit tokens into a single asset pool and receive bathTokens, which represent shares of the underlying pool. \
-(Ex. LP deposits ETH, receives bathETH)\
+The Rubicon order book protocol has liquidity pools. Liquidity providers (LPs) deposit tokens into a single asset pool and receive bathTokens, which represent shares of the underlying pool. (Ex. LP deposits ETH, receives bathETH)\
 \
 BathTokens adhere to the [ERC-4626 standard](https://ethereum.org/en/developers/docs/standards/tokens/erc-4626/) for tokenized yield-bearing vaults.
 
@@ -15,7 +14,7 @@ BathTokens adhere to the [ERC-4626 standard](https://ethereum.org/en/developers/
 
 The core structure of this product revolves around _single-asset_ liquidity pools. Users who want passive market-making yield on their assets can deposit into these liquidity pools. From there, these pools are then utilized by strategists, on a pair basis, to perform high-frequency market making for the given pair (asset/quote). Please see below for a diagram of how the core pieces of Rubicon Pools interact with the Rubicon Market.
 
-![Rubicon Smart Contract Infrastructure](</assets/image (83).png>)
+![Rubicon Smart Contract Infrastructure](</assets/image(83).png>)
 
 Rubicon Pools is comprised of four smart contracts that are detailed in these docs:
 
@@ -40,7 +39,7 @@ A key security feature of Rubicon Pools is that supplied liquidity must be place
 
       * Shape parameter = -0.005 and qt represents the delta between the target ratio and the actual asset/quote ratio that exists across the liquidity pools.
 
-![Optimal High-Frequency Market Making; Fushimi et. al 2018](</assets/image (32).png>)
+![Optimal High-Frequency Market Making; Fushimi et. al 2018](</assets/image(32).png>)
 
 ### Key Security Considerations
 
