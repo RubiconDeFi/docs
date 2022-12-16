@@ -1,13 +1,14 @@
 ---
 title: Rubicon | Liquidity Pools
+pageTitle: Liquidity Pools
 description: Everything you need to know about Rubicon liquidity pools
 ---
 
 ## Developers
 
-Read the liquidity pool contract ([BathToken.sol](https://github.com/RubiconDeFi/rubicon-protocol-v1/blob/master/contracts/rubiconPools/BathToken.sol)) on GitHub.
+Checkout the liquidity pool contract [BathToken.sol](https://github.com/RubiconDeFi/rubicon-protocol-v1/blob/master/contracts/rubiconPools/BathToken.sol) on GitHub.
 
-Also, check out the pool [contracts docs](../developers/rubicon-pools/) and the bathToken [API docs](../api/subgraphs/bathtoken-api.md)
+Also, check out the pool [contracts docs](/docs/protocol/rubicon-pools/rubicon-pools) and the bathToken [API docs](/docs/api/subgraphs/bathtoken-api)
 
 ### What are liquidity pools?
 
@@ -18,7 +19,7 @@ Rubicon liquidity pools are a set of smart contracts which enable liquidity prov
 Liquidity providers (LPs) receive bathTokens when they deposit crypto assets into a pool. They represent their proportional share of the underlying pool assets.\
 (Ex. LP deposits ETH, receives bathETH)
 
-From the beginning, we designed these pools with security parameters that will enable anyone to manage pool liquidity. While the system is still under development, our team acts as managers of pool liquidity. You can learn more on the [Current Pools Strategy](current-pools-strategy.md) page. The next version of the Rubicon liquidity pools is in the research and development phase. We will share updates on [our blog](https://mirror.xyz/rubicon.eth)!
+From the beginning, we designed these pools with security parameters that will enable anyone to manage pool liquidity. While the system is still under development, our team acts as managers of pool liquidity. You can learn more on the [Current Pools Strategy](/docs/guides/liquidity-pools/current-pools-strategy) page. The next version of the Rubicon liquidity pools is in the research and development phase. We will share updates on [our blog](https://mirror.xyz/rubicon.eth)!
 
 ![Figure](/assets/image(3).png)
 

@@ -1,4 +1,6 @@
 ---
+title: Rubicon | Bath Pair
+pageTitle: BathPair
 description: Pair-specific market-making and strategy execution
 ---
 

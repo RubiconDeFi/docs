@@ -1,4 +1,6 @@
 ---
+title: Rubicon | Bath Token
+pageTitle: Bath Token
 description: An ERC-20 token that represents user liquidity in Rubicon Pools
 ---
 
