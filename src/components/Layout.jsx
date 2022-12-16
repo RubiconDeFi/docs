@@ -6,7 +6,7 @@ import { Logo, Logomark } from '@/components/Logo'
 import { MobileNavigation } from '@/components/MobileNavigation'
 import { Navigation } from '@/components/Navigation'
 import { Prose } from '@/components/Prose'
-import { Search } from '@/components/Search'
+// import { Search } from '@/components/Search'
 import { ThemeSelector } from '@/components/ThemeSelector'
 
 const navigation = [
@@ -187,9 +187,6 @@ function Header({ navigation }) {
           <Logomark className="h-9 w-9 bg-white p-2 lg:hidden" />
           <Logo className="hidden h-9 w-auto fill-slate-700 dark:fill-red-100 lg:block" />
         </Link>
-      </div>
-      <div className="-my-5 mr-6 sm:mr-8 md:mr-0">
-        <Search />
       </div>
       <div className="relative flex basis-0 justify-end gap-6 sm:gap-8 md:flex-grow">
         <ThemeSelector className="relative z-10" />
