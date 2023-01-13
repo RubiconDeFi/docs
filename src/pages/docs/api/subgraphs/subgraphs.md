@@ -12,7 +12,7 @@ Subgraphs store and organize data (swaps, trades, deposits, etc.) from the proto
 
 The Rubicon protocol has two main subgraphs:
 
-* ****[RubiconMarket](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket): Tracks trading activity (maker/taker trades) on the Rubicon order books, used to query market data and historical token prices
+* [RubiconMarket](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket): Tracks trading activity (maker/taker trades) on the Rubicon order books, used to query market data and historical token prices
 * [BathToken Subgraph](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/bathtoken): Tracks activity (deposits/withdrawals/yield) on the Rubicon liquidity pools, used to query pool metrics and historical performance
 
 ### **Deployments**

@@ -1,4 +1,6 @@
 ---
+title: Rubicon | Add a Trading Pair
+pageTitle: Add a Trading Pair
 description: How to add a new trading pair locally to the Rubicon App
 ---
 

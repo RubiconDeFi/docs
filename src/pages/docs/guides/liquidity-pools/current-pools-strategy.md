@@ -1,4 +1,6 @@
 ---
+title: Rubicon | Current Pools Strategy
+pageTitle: Current Pools Strategy
 description: Information on the liquidity management strategy
 ---
 

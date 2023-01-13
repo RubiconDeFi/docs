@@ -1,4 +1,6 @@
 ---
+title: Rubicon | Bath House
+pageTitle: Bath House
 description: The admin contract for Rubicon Pools
 ---
 

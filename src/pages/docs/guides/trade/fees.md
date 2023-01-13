@@ -1,11 +1,8 @@
 ---
-title: Fees
+title: Rubicon | Fees
 pageTitle: Fees
 description: Fees on Rubicon
 ---
-
-
-
 
 ## Network Fees 
 
@@ -14,11 +11,11 @@ Rubicon order books are on-chain, all transactions require network fees (gas) th
 ### Trading Fees
 
 {% callout title="Taker Fee: 0.01%" %}
-Paid by Swaps, Market Orders, and orders that 'take' liquidity from the order book
+Paid by Swaps, Market Orders, and orders that `take` liquidity from the order book
 {% /callout %}
 
 {% callout title="Maker Fee: 0%" %}
-Limit Orders that 'make' liquidity on the order book do not pay fees other than gas
+Limit Orders that `make` liquidity on the order book do not pay fees other than gas
 {% /callout %}
 
 

@@ -1,4 +1,6 @@
 ---
+title: Rubicon | Bridging to Optimism 
+pageTitle: Bridging to Optimism
 description: >-
   Find the optimal route to bridge tokens between Ethereum, Optimism, and more
   chains!
@@ -6,7 +8,7 @@ description: >-
 
 # 🌉 Bridge
 
-The [Bridge](https://app.rubicon.finance/bridge) on Rubicon uses the powerful [Socket API](https://www.socket.tech/) to find the best bridge route for you to send tokens between blockchains. Visit our [bridge guide](bridging-to-optimism.md) to learn how to bridge tokens to Optimism.
+The [Bridge](https://app.rubicon.finance/bridge) on Rubicon uses the powerful [Socket API](https://www.socket.tech/) to find the best bridge route for you to send tokens between blockchains. Visit our [bridge guide](/docs/guides/bridge/bridging-to-optimism) to learn how to bridge tokens to Optimism.
 
 You can view which route gets you the most tokens on the destination chain and also compare the fees for each bridge:
 
