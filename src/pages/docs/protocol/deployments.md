@@ -36,7 +36,7 @@ Please see below for live v1 deployments. Contracts are not yet verified on Ethe
 [**Rubicon Router:**](https://goerli-optimistic.etherscan.io/address/0x6aaEd1985a0e011ca82BB5Df8ebd92063134fd7c) 0x6aaEd1985a0e011ca82BB5Df8ebd92063134fd7c\
 [**BathHouse:**](https://goerli-optimistic.etherscan.io/address/0x1229036F63679B61910CB1463e5BB57f68D19bb2) 0x1229036F63679B61910CB1463e5BB57f68D19bb2\
 [**BathPair:**](https://goerli-optimistic.etherscan.io/address/0x9dBf17d518f722B5Aae5573D808B94024b635529) 0x9dBf17d518f722B5Aae5573D808B94024b635529\
-[**MarketAidFactory:**](https://goerli-optimistic.etherscan.io/address/0x6838dd21aa01Bde8E600d499A95f9AE02f2bB376) 0x6838dd21aa01Bde8E600d499A95f9AE02f2bB376
+[**MarketAidFactory:**](https://goerli-optimism.etherscan.io/address/0x1215007738491710913359b5A733c8A87624f8d3) 0x1215007738491710913359b5A733c8A87624f8d3
 
 Note: any existing bathTokens are queried via tokenToBathToken() on BathHouse. Here is the readout with the implementations:
 
