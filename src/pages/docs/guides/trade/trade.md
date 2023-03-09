@@ -14,7 +14,7 @@ On the [Trade](https://app.rubicon.finance/trade) page you can browse the order 
 
 ![](</assets/image(76).png>)
 
-Submit [Market](/docs/guides/trade/order-types) and [Limit](/docs/guides/trade/order-types) Orders on the Buy or Sell side.
+Submit [Market](/docs/guides/trade/order-types) and [Limit](/docs/guides/trade/order-types) Orders on the Buy or Sell side. 
 
 ### Token Menu
 
