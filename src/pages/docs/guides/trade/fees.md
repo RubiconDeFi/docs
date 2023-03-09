@@ -1,27 +1,21 @@
 ---
 title: Rubicon | Fees
 pageTitle: Fees
-description: Fees on Rubicon
+description: Fee Schedule
 ---
 
-## Network Fees 
+## Network Fees
 
-Rubicon order books are on-chain, all transactions require network fees (gas) that are paid in ETH. Gas fees on [Optimism](https://www.optimism.io/) are 50-100x cheaper than Ethereum Mainnet, you can monitor them on this [public dashboard](https://public-grafana.optimism.io/d/9hkhMxn7z/public-dashboard?orgId=1\&refresh=5m).
+Rubicon is an **onchain** order book protocol, all trades and transactions must pay network fees or "gas". On the [Arbitrum](https://arbitrum.io/) and [Optimism](https://www.optimism.io/) networks these fees are paid in ETH.
 
-### Trading Fees
+## Fee Schedule
 
-{% callout title="Taker Fee: 0.01%" %}
-Paid by Swaps, Market Orders, and orders that `take` liquidity from the order book
-{% /callout %}
+Rubicon uses a maker-taker fee model. Trades that "take" liquidity from the order book pay a rebate to the liquidity provider or "maker" that placed orders on the book.
 
-{% callout title="Maker Fee: 0%" %}
-Limit Orders that `make` liquidity on the order book do not pay fees other than gas
-{% /callout %}
+| Type       | Amount   | Description                                    |
+| ---------- | -------- | ---------------------------------------------- |
+| Taker Fee  | 0.01%    | Orders that take liquidity pay a 0.01% fee in the ERC-20 token that is sent |
+| Maker Fee  | 0.00%    | Orders that make liquidity pay no fees other than gas |
+| Maker Rebate | 0.01%  | Orders that make liquidity earn a 0.01% rebate if/when they are filled |
 
-
-### Liquidity Pool Fees
-
-{% callout type="warning" title="Withdrawal Fee: 0.03%" %}
-A withdrawal fee is paid back into the pool, effectively rewarding remaining liquidity providers. Stops pool spam.
-(These are variable protocol parameters and could change)
-{% /callout %}
+All traders pay the same fees on Rubicon. There are no volume tiers or VIP discounts.

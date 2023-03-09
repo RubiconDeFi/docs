@@ -1,11 +1,18 @@
-## Welcome to Rubicon guides and developer documentation 
+# Rubicon Documentation and Guides
 
-[![FAQ](https://img.shields.io/badge/FAQ-2ea44f)](https://docs.rubicon.finance/docs/introduction/faq)
-[![Guides](https://img.shields.io/badge/Guides-2ea44f)](https://docs.rubicon.finance/docs/guides/trade/trade)
-[![API](https://img.shields.io/badge/API-2ea44f?logo=Rust)](https://docs.rubicon.finance/docs/guides/trade/trade)
+[![Discord](https://img.shields.io/discord/752590582274326680?link=https://discord.com/invite/E7pS24J&link=https://discord.com/invite/E7pS24J)
+[![Twitter Follow](https://img.shields.io/twitter/follow/rubicondefi.svg?label=rubicondefi&style=social)](https://twitter.com/rubicondefi)
 
+Rubicon is an onchain order book protocol built on Ethereum layer 2 (L2) networks.
 
-Rubicon is an order book protocol for Ethereum. Use it to trade ERC-20 tokens with Swaps, Limit Orders, and Market Orders or provide liquidity in Pools.
-Rubicon is built on Optimism, a low-cost and lightning-fast Ethereum L2 chain.
+This repository is the source for the docs and guides site at [docs.rubicon.finance](https://docs.rubicon.finance/). The site is built using [MarkDoc](https://markdoc.dev/), a Markdown-based document format and framework for content publishing.
 
-![Rubicon_v1_RubiconMarket](https://user-images.githubusercontent.com/17028936/201389403-f1a2f173-67c8-4780-ac2c-775438dfcfcf.png)
+Please note this repository is under active development and can (will) change significantly between versions.
+
+## Contributing
+
+This repository is open to contributions! Visit the Project Board to see open issues or make edits on your own and submit a pull request for review.
+
+## License
+
+Our documentation is open-source and issued under the [MIT License](https://github.com/RubiconDeFi/docs/blob/master/LICENSE).

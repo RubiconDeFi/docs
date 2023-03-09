@@ -1,7 +1,7 @@
 ---
 title: Rubicon | Order Types
 pageTitle: Order Types
-description: Supported order types on the Rubicon order book protocol
+description: Order types on the order book protocol
 ---
 
 
