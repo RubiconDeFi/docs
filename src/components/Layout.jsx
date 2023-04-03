@@ -106,7 +106,15 @@ const navigation = [
         ],
       },
       {
-        title: 'Deployments',
+        title: 'Mainnet Deployments',
+        href: '/docs/protocol/mainnet_deployments',
+      },
+      {
+        title: 'Testnet Deployments',
+        href: '/docs/protocol/testnet_deployments',
+      },
+      {
+        title: 'v1 Deployments',
         href: '/docs/protocol/deployments',
       },
       {
