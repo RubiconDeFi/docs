@@ -37,7 +37,7 @@ function replaceMetaData(text, blockArray) {
 	}
 
 	for (const block of blocks) {
-		const blockPlaceholder = `|****${block.index}****|`;
+		const blockPlaceholder = `|**** ${block.index} ****|`;
 		text = text.replace(`${block.content}`, blockPlaceholder);
 		blockArray.push({ index: block.index, content: block.content, type: block.type });
 	}
@@ -63,7 +63,7 @@ const translateMarkdownFile = async (inputFilePath, outputFilePath, languageCode
 	}
 
 	for (const block of codeBlocks) {
-		const blockPlaceholder = `|****${block.index}****|`;
+		const blockPlaceholder = `|**** ${block.index} ****|`;
 		translatedFileContent = translatedFileContent.replace(blockPlaceholder, `${block.content}`);
 	}
 

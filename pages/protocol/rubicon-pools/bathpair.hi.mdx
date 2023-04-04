@@ -1,0 +1,37 @@
+---
+title: रूबिकॉन | स्नान जोड़ी
+pageTitle: बाथपेयर
+description: जोड़ी-विशिष्ट बाजार-निर्माण और रणनीति निष्पादन
+---
+
+## बाथ पेयर
+
+[BathPair contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathPair.sol) रणनीतिकारों, उपयोगकर्ता की तरलता और प्रमुख सुरक्षा विचारों को किसी दिए गए व्यापारिक जोड़े के लिए एक साथ आने की अनुमति देकर रुबिकॉन पूल के दिल का प्रतिनिधित्व करता है। यह अनुबंध रणनीतिकारों को रूबिकन मार्केट पर बाजार बनाने के लिए उपयोगकर्ता की तरलता को तैनात करने की अनुमति देता है। इसके अलावा, यह अनुबंध सुनिश्चित करता है कि उपयोगकर्ता फंड संभावित रूप से दुर्भावनापूर्ण अभिनेताओं से सुरक्षित हैं और रुबिकॉन पूल के बंद-लूप सिस्टम के भीतर रहते हैं।
+
+### महत्वपूर्ण कार्यों
+
+* `इनिशियलाइज़पेयर` - यह फ़ंक्शन तब कहा जाता है जब बाथ हाउस इस अनुबंध को आरंभ करता है। यह फ़ंक्शन नए बाथ टोकन बनाता है यदि वे दिए गए बाथ जोड़ी उदाहरण के लिए मौजूद नहीं हैं और जोड़ी को मौजूदा कोट बाथ टोकन पर इंगित करता है यदि यह पहले से मौजूद है।
+* `ExecuteStrategy` - यह बाथपेयर.सोल का मुख्य कार्य है। रुबिकॉन पूल के संस्करण शून्य में, यह एक रणनीतिकार को अंतर्निहित बाथटोकन तरलता के साथ एक जोड़े व्यापार (पूछें और बोली) लगाने की अनुमति देता है जिसे इस जोड़ी द्वारा प्रबंधित किया जाता है। _यह कार्य रणनीतिकारों के लिए बाजार बनाने और उपयोगकर्ता तरलता का लाभ उठाने के लिए प्रवेश बिंदु है।_
+  * इस फ़ंक्शन को कॉल करते समय रणनीतिकार द्वारा प्रदान किए गए पैरामीटर हैं:
+
+      ```
+          address targetStrategy,
+          uint256 askNumerator, // *Asset Amt* / Quote Amt
+          uint256 askDenominator, // Asset Amt / *Quote Amt*
+          uint256 bidNumerator, // *Quote Amt* / Asset Amt
+          uint256 bidDenominator // Quote Amt / *Asset Amt*
+      ```
+* `getMaxOrderSize` - यह फ़ंक्शन बोली के लिए सबसे बड़ा ऑर्डर आकार देता है या एक रणनीतिकार उपयोगकर्ता निधि के साथ पूछ सकता है। इसके अलावा, यह फ़ंक्शन सुनिश्चित करता है कि सापेक्ष क्रम आकार और गतिशील [inventory management](/docs/protocol/rubicon-pools/rubicon-pools#constraints-and-risk-parameters) लागू हैं।
+* `रणनीतिकारबूटीक्लेम` - इस समारोह को रणनीतिकारों द्वारा अर्जित उपज को स्वचालित रूप से वापस करने के लिए बुलाया जाता है जो कि सफल बाजार-निर्माण के साथ अर्जित किया गया हो। उपज का दावा करने के लिए मुख्य गणना है (इस रणनीतिकार के परिणामस्वरूप ऑर्डर की मात्रा भरती है) / (दिए गए एसेट के लिए ऑर्डर की कुल मात्रा भरती है) \* (उपज की अंतर्निहित राशि)।
+
+### प्रमुख सुरक्षा पैरामीटर और निष्पादन प्रवाह
+
+ऐसे कई सुरक्षा पैरामीटर हैं जो यह सुनिश्चित करने के लिए हैं कि दुर्भावनापूर्ण अभिनेता या खराब बाज़ार निर्माता रूबिकन मार्केट पर उपयोगकर्ता पूंजी को अप्रभावी रूप से तैनात नहीं कर सकते हैं। ये सभी फ़ंक्शन और पैरामीटर रणनीतिकार द्वारा किए गए एकल फ़ंक्शन कॉल में एक भूमिका निभाते हैं: `executeStrategy`। कृपया उन्हें नीचे उस क्रम में देखें जिसमें वे फ़ंक्शन कॉल के निष्पादन के दौरान होते हैं।
+
+* `ओनली एप्रूव्ड स्ट्रैटेजी` - इस फंक्शन कॉल की लक्ष्य रणनीति को बाथ हाउस द्वारा अनुमोदित किया जाना चाहिए।
+* `enforceReserveRatio` - यह संशोधक सुनिश्चित करता है कि प्रत्येक अंतर्निहित तरलता पूल (परिसंपत्ति और उद्धरण बाथटोकन) के लिए `आरक्षित अनुपात` कार्य निष्पादन_ से पहले और बाद में मनाया जाता है।
+* `getMaxOrderSize` - इस फ़ंक्शन का उपयोग यहां यह सुनिश्चित करने के लिए किया जाता है कि बोली का अंश (जो चलनिधि पूल से उपयोग किया जा रहा है) और जोड़े गतिशील इन्वेंट्री प्रबंधन बाधाओं का पालन करें।
+* `enforceSpread` - यह फ़ंक्शन सुनिश्चित करता है कि (ए) जोड़े के व्यापार के लिए सबमिट किए गए ऑर्डर पर एक फैलाव है और (बी) जोड़े के व्यापार में एक पूछ/बोली मूल्य है जो ऑर्डर बुक के सही आधे हिस्से पर है (पूछें) /bid एक मान्य आस्क/बोली है `/` midpoint price of the order book). A price oracle will be implemented in future versions to further ensure that midpoint of the order book is respected as a valid point of reference.
+* `IPairsTrade(targetStrategy).execute` - the strategy is then called and a pairs trade is placed. See PairsTrade.sol.
+* `cancelPartialFills` - this crucial function parses through the outstanding orders for this pair in the order book and (a) cancels any orders whose counterparts (the bid to an ask) of the pairs trade have been filled. This represents a yield event in which a pair's trade was partially filled. (b) Any orders that have exceeded the `timeDelay` for this pair are canceled to ensure no liquidity is locked in old orders.
+* `rebalancePair` - this simple function sends any filled orders that send ERC-20 assets to a Bath Token's sister pool (Asset `< - >`उद्धरण) वापस सही तरलता पूल में ताकि प्रतिफल प्राप्त किया जा सके।

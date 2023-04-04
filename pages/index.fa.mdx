@@ -1,0 +1,64 @@
+---
+title: روبیکن | بررسی اجمالی
+pageTitle: بررسی اجمالی
+description: به راهنماهای روبیکن و مستندات توسعه دهنده خوش امدید
+---
+
+به راهنمای Rubicon و مستندات توسعه دهنده خوش آمدید
+
+import { QuickLinks, QuickLink } from "/components/QuickLinks.jsx";
+
+<QuickLinks>
+<QuickLink title="سوالات متداول" icon="installation" href="/faq" description="جدید به روبیکن? از سوالات متداول ما دیدن کنید"></QuickLink>
+<QuickLink
+		title="راهنماها"
+		icon="presets"
+		href="/guides/trade/trade"
+		description="بیاموزید که چگونه تجارت کنید, مبادله, پل, و نقدینگی را در برنامه روبیکن فراهم کنید!"
+	></QuickLink>
+<QuickLink
+		title="روبیکن مارکت"
+		icon="plugins"
+		href="/api-guides/subgraphs/rubiconmarket-api"
+		description="اسناد و مدارک برای قرارداد کتاب سفارش."
+	></QuickLink>
+<QuickLink
+		title="اپیس"
+		icon="theming"
+		href="/api-guides/subgraphs/subgraphs"
+		description="پرس و جو داده های بازار با زیر گراف و یا تعامل با روبیکن با استفاده از پایتون و زنگ اس دی اس"
+	></QuickLink>
+</QuickLinks>
+
+## روبیکون چیست؟
+
+[Rubicon](https://rubicon.finance/) یک پروتکل دفتر سفارش برای [Ethereum](https://ethereum.org/en/) است. از آن برای تجارت استفاده کنید [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) توکن هایی با Swaps، Limit Orders و Market Orders یا ارائه نقدینگی در Pools.
+
+Rubicon بر روی [Optimism](https://www.optimism.io/)، اتریوم کم هزینه و سریع ساخته شده است [L2](https://ethereum.org/en/layer-2/#:~:text=Layer%202%20(L2)%20is%20a،%20امنیت%20%20%20Ethereum را تضمین می کند .) زنجیر.
+
+## مروری بر پروتکل
+
+RubiconMarket.sol یک [limit order book](https://en.wikipedia.org/wiki/Central_limit_order_book) است قرارداد هوشمند این موتور منطبق و کتاب های سفارش را برای تجارت همتا به همتای توکن های ERC-20 پیاده سازی می کند.
+
+Rubicon Pools سیستمی از قراردادهای هوشمند است که به ارائه‌دهندگان نقدینگی غیرفعال (LP) امکان می‌دهد توکن‌ها را در یک استخر سپرده کنند، جایی که بازارسازان فعال (استراتژیست‌ها) از دارایی‌های استخر در دفترچه سفارش استفاده می‌کنند. سود حاصل از بازارسازی به LP ها می رسد و استراتژیست ها هزینه عملکرد را دریافت می کنند.
+
+![Rubicon v1 Architecture](/assets/Rubicon_v1_RubiconMarket.png)
+
+## توسعه دهندگان: پروتکل Rubicon را به صورت محلی راه اندازی کنید
+
+```bash
+$ git clone https://www.github.com/RubiconDeFi/rubicon_protocol.git   
+$ cd rubicon_protocol && npm i
+$ npm i --save-dev openzeppelin-solidity@2.5.1
+$ truffle init
+$ 'n' for overwriting contracts
+$ 'n' for overwriting migrations
+$ (in separate terminal) ganache-cli
+```
+
+همچنین مطمئن شوید که خطوطی را در truffle-config.js که عبارت «توسعه:» را می‌نویسند، کامنت بگذارید و لوکال هاست را در زیر شبکه‌ها قرار دهید تا بتوانید به Ganache متصل شوید.
+
+```bash
+$ truffle migrate -- deploys contracts to development network, i.e. localhost
+$ truffle test -- run the set of tests provided in the test folder of repo
+```

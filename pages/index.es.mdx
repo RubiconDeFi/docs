@@ -1,0 +1,64 @@
+---
+title: Rubicon | Descripción general
+pageTitle: Descripción general
+description: Bienvenido a las guías de Rubicon y a la documentación para desarrolladores
+---
+
+Bienvenido a las guías y la documentación para desarrolladores de Rubicon
+
+import { QuickLinks, QuickLink } from "/components/QuickLinks.jsx";
+
+<QuickLinks>
+<QuickLink title="Preguntas FRECUENTES" icon="installation" href="/faq" description="¿Eres nuevo en Rubicon? Visita nuestras Preguntas Frecuentes"></QuickLink>
+<QuickLink
+		title="Guiar"
+		icon="presets"
+		href="/guides/trade/trade"
+		description="Aprenda a operar, Intercambiar, Unir y proporcionar liquidez en la aplicación Rubicon."
+	></QuickLink>
+<QuickLink
+		title="Mercado del Rubicón"
+		icon="plugins"
+		href="/api-guides/subgraphs/rubiconmarket-api"
+		description="Documentación para el contrato de libro de pedidos."
+	></QuickLink>
+<QuickLink
+		title="APIs"
+		icon="theming"
+		href="/api-guides/subgraphs/subgraphs"
+		description="Consulte datos de mercado con subgrafos o interactúe con Rubicon utilizando SDK de Python y Rust"
+	></QuickLink>
+</QuickLinks>
+
+## ¿Qué es Rubicón?
+
+[Rubicon](https://rubicon.finance/) es un protocolo de cartera de pedidos para [Ethereum](https://ethereum.org/en/). Úselo para comerciar [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) tokens con Swaps, Órdenes Limitadas y Órdenes de Mercado o proporcionar liquidez en Pools.
+
+Rubicon se basa en [Optimism](https://www.optimism.io/), un Ethereum ultrarrápido y de bajo costo [L2](https://ethereum.org/en/layer-2/#:~:text=Layer%202%20(L2)%20is%20a, la%20seguridad%20garantiza%20de%20Ethereum .) cadena.
+
+## Descripción general del protocolo
+
+RubiconMarket.sol es un [limit order book](https://en.wikipedia.org/wiki/Central_limit_order_book) contrato inteligente. Implementa un motor de comparación y libros de pedidos para el comercio entre pares de tokens ERC-20.
+
+Rubicon Pools es un sistema de contratos inteligentes que permite a los proveedores de liquidez (LP) pasivos depositar tokens en un grupo, donde los creadores de mercado (estrategas) activos utilizan los activos del grupo en los libros de pedidos. El rendimiento de la creación de mercado se destina a LP y los estrategas obtienen una tarifa de rendimiento.
+
+![Rubicon v1 Architecture](/assets/Rubicon_v1_RubiconMarket.png)
+
+## Desarrolladores: Inicie el protocolo Rubicon localmente
+
+```bash
+$ git clone https://www.github.com/RubiconDeFi/rubicon_protocol.git   
+$ cd rubicon_protocol && npm i
+$ npm i --save-dev openzeppelin-solidity@2.5.1
+$ truffle init
+$ 'n' for overwriting contracts
+$ 'n' for overwriting migrations
+$ (in separate terminal) ganache-cli
+```
+
+También asegúrese de comentar las líneas en truffle-config.js que dicen `desarrollo:` e incluya localhost en las redes para que pueda conectarse a Ganache.
+
+```bash
+$ truffle migrate -- deploys contracts to development network, i.e. localhost
+$ truffle test -- run the set of tests provided in the test folder of repo
+```

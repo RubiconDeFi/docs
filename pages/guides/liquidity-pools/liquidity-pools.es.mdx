@@ -1,0 +1,30 @@
+---
+title: Rubicon | Fondos de Liquidez
+pageTitle: Fondos de Liquidez
+description: Todo lo que necesita saber sobre los fondos de liquidez de Rubicon
+---
+
+## Desarrolladores
+
+Consulte el contrato de fondo de liquidez [BathToken.sol](https://github.com/RubiconDeFi/rubicon-protocol-v1/blob/master/contracts/rubiconPools/BathToken.sol) en GitHub.
+
+Además, echa un vistazo a la piscina [contracts docs](/docs/protocol/rubicon-pools/rubicon-pools) y el token de baño [API docs](/docs/api/subgraphs/bathtoken-api)
+
+### ¿Qué son los fondos de liquidez?
+
+Los fondos de liquidez de Rubicon tienen [certain risks](/docs/protocol/rubicon-pools/risks). Tenga cuidado y solo deposite lo que pueda permitirse perder.
+
+Los fondos de liquidez de Rubicon son un conjunto de contratos inteligentes que permiten a los proveedores de liquidez (LP) depositar tokens ERC-20 en un fondo. Los tokens en el grupo son utilizados por creadores de mercado activos (estrategas) para proporcionar liquidez en los libros de pedidos de Rubicon. El rendimiento de la creación de mercado va a los LP, mientras que los estrategas ganan una tarifa de gestión.
+
+Los proveedores de liquidez (LP) reciben bathTokens cuando depositan criptoactivos en un grupo. Representan su parte proporcional de los activos subyacentes del grupo.\
+(Ej. LP deposita ETH, recibe bathETH)
+
+Desde el principio, diseñamos estos grupos con parámetros de seguridad que permitirán que cualquier persona administre la liquidez del grupo. Si bien el sistema aún está en desarrollo, nuestro equipo actúa como administrador de la liquidez del grupo. Puede obtener más información en [Current Pools Strategy](/docs/guides/liquidity-pools/current-pools-strategy) página. La próxima versión de los fondos de liquidez de Rubicon se encuentra en la fase de investigación y desarrollo. ¡Compartiremos actualizaciones el [our blog](https://mirror.xyz/rubicon.eth)!
+
+![Figure](/assets/image(3).png)
+
+### Ventajas
+
+Muchos protocolos/DEX eligen entre liquidez pasiva o activa. Rubicon describe los roles e incentivos tanto para los proveedores de liquidez pasiva como para los administradores de liquidez activa.
+
+En Rubicon, solo hay un grupo para cada token. Por ejemplo, el grupo de USDC se puede usar en ETH-USDC, OP-USDC y cualquier otro libro de pedidos de USDC. Esto es más eficiente en términos de capital que los sistemas en los que la liquidez está bloqueada en un solo par comercial.

@@ -1,0 +1,88 @@
+---
+title: Rubicon | Fungsi Kunci Pasar
+pageTitle: Fungsi Kunci Pasar
+description: Titik masuk utama dan fungsi kontrak Pasar Rubicon
+---
+
+## Fungsi utama
+
+#### Menawarkan
+
+```
+function offer(uint pay_amt, ERC20 pay_gem, uint buy_amt, ERC20 buy_gem, uint pos) 
+    public returns (uint)
+```
+
+Fungsi **penawaran** adalah fungsi utama untuk menempatkan order limit buy atau limit sell baru di pasar Rubicon. Fungsi ini mengambil dana pengguna untuk _ERC-20 pair_ tertentu dan menempatkannya ke dalam buku pesanan smart contract. Ketika pengguna lain memilih untuk membeli pesanan atau pesanan dicocokkan dengan pesanan lain, penawaran akan diisi dan perdagangan dieksekusi oleh Pasar Rubicon.
+
+| Parameter                 | Use                                                                                                                                          |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| uint pay\_amt             | The quantity of the asset that the user is _offering in wad_                                                                                 |
+| ERC20 pay\_gem            | The ERC-20 asset that the user is _offering_                                                                                                 |
+| uint buy\_amt             | The quantity of the asset that the user is hoping to _exchange for in wad_                                                                   |
+| ERC20 buy\_gem            | The asset the user is hoping to _exchange for_                                                                                               |
+| uint pos                  | The position in the _sorted order book_ to place the order. Set this to 0 unless you know the exact position (closest id) to place the order |
+| \[Optional] bool matching | Optional boolean that dictates _whether or not the offer should be automatically matched_ if possible                                        |
+
+Penting untuk diperhatikan bahwa fungsi penawaran memiliki beberapa representasi di pasar Rubicon. _Opsional,_ pengguna dapat menambahkan parameter _pos_ atau _matching_. Ini memungkinkan pengguna untuk memilih di mana dalam buku pesanan yang disortir penawaran harus berada dan apakah penawaran harus tunduk pada kemungkinan pencocokan otomatis pesanan atau tidak.
+
+#### Membeli
+
+```
+function buy(uint id, uint amount) public can_buy(id) 
+    returns (bool)
+```
+
+| Parameter   | Use                                                          |
+| ----------- | ------------------------------------------------------------ |
+| uint id     | The id of the order the user wants to buy                    |
+| uint amount | The wad quantity/portion of the order the user wants to buy  |
+
+The buy function allows a user to buy a given order in the order book and ultimately calls super.buy() in the RubiconMarket.sol contract. Furthermore, the buy function will also result in the caller paying the trade fee (see fees).
+
+#### Cancel
+
+```
+function cancel(uint id)
+    public
+    can_cancel(id)
+    returns (bool success)
+```
+
+| Parameter | Use                                          |
+| --------- | -------------------------------------------- |
+| uint id   | The id of the order the user wants to cancel |
+
+Fungsi ini memungkinkan pengguna untuk membatalkan penawaran dan mengembalikan dana kepada pengguna. Pengubah **can\_cancel** memeriksa untuk memastikan bahwa penelepon memiliki penawaran dan penawaran tersebut aktif. Sebagai alternatif, pengguna juga dapat menggunakan fungsi perutean **kill** untuk mendapatkan hasil yang sama dan membatalkan pesanan mereka pada id tertentu.
+
+### Fungsi Perutean
+
+#### BeliSemuaJumlah
+
+```
+    function buyAllAmount(
+    ERC20 buy_gem,
+    uint256 buy_amt,
+    ERC20 pay_gem,
+    uint256 max_fill_amount
+) external returns (uint256 fill_amt)
+```
+
+| Parameter | Use                                          |
+| --------- | -------------------------------------------- |
+| uint id   | The id of the order the user wants to cancel |
+
+This function allows a user to buy any amount of an asset (buy\_gem) through multiple orders in the book. The function will keep buying through orders until the desired buy-amt is acquired.
+
+#### Take
+
+```
+function take(bytes32 id, uint128 maxTakeAmount) public
+```
+
+| Parameter          | Use                                                          |
+| ------------------ | ------------------------------------------------------------ |
+| uint id            | The id of the order the user wants to buy                    |
+| uint maxTakeAmount | The wad quantity/portion of the order the user wants to buy  |
+
+Ini hanyalah fungsi perutean yang memungkinkan pengguna mengambil penawaran dengan mudah melalui titik masuk **take**. Ini akan merutekan pengguna untuk kemudian _membeli penawaran._

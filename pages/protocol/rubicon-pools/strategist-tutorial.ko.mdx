@@ -1,0 +1,41 @@
+---
+title: 루비콘/전략가 튜토리얼
+pageTitle: 전략가 튜토리얼
+description: 루비콘 풀에 대한 전략가가되는 방법에 대한 개요
+---
+
+## 전략가
+
+전략가는 Rubicon 주문서에서 시장 조성을 목적으로 BathToken 유동성을 사용하여 입찰 및/또는 요청을 할 수 있습니다. 그들은 오프체인 전략을 활용하여 풀 시스템 범위 내에서 거래를 하고 보상을 얻습니다.
+
+### 전략가 진입점 및 레버
+
+Pools 시스템의 전략가는 Rubicon에서 시장 형성에 활용할 수 있는 세 가지 주요 기능을 가지고 있습니다. 전략가는 'bathToken' 자금으로 시장 조성('strategistBootyClaim' 참조)하는 동안 생성한 모든 채우기의 비율을 획득하는 이점을 즐깁니다. 세 가지 주요 기능은 다음과 같습니다.
+
+* `executeStrategy` - 전략가가 폐쇄 루프 시스템 내에서 거래를 하기 위해 활용하는 핵심 기능입니다. 전략가 및 주요 데이터를 기록하는 동안 주문서에 입찰 및/또는 요청을 배치하여 NPV 긍정적인 시장 조성 행동에 대한 보상을 받을 수 있습니다.
+* `bathScrub` - 이 기능은 효율적으로 작동하기 위해 Rubicon 풀에서 수행해야 하는 필수 "청소" 기능입니다. 이 함수는 주어진 `BathPair`에서 미결 주문을 분석합니다. 이렇게 하면 "시간 만료" 이후에도 여전히 오더북에 있는 모든 주문이 수익률에 대해 기록되고 유동성이 풀로 반환됩니다. 또한 이 함수는 `maxOutstandingPairCount`를 준수하기 위해 주어진 쌍에 대한 미결제 주문 수량을 줄이기 위해 호출되어야 합니다.
+* `removeLiquidity` - 이 기능을 사용하면 전략가가 풀 유동성에 배치한 오더북에서 "위험을 회피"하고 유동성을 제거할 수 있습니다.
+
+### 핵심 아이디어
+
+전략가는 Rubicon Market에서 사용자 자금과 시장 조성을 활용하기 위한 핵심 진입점인 BathPair.sol의 'executeStrategy' 기능을 가지고 있습니다. 전략가의 역할은 Rubicon 오더북에 자동으로 배타적으로 배치되는 사용자 자금으로 정확한 오퍼를 찾는 것입니다. 풀을 사용하면 Rubicon 주문서에 입찰 또는 요청을 할 수 있습니다.
+
+이 함수에는 RubiconMarket.sol의 'offer' 함수에 직접 매핑되는 많은 입력 __이 있습니다.
+
+```
+function executeStrategy(
+        address targetStrategy, //address of the strategy to use - PairsTrade in v0
+        uint256 askNumerator, // *Asset Amt* / Quote Amt
+        uint256 askDenominator, // Asset Amt / *Quote Amt*
+        uint256 bidNumerator, // *Quote Amt* / Asset Amt
+        uint256 bidDenominator // Quote Amt / *Asset Amt*
+    )
+```
+
+* `targetStrategy` - 주어진 입력으로 시장 조성 전략을 실행하는 계약의 주소. 풀의 현재 버전에서는 [_only approved strategy is the Pairs Trade_](/docs/protocol/rubicon-pools/bathpair).
+* `askNumerator` - 자산 수량(예: WBTC)에서 LP 자금과 거래하는 데 사용될 정확한 분자([pay\_am](/docs/protocol/rubicon-market/key-functions#offer)[t](https://www.youtube.com/watch?v=dQw4w9WgXcQ)) ).
+* `askDenominator` - 호가 자산 금액(예: USDC)에서 LP 자금과 거래하는 데 사용될 정확한 분모([buy\_amt](/docs/protocol/rubicon-market/key-functions#offer))입니다.
+* `bidNumerator` - 견적 자산 금액(예: USDC).
+* `bidDenominator` - 자산 금액(예: WETH)에서 이 입찰을 수행하는 데 사용될 정확한 분모([buy\_amt](/docs/protocol/rubicon-market/key-functions#offer))입니다.
+
+전략가는 성공적인 채우기에 대한 지불금을 받기 위해 오프체인에서 최고의 입찰가를 결정하고 사용자 자금에 대한 시장 조건을 기반으로 하도록 요청해야 합니다.

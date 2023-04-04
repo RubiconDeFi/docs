@@ -1,0 +1,38 @@
+---
+title: Rubicon | Tasas de Crecimiento de Piscinas
+pageTitle: Tasas de Crecimiento de las Piscinas
+description: Comprender las tasas de crecimiento de las piscinas Rubicon
+---
+
+# Las tasas de crecimiento
+
+import { Callout } from "/components/Callout";
+
+<Callout type="warning" title="Descargo">
+El uso de Rubicon Pools tiene [**certain risks**](/protocol/rubicon-pools/risks). Tenga cuidado y solo deposite lo que pueda permitirse perder.
+</Callout>
+
+
+[Rubicon Pools](/docs/protocol/rubicon-pools/rubicon-pools) son los fondos de liquidez nativos para los libros de pedidos de Rubicon. Los proveedores de liquidez depositan tokens en un grupo, donde los creadores de mercado activos (estrategas) utilizan la liquidez del grupo para proporcionar liquidez en los libros de órdenes. El rendimiento de las actividades de creación de mercado va a los proveedores de liquidez, con una tarifa de rendimiento al estratega.
+
+El rendimiento de un grupo (es decir, bathTokens, que representan la participación de un LP en el grupo) está determinado por la rentabilidad de la creación de mercado del estratega. Es importante destacar que los rendimientos del grupo son _discretos y no continuos_ ya que se generan cuando se completan las transacciones.
+
+Los grupos utilizan un modelo compartido de grupo de código abierto implementado por primera vez por las bóvedas de yEarn; para obtener más detalles sobre cómo se utilizan los rendimientos discretos para extrapolar un APY asumido y una estructura de participación en el grupo, consulte este excelente [explanation](https://docs.yearn.finance/getting-started/guides/how-to-understand-yvault-roi) por año (nuestras estimaciones APR/APY usan el mismo enfoque).
+
+Un concepto útil para comprender el rendimiento de cualquier grupo determinado es el "precio" virtual del grupo. Este valor se calcula en función del `subyacenteBalance` / `totalSupply` para un grupo; esto representa los activos subyacentes frente al número de acciones. Este aumento de valor representa el rendimiento realizado para los titulares de bathToken.
+
+En el [Pools page](https://app.rubicon.finance/pools) en la aplicación web, cada fondo de liquidez tiene una TAE estimada correspondiente:
+
+![](/activos/imagen(8).png)
+
+Al pasar el cursor sobre esta tarifa, se mostrará una información sobre herramientas con tarifas adicionales para cada grupo. La tasa principal es un APY estimado, que se calcula a partir de _lo mejor entre el desempeño semanal o mensual posterior del grupo_. A continuación se muestra una descripción general de cómo se calculan estas tasas:
+
+% de cambio de 7 días: `Cambio en el rendimiento del fondo o en el precio de las acciones en los últimos 7 días.`
+
+% de cambio de 30 días: `Cambio en el rendimiento del fondo o en el precio de las acciones en los últimos 30 días.`
+
+TAE bruta: 'Lo mejor del cambio de 7 días frente a 30 días * (un año/tamaño de la muestra)'
+
+APY estimado - 'Lo mejor del cambio de 7 días frente a 30 días como tasa^(Un año/tamaño de la muestra) -1'
+
+APR de recompensas: `anualiza la tasa a la que se acumulan las recompensas y el precio actual del token de recompensa`

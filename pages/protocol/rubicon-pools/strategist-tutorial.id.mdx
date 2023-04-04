@@ -1,0 +1,41 @@
+---
+title: Rubicon | Tutorial Strategi
+pageTitle: Strategi Tutorial
+description: Gambaran umum tentang bagaimana menjadi ahli strategi untuk Kumpulan Rubicon
+---
+
+## Pakar strategi
+
+Ahli strategi memiliki kemampuan untuk mengajukan penawaran dan/atau permintaan menggunakan likuiditas BathToken untuk tujuan pembuatan pasar di buku pesanan Rubicon. Mereka menggunakan strategi off-chain untuk menempatkan perdagangan dalam batasan sistem Pools dan memenangkan hadiah.
+
+### Titik Masuk dan Pengungkit Strategist
+
+Ahli strategi dalam sistem Pools memiliki tiga fungsi utama yang dapat mereka manfaatkan untuk memasarkan Rubicon. Ahli strategi menikmati keuntungan memenangkan sebagian dari semua pengisian yang mereka buat saat membuat pasar (lihat `strategistBootyClaim`) dengan dana `bathToken`. Tiga fungsi utama tersebut adalah sebagai berikut:
+
+* `executeStrategy` - ini adalah fungsi inti yang digunakan ahli strategi untuk menempatkan perdagangan dalam sistem loop tertutup. Hal ini memungkinkan penempatan bid dan/atau ask di order book sambil mencatat ahli strategi dan data kunci sehingga mereka dapat dihargai atas perilaku pembuatan pasar yang positif NPV
+* `bathScrub` - fungsi ini adalah fungsi "pembersihan" wajib yang harus dilakukan pada Rubicon Pools agar dapat beroperasi secara efisien. Fungsi ini mem-parsing pesanan yang belum selesai pada `BathPair` yang diberikan. Hal ini memastikan bahwa setelah "kedaluwarsa", setiap pesanan yang masih ada dalam buku pesanan dicatat untuk hasil dan likuiditas dikembalikan ke kumpulan. Selain itu, fungsi ini harus dipanggil untuk mengurangi jumlah pesanan yang belum dibayar untuk pasangan yang diberikan untuk mematuhi `maxOutstandingPairCount`
+* `removeLiquidity` - fungsi ini memungkinkan ahli strategi untuk melakukan "risk-off" dan menghapus likuiditas dari buku pesanan yang mereka tempatkan dengan likuiditas Pools.
+
+### Gagasan Utama
+
+Ahli strategi memiliki titik masuk inti untuk memanfaatkan dana pengguna dan pembuatan pasar di Pasar Rubicon: fungsi `executeStrategy` di BathPair.sol. Peran ahli strategi adalah menemukan penawaran yang tepat untuk dibuat dengan dana pengguna yang secara otomatis, dan eksklusif, ditempatkan di buku pesanan Rubicon; Pools memungkinkan penawaran atau permintaan untuk ditempatkan di buku pesanan Rubicon.
+
+Fungsi ini memiliki sejumlah input __ yang memetakan langsung ke fungsi `penawaran` di RubiconMarket.sol:
+
+```
+function executeStrategy(
+        address targetStrategy, //address of the strategy to use - PairsTrade in v0
+        uint256 askNumerator, // *Asset Amt* / Quote Amt
+        uint256 askDenominator, // Asset Amt / *Quote Amt*
+        uint256 bidNumerator, // *Quote Amt* / Asset Amt
+        uint256 bidDenominator // Quote Amt / *Asset Amt*
+    )
+```
+
+* `targetStrategy` - alamat kontrak yang menjalankan strategi pembuatan pasar dengan masukan yang diberikan. Dalam versi Pools saat ini, [_only approved strategy is the Pairs Trade_](/docs/protocol/rubicon-pools/bathpair).
+* `askNumerator` - pembilang yang tepat ([pay\_am](/docs/protocol/rubicon-market/key-functions#offer)[t](https://www.youtube.com/watch?v=dQw4w9WgXcQ)) yang akan digunakan untuk melakukan perdagangan dengan dana LP dalam kuantitas aset (mis. WBTC ).
+* `askDenominator` - penyebut yang tepat ([buy\_amt](/docs/protocol/rubicon-market/key-functions#offer)) yang akan digunakan untuk melakukan perdagangan dengan dana LP dalam jumlah aset kutipan (misalnya USDC).
+* `bidNumerator` - pembilang yang tepat ([pay\_am](/docs/protocol/rubicon-market/key-functions#offer)[t](https://www.youtube.com/watch?v=dQw4w9WgXcQ)) yang akan digunakan untuk melakukan perdagangan dengan dana LP dalam jumlah aset kuotasi (mis. USDC).
+* `bidDenominator` - penyebut yang tepat ([buy\_amt](/docs/protocol/rubicon-market/key-functions#offer)) yang akan digunakan untuk mengajukan bid ini dalam jumlah aset (mis. WETH).
+
+Ahli strategi harus menentukan off-chain tawaran terbaik dan meminta untuk membuat dana pengguna berdasarkan kondisi pasar untuk menerima pembayaran untuk pengisian yang berhasil.

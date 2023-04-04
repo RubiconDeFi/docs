@@ -1,0 +1,38 @@
+---
+title: Tingkat Pertumbuhan Rubicon | Pool
+pageTitle: Tingkat Pertumbuhan Kolam Renang
+description: Memahami tingkat pertumbuhan Kolam Rubicon
+---
+
+# Tingkat pertumbuhan
+
+import { Callout } from "/components/Callout";
+
+<Callout type="warning" title="Disclaimer">
+Menggunakan Rubicon Pools memiliki [**certain risks**](/protocol/rubicon-pools/risks). Berhati-hatilah dan hanya setorkan apa yang Anda mampu untuk kehilangan.
+</Callout>
+
+
+[Rubicon Pools](/docs/protocol/rubicon-pools/rubicon-pools) adalah kumpulan likuiditas asli untuk buku pesanan Rubicon. Penyedia likuiditas menyetor token ke dalam kumpulan, di mana kumpulan likuiditas digunakan oleh pembuat pasar aktif (ahli strategi) untuk menyediakan likuiditas pada buku pesanan. Hasil dari aktivitas pembuatan pasar masuk ke penyedia likuiditas, dengan biaya kinerja masuk ke ahli strategi.
+
+Kinerja kumpulan (yaitu bathTokens, yang mewakili bagian LP dari kumpulan) ditentukan oleh profitabilitas pembuatan pasar ahli strategi. Yang penting, pengembalian kumpulan bersifat _diskrit dan tidak berkelanjutan_ karena dihasilkan saat perdagangan diisi.
+
+Kumpulan menggunakan model berbagi kumpulan sumber terbuka yang pertama kali diterapkan oleh brankas yEarn; untuk detail lebih lanjut tentang bagaimana pengembalian diskrit digunakan untuk mengekstrapolasi asumsi APY dan struktur berbagi kumpulan, lihat [explanation](https://docs.yearn.finance/getting-started/guides/how-to-understand-yvault-roi) yang hebat ini oleh yEarn (estimasi APR/APY kami menggunakan pendekatan yang sama).
+
+Konsep yang berguna untuk memahami kinerja kumpulan tertentu adalah "harga" virtual kumpulan tersebut. Nilai ini dihitung berdasarkan `underlyingBalance` / `totalSupply` untuk kumpulan; ini mewakili aset dasar vs. jumlah saham. Peningkatan nilai ini mewakili hasil yang direalisasikan untuk pemegang bathToken.
+
+Di [Pools page](https://app.rubicon.finance/pools) di aplikasi web, setiap kumpulan likuiditas memiliki perkiraan APR yang sesuai:
+
+![](/aset/gambar(8).png)
+
+Mengarahkan kursor ke tarif ini akan menampilkan tooltip dengan tarif tambahan untuk setiap kumpulan. Tarif utama adalah perkiraan APY, yang dihitung dari _yang terbaik dari kinerja mingguan atau bulanan yang tertinggal untuk kumpulan._ Berikut ini ikhtisar tentang bagaimana tarif ini dihitung:
+
+Perubahan % 7 Hari - `Perubahan kinerja kumpulan atau harga saham dalam 7 hari terakhir.`
+
+Perubahan % 30 Hari - `Perubahan kinerja kumpulan atau harga saham dalam 30 hari terakhir.`
+
+APR Kotor - `Lebih baik mengikuti perubahan 7 hari vs 30 hari * (Satu tahun / ukuran sampel)`
+
+Estimasi APY - `Lebih baik dari trailing 7d vs 30d berubah sebagai rate^(Satu tahun / ukuran sampel) -1`
+
+Hadiah APR - `Menyetahunkan tarif di mana hadiah bertambah dan harga token hadiah saat ini`

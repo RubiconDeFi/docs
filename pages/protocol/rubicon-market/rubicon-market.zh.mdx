@@ -1,0 +1,151 @@
+---
+title: Rubicon/Rubicon市场
+pageTitle: Rubicon市场
+description: Rubicon订单簿合同概述和文档
+---
+
+Rubicon 的核心交易逻辑位于 [RubiconMarket](https://github.com/RubiconDeFi/rubicon_protocol/blob/master/contracts/RubiconMarket.sol)智能合约 - Rubicon 的中央订单簿。将此智能合约视为中间层是有用的，它通过订单簿促进数字资产的点对点交换。
+
+# 📊 卢比肯市场
+
+＃＃ 概述
+
+Rubicon Market 智能合约实现了链上订单簿和 [ERC-20 tokens](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) 点对点交易的匹配引擎。
+
+订单簿是按价格排序的资产买卖订单列表。该合约将每个 ERC20/ERC20 订单簿实现为两个双向链接的排序列表，一个用于给定市场的买方，一个用于卖方。
+
+合约使用托管模型来提供流动性；当在账簿上放置限价订单时，这些代币将发送到合约。如果/当订单被执行时，合约直接匹配交易者并将代币发送给每一方。可以取消订单，合约会将代币返还给发送者。
+
+Rubicon Market 是 MakerDAO 开源的衍生作品 [OasisDEX](https://oasisdex.com/)并继承了 AGPL3 许可。
+
+## 交易功能
+
+＃＃＃ 提供（）
+
+```
+    function offer(
+        uint256 pay_amt,
+        ERC20 pay_gem,
+        uint256 buy_amt,
+        ERC20 buy_gem,
+        uint256 pos,
+    ) public returns (uint256)
+```
+
+| Parameter Name         | Type        | Description                                                                                                                       |
+| ---------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| pay\_amt               | uint256     | Quantity of ERC-20 tokens the maker is selling                                                                                    |
+| pay\_gem               | address     | ERC-20 token the maker is selling                                                                                                 |
+| uint buy\_amt          | uint256     | Quantity of ERC-20 tokens the maker is buying                                                                                     |
+| ERC20 buy\_gem         | address     | ERC-20 token the maker is buying                                                                                                  |
+| uint pos               | uint256     | Position in the sorted list to place the order. Set this to 0 unless you know the exact position (closest ID) to insert the order |
+| \[Optional] matching   | bool        | Optional boolean to determine whether the offer should be automatically matched (placed in the sorted list)                       |
+
+The primary function for placing limit orders on Rubicon. The **pay_amt** quantity of the **pay_gem** token will be sent to the order book contract, sitting in escrow until it is filled or canceled. Always set pos to **0** unless you know the exact position in the sorted lost to insert the order.
+
+### cancel()
+
+```
+    function cancel(uint id)
+        public
+        can_cancel(id)
+        returns (bool success)
+```
+
+| Parameter Name         | Type        | Description                                    |
+| ---------------------- | ----------- | ---------------------------------------------- |
+| id                     | uint256     | The id of the order the user wants to cancel   |
+
+此功能用于填写或“挑选”账簿中的特定订单。来电者将支付接受者费用。或者，您可以使用 **take()** 路由函数来获得相同的结果并填写特定报价。
+
+### buyAllAmount（）
+
+```
+     function buyAllAmount(
+        ERC20 buy_gem,
+        uint256 buy_amt,
+        ERC20 pay_gem,
+        uint256 max_fill_amount
+    ) external returns (uint256 fill_amt)
+```
+
+| Parameter Name         | Type        | Description                                    |
+| ---------------------- | ----------- | ---------------------------------------------- |
+| buy\_gem               | address     | ERC-20 token the taker is buying               |
+| buy\_amt               | uint256     | Quantity of tokens the taker is buying         |
+| pay\_gem               | address     | ERC-20 token the taker is selling              |
+| max\_fill\_amount      | uint256     | Maximum amount of pay tokens sold              |
+
+尝试用 **sell_amt** 数量的 **sell_gem** 代币交易至少 **min_fill_amount** 数量的 **pay_gem** 代币。如果交易者收到的金额少于指定的最低金额，交易将恢复。这是一个“Fill-or-Kill”卖单。
+
+## 查看函数
+
+### getBestOffer（）
+
+```
+function getBestOffer(ERC20 pay_gem, ERC20 buy_gem)
+    public
+    view
+    returns (uint256)
+```
+
+返回订单簿顶部的报价 ID。
+
+前任。使用 WETH 作为 **pay_gem** 和 USDC 作为 **buy_gem** 调用此函数将返回 WETH/USDC 的最佳询价。切换代币将返回最佳出价。
+
+### getWorseOffer()
+
+```
+function getWorseOffer(uint256 id)
+    public
+    view
+    returns (uint256)
+```
+
+返回排序列表中的下一个更差的报价。如果目标订单是要价，则较差的报价较高，如果是出价，则报价较低。在这两种情况下，如果它们相等，它将返回一个较新的。
+
+### getBuyAmount（）
+
+```
+    function getBuyAmount(
+        ERC20 buy_gem,
+        ERC20 pay_gem,
+        uint256 pay_amt
+    ) external view returns (uint256 fill_amt)
+```
+
+如果花费了指定数量的 **pay_gem** 代币，则返回收到的 **buy_gem** 代币数量。用于检查订单簿的当前状态。
+
+### 获取支付金额（）
+
+```
+function getPayAmount(
+        ERC20 pay_gem,
+        ERC20 buy_gem,
+        uint256 buy_amt
+    ) external view returns (uint256 fill_amt)
+```
+
+返回购买指定数量的 **buy_gem** 代币所需的 **pay_gem** 代币数量。用于检查订单簿的当前状态。
+
+### getOfferCount（）
+
+```
+function getOfferCount(ERC20 sell_gem, ERC20 buy_gem)
+        public
+        view
+        returns (uint256)
+```
+
+返回指定对的订单簿中的报价数量。
+
+### getFeeBPS（）
+
+```
+function getFeeBPS()
+    public
+    view
+    returns (uint256)
+```
+
+以基点为单位返回协议接受者费用。

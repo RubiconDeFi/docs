@@ -1,0 +1,38 @@
+---
+title: Rubicon/池增长率
+pageTitle: 泳池增长率
+description: 了解Rubicon池的增长率
+---
+
+＃ 增长率
+
+import { Callout } from "/components/Callout";
+
+<Callout type="warning" title="免责声明">
+使用 Rubicon 池有 [**certain risks**](/protocol/rubicon-pools/risks)。谨慎行事，只存入您可以承受的损失。
+</Callout>
+
+
+[Rubicon Pools](/docs/protocol/rubicon-pools/rubicon-pools)是 Rubicon 订单簿的本地流动资金池。流动性提供者将代币存入池中，活跃的做市商（策略师）使用池中的流动性来为订单簿提供流动性。做市活动的收益归流动性提供者所有，绩效费用归策略师所有。
+
+池的性能（即 bathTokens，代表 LP 在池中的份额）由策略师做市的盈利能力决定。重要的是，池回报是_离散的而不是连续的_，因为它们是在交易完成时产生的。
+
+矿池使用首先由 yEarn 保险库实施的开源矿池共享模型；有关如何使用离散回报来推断假设的 APY 和池份额结构的更多详细信息，请查看这个很棒的 [explanation](https://docs.yearn.finance/getting-started/guides/how-to-understand-yvault-roi)通过 yEarn（我们的 APR/APY 估计使用相同的方法）。
+
+了解任何给定池的性能的一个有用概念是池的虚拟“价格”。该值是根据矿池的 `underlyingBalance` / `totalSupply` 计算的；这代表标的资产与股票数量的关系。这一价值增加代表了 bathToken 持有者的已实现收益。
+
+在[Pools page](https://app.rubicon.finance/pools)在 web 应用程序中，每个流动资金池都有一个相应的预估 APR：
+
+![](/assets/image(8).png)
+
+将鼠标悬停在该费率上将显示一个工具提示，其中包含每个池的额外费率。主要费率是估计的 APY，它是根据_池的每周或每月尾随表现中的较好者计算得出的。_以下是如何计算这些费率的概述：
+
+7 天百分比变化 - `过去 7 天池表现或股价的变化。`
+
+30 天百分比变化 - `过去 30 天池表现或股价的变化。`
+
+总 APR - `尾随 7d 与 30d 变化的更好 *（一年/样本量）`
+
+估计 APY - `尾随 7d 与 30d 的变化率更好^（一年/样本量）-1`
+
+奖励 APR - `年化奖励累积的比率和当前的奖励代币价格`

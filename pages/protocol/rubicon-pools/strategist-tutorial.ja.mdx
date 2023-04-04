@@ -1,0 +1,41 @@
+---
+title: ルビコン/ストラテジストのチュートリアル
+pageTitle: ストラテジストのチュートリアル
+description: ルビコンプールの戦略家になる方法の概要
+---
+
+## ストラテジスト
+
+ストラテジストは、ルビコンのオーダーブックでマーケットメイクを行う目的で、BathToken 流動性を使用してビッドおよび/またはアスクを行うことができます。彼らはオフチェーン戦略を利用して、プール システムの範囲内で取引を行い、報酬を獲得します。
+
+### ストラテジストのエントリー ポイントとレバー
+
+プール システムのストラテジストには、Rubicon でのマーケット メイクに利用できる 3 つの主要な機能があります。ストラテジストは、「bathToken」資金を使ってマーケット メーキング (「strategistBootyClaim」を参照) を行っている間に作成したすべての約定の一部を獲得するという利点を享受します。主な機能は以下の3つです。
+
+* `executeStrategy` - これはストラテジストがクローズド ループ システム内で取引を行うために利用するコア機能です。ストラテジストと主要データをログに記録しながら、オーダーブックにビッドおよび/またはアスクを配置できるため、NPV に積極的なマーケット メイキング行動に対して報酬を得ることができます。
+* `bathScrub` - この関数は、Rubicon プールが効率的に動作するために実行する必要がある必須の「クリーニング」関数です。この関数は、指定された「BathPair」の未処理の注文を解析します。これにより、「期限切れ」の後、オーダーブックにまだ残っている注文が利回りのために記録され、流動性がプールに戻されます。さらに、この関数を呼び出して、特定のペアの未処理注文数を減らして「maxOutstandingPairCount」を遵守する必要があります。
+* `removeLiquidity` - この機能により、ストラテジストは「リスクオフ」に移行し、プールの流動性で発注したオーダーブックから流動性を削除できます。
+
+### 重要なアイデア
+
+ストラテジストは、ルビコン マーケットでユーザー ファンドとマーケット メイクを利用するためのコア エントリ ポイントを持っています。BathPair.sol の「executeStrategy」関数です。ストラテジストの役割は、ルビコンのオーダーブックに自動的かつ排他的に配置されたユーザー資金で行う正確なオファーを見つけることです。プールでは、ビッドまたはアスクをルビコンのオーダーブックに入れることができます。
+
+この関数には、RubiconMarket.sol の `offer` 関数に直接マッピングされるいくつかの入力 __ があります。
+
+```
+function executeStrategy(
+        address targetStrategy, //address of the strategy to use - PairsTrade in v0
+        uint256 askNumerator, // *Asset Amt* / Quote Amt
+        uint256 askDenominator, // Asset Amt / *Quote Amt*
+        uint256 bidNumerator, // *Quote Amt* / Asset Amt
+        uint256 bidDenominator // Quote Amt / *Asset Amt*
+    )
+```
+
+* `targetStrategy` - 指定された入力でマーケット メイキング戦略を実行するコントラクトのアドレス。プールの現在のバージョンでは、[_only approved strategy is the Pairs Trade_](/docs/protocol/rubicon-pools/bathpair).
+* `askNumerator` - 資産数量 (例: WBTC) で LP ファンドとの取引を行うために使用される正確な分子 ([pay\_am](/docs/protocol/rubicon-market/key-functions#offer)[t](https://www.youtube.com/watch?v=dQw4w9WgXcQ)) ）。
+* `askDenominator` - 見積資産額 (例: USDC) で LP ファンドとの取引を行うために使用される正確な分母 ([buy\_amt](/docs/protocol/rubicon-market/key-functions#offer))。
+* `bidNumerator` - クォート資産額で LP ファンドとの取引を行うために使用される正確な分子 ([pay\_am](/docs/protocol/rubicon-market/key-functions#offer)[t](https://www.youtube.com/watch?v=dQw4w9WgXcQ)) (例: USDC）。
+* `bidDenominator` - 資産額 (WETH など) でこの入札を行うために使用される正確な分母 ([buy\_amt](/docs/protocol/rubicon-market/key-functions#offer))。
+
+ストラテジストは、成功した約定の支払いを受け取るために、ユーザー資金の市場状況に基づいてオフチェーンで最良のビッドとアスクを決定する必要があります。

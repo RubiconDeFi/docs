@@ -1,0 +1,64 @@
+---
+title: روبيكون / نظرة عامة
+pageTitle: لمحة عامة
+description: مرحبا بكم في أدلة روبيكون ووثائق المطور
+---
+
+مرحبًا بك في أدلة Rubicon ووثائق المطور
+
+import { QuickLinks, QuickLink } from "/components/QuickLinks.jsx";
+
+<QuickLinks>
+<QuickLink title="الأسئلة الشائعة" icon="installation" href="/faq" description="جديد في روبيكون? قم بزيارة الأسئلة الشائعة"></QuickLink>
+<QuickLink
+		title="أدلة"
+		icon="presets"
+		href="/guides/trade/trade"
+		description="تعلم كيفية التجارة ، مبادلة ، جسر ، وتوفير السيولة على التطبيق روبيكون!"
+	></QuickLink>
+<QuickLink
+		title="روبيكونماركت"
+		icon="plugins"
+		href="/api-guides/subgraphs/rubiconmarket-api"
+		description="وثائق عقد دفتر الطلبات."
+	></QuickLink>
+<QuickLink
+		title="واجهات برمجة التطبيقات"
+		icon="theming"
+		href="/api-guides/subgraphs/subgraphs"
+		description="الاستعلام عن بيانات السوق مع الرسوم البيانية الفرعية أو التفاعل مع روبيكون باستخدام بيثون و روست سك"
+	></QuickLink>
+</QuickLinks>
+
+## ما هو روبيكون؟
+
+[Rubicon](https://rubicon.finance/) هو بروتوكول دفتر أوامر لـ [Ethereum](https://ethereum.org/en/). استخدمها لتداول رموز [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) مع المقايضات وأوامر الحد وأوامر السوق أو توفير السيولة في المجمعات.
+
+تم بناء روبيكون على [Optimism](https://www.optimism.io/) ، سلسلة Ethereum منخفضة التكلفة وسريعة البرق [L2](https://ethereum.org/en/layer-2/#:~:text=Layer%202%20(L2)٪ 20is٪ 20a ،٪ 20security٪ 20guarantees٪ 20of٪ 20Ethereum.).
+
+## نظرة عامة على البروتوكول
+
+RubiconMarket.sol هو عقد ذكي [limit order book](https://en.wikipedia.org/wiki/Central_limit_order_book). تقوم بتنفيذ محرك مطابق ودفاتر الطلبات للتداول من نظير إلى نظير لتوكنات ERC-20.
+
+Rubicon Pools هو نظام من العقود الذكية يمكّن مزودي السيولة السلبية (LPs) من إيداع الرموز المميزة في مجمع ، حيث يستخدم صانعو السوق النشطون (الاستراتيجيون) الأصول المجمعة في دفاتر الطلبات. يذهب العائد من صناعة السوق إلى LPs ، ويحصل الاستراتيجيون على رسوم أداء.
+
+![Rubicon v1 Architecture](/assets/Rubicon_v1_RubiconMarket.png)
+
+## المطورون: ابدأ بروتوكول روبيكون محليًا
+
+```bash
+$ git clone https://www.github.com/RubiconDeFi/rubicon_protocol.git   
+$ cd rubicon_protocol && npm i
+$ npm i --save-dev openzeppelin-solidity@2.5.1
+$ truffle init
+$ 'n' for overwriting contracts
+$ 'n' for overwriting migrations
+$ (in separate terminal) ganache-cli
+```
+
+تأكد أيضًا من التعليق على سطور truffle-config.js التي تقول `` تطوير: '' وقم بتضمين المضيف المحلي ضمن الشبكات حتى تتمكن من الاتصال بـ Ganache.
+
+```bash
+$ truffle migrate -- deploys contracts to development network, i.e. localhost
+$ truffle test -- run the set of tests provided in the test folder of repo
+```

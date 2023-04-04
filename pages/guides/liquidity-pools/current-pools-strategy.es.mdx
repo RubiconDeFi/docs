@@ -1,0 +1,25 @@
+---
+title: Rubicon | Estrategia Actual de Pools
+pageTitle: Estrategia Actual de los Pools
+description: Información sobre la estrategia de gestión de liquidez
+---
+
+# Estrategia actual de grupos
+
+Los estrategas de Rubicon utilizan actualmente una estrategia pura de creación de mercado. Esto significa que mantienen un margen en torno al precio de mercado actual, y sus órdenes ejecutadas pueden eliminarse instantáneamente para que los fondos de liquidez puedan obtener rendimiento.
+
+Los fondos de liquidez pueden reequilibrarse internamente entre ellos o utilizar un lugar externo como un AMM.
+
+## Reequilibrio interno
+
+Los pedidos completados se pueden reequilibrar internamente entre grupos. El reequilibrio interno siempre es el objetivo porque es más barato, pero el grupo asume cierto riesgo de inventario.
+
+![](</assets/Rubicon v1\_ Internal Rebalancing - Option 1.png>)
+
+## Reequilibrio externo
+
+Las órdenes completadas también se pueden reequilibrar en un lugar de liquidez externo, generalmente un AMM. Los reequilibrios externos son más costosos porque pagan tarifas de gas y la tarifa AMM, pero permiten que los grupos eliminen el riesgo al instante y obtengan rendimiento.
+
+![](</assets/Rubicon v1\_ Internal Rebalancing - Option 2 (1).png>)
+
+Para más preguntas sobre la gestión de liquidez o para participar, visite el canal #marketmakers en Rubicon Discord

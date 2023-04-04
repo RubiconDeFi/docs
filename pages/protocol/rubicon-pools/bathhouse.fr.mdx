@@ -1,0 +1,23 @@
+---
+title: Rubicon | Maison de bain
+pageTitle: Maison de bain
+description: Le contrat d'administration pour les piscines Rubicon
+---
+
+## Maison de bain
+
+Le [BathHouse contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathHouse.sol) agit en tant qu'administrateur du système Rubicon Pools tout en fournissant des fonctions clés de haut niveau au système. Les fonctions les plus importantes du BathHouse sont d'initialiser de nouveaux BathPairs, d'approuver des stratégies et de gérer l'organisation et le routage du pool de liquidités.
+
+### Fonctions des touches
+
+* `initBathPair`- cette fonction initialise un BathPair. En pratique, cela permet de former de nouveaux pools de liquidité sur une nouvelle paire de Rubicon tout en intégrant ladite paire à un pool de liquidité de cotation existant (par exemple bathUSDC) s'il n'existe pas déjà.
+* `getBathPair` - une fonction getter pour permettre à l'appelant de déterminer facilement l'adresse BathPair pour une combinaison donnée de `(atout d'adresse, guillemet d'adresse)`.
+* **Gestion de la stratégie**
+  * Ce contrat gère les "stratégies" prises en charge par Rubicon Pools. Actuellement, la seule stratégie autorisée dans v0 est le PairsTrade - dans lequel un stratège effectue un échange de paires unique par appel de fonction.
+  * `isApprovedStrat` - fonction pour vérifier si un appelant ou une adresse donnée est une stratégie approuvée.
+  * `approveStrategy` - fonction d'administration pour ajouter une nouvelle stratégie aux pools Rubicon.
+* **Gestion des paramètres**
+  * Ce contrat contrôle quelques paramètres au niveau du système qui sont pertinents pour les stratèges et les LP.
+  * `setCancelTimeDelay` - cette fonction définit le `timeDelay` sur BathPair.sol après lequel les commandes non exécutées sont annulées dans les carnets de commandes.
+  * `setMaxOutstandingPairCount` - cette fonction définit la valeur `maxOutstandingPairCount` pour un BathPair donné. Cette valeur définit le nombre d'ordres qui peuvent être en attente dans le carnet d'ordres pour une paire de trading donnée.
+* `onlyAdmin` - le BathHouse est actuellement géré par l'équipe Rubicon et a la capacité d'être administré par n'importe quelle adresse, y compris, par exemple, un DAO multi-sig.

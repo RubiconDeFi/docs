@@ -1,0 +1,85 @@
+---
+title: ルビコン/マーケットエイド
+pageTitle: 市場援助
+description: ルビコンのためのオンチェーンの高周波市場作りの契約と機能
+---
+
+## 市場援助
+
+`MarketAid.sol` は、所有者が `RubiconMarket.sol` で指値注文のバッチを送信し、注文をキャンセルできるヘルパー コントラクトです。これにより、アクティブなトレーダーやマーケット メーカーは、1 回のトランザクションで多数の未処理の注文を簡単に発注およびキャンセルできます。 MarketAid は、トレーダーがルビコンのオーダーブックでより大規模で効率的かつ複雑な取引を行うことを可能にする中間層の契約と考えることができます。
+
+MarketAid のインスタンスを作成した後、トレーダーは、低レベルの「RubiconMarket.sol」関数「offer」と「cancel」を拡張する強力なバッチ関数、および 2 つの組み合わせを使用できます。 `batchMarketMakingTrades()` で大量の指値注文を送信するか、オープン注文のバッチをキャンセルして `batchRequoteOffers()` で置き換えるか、`scrubStrategistTrades()` で多数のオープン注文をキャンセルします。クイック スタート チュートリアルと MarketAid 機能の概要については、引き続きお読みください。 MarketAid について質問や問題がある場合は、[Discord server](https://discord.com/invite/E7pS24J) に参加してください。ルビコンでの自動取引の開始を喜んでお手伝いいたします。
+
+### リスク免責事項
+
+MarketAid はベータ版であり、洗練されたトレーダーと開発者のみを対象としています。私たちのチームはこのコードを使用していますが、監査されていないため、自己責任で使用してください。
+
+### 展開
+
+楽観主義 メインネット:
+
+- [Factory](https://optimistic.etherscan.io/address/0x267D94C6e67e4436EFfE092b08d040cFF36B2DA7)
+- [MarketAid Instance Example](https://optimistic.etherscan.io/address/0x40e20121f46237Ae5d6822fd75847CedD17c449F)
+
+楽観主義 Goerli:
+
+- [Factory](https://goerli-optimism.etherscan.io/address/0x6838dd21aa01Bde8E600d499A95f9AE02f2bB376)
+- [MarketAid Instance](https://goerli-optimism.etherscan.io/address/0xd3757c79df77cfac54501b5dadf7ec47a38e1a65)
+
+＃＃＃ クイックスタート
+
+パーソナル インスタンスを作成し、ERC-20 トークンでコントラクトに資金を提供し、注文の最初のバッチを「RubiconMarket.sol」に送信して、「MarketAid.sol」を開始します。これを既存のボットに統合するには、「ethers.js」を使用できます。さらに簡単にするためのチュートリアルに取り組んでいます。始めましょう：
+
+1.「MarketAid」コントラクトの新しいインスタンスを作成します
+   1. `MarketAidFactory` コントラクトで `createMarketAidInstance()` を呼び出して、`MarketAid` インスタンスをデプロイします。これにより、「createMarketAidInstance()」の呼び出し元に許可された「MarketAid」の新しいインスタンスが生成され、コントラクトにアクセスできるストラテジストとして自動的に承認されます。
+2. 取引したい ERC-20 で MarketAid インスタンスに資金を提供します (WETH、USDC、DAI など)。
+
+   1. MarketAid インスタンスは、`MarketAidFactory` の `getUserMarketAid()` を介して、または `createMarketAidInstance()` 呼び出しから発行されたイベントを読み取ることによってクエリできます。
+   2. 「admin」変数があなたのアドレスであり、「承認済みストラテジスト」でもあることを確認して、最初に Etherscan を介してコントラクトを管理していることを確認します。
+   3. 資金を正しいアドレスに送金していることを確認してください!
+
+3. 以下で説明する関数を使用して、MarketAid コントラクトからルビコン注文のバッチを送信します。
+
+注: 「MarketAid」インスタンスの所有者は、コントラクトを使用およびアクセスするために追加のアドレスを承認できます (複数のアドレスで「onlyApprovedStrategist」チェックをクリアできます)。
+
+＃＃ トラブルシューティング
+
+次の点を確認してください。
+
+- MarketAid インスタンスはどこにありますか?
+  - `getUserMarketAid()` を使用したクエリ -> 作成したすべてのインスタンスの配列を返します
+- あなたのMarketAidインスタンスは、あなたがやり取りしたい契約を承認しました
+  ・それ以外の場合はお取り引き致します。 `placeMarketMakingTrades()` を使用すると、 `RubiconMarket` コントラクトが自動的に承認されます
+- あなたは Market Aid インスタンスの管理者です
+  - インスタンスで `admin()` を使用してクエリを実行 -> インスタンスを所有する EOA を返します
+- MarketAid を介して ERC20 ペアを管理しようとしている EOA は、_承認されたストラテジスト_です。
+  - 契約の主なセキュリティ チェック、管理者はストラテジストとして自動承認されます
+
+## 関数 (進行中)
+
+一般に、各入力は、低レベルの RubiconMarket に配置するものとまったく同じです。オファーを出すときに入札および/または要求する ERC20 の生の uint 値 ( `offer()` )。バッチ処理するには、すべてのオファーの値を配列として渡し、すべての類似変数 (例: 分子を尋ねる) をペアにします。渡される配列は長さが一致している必要があります。これは、異なる価格で多数のオファーを一度に配置する場合に役立ちます。 「ethers」を介して「formatUnits()」と「parseUnits()」を使用すると、人間の数の「=」wei 変換を処理するときに、数値と ERC-20 値を処理するのに役立つことに注意してください。
+
+重要な概念は、MarketAid (`placeMarketMakingTrades` 経由) を通じて発注された各注文は、マーケット メーカーの未処理の注文を識別することができる一意の ID を作成するということです。未処理の本は、「getOutstandingStrategistTrades()」を介して任意の EOA についていつでも照会できます。これは、未処理の本を管理し、一意の ID のリストまたは特定のユーザー コントロールの「strategistTrades」を取得するのに役立ちます。マーケット メーカーは、ブックを照会し、必要に応じて再クオート ( `batchRequoteOffers` ) またはキャンセル ( `scrubStrategistTrades` ) できます。フィルは、ユーザーが制御する「MarketAid」インスタンスに自動的に発生することに注意してください。
+
+-placeMarketMakingTrades
+  - BID および/または ASK を単一の一意の「strategistTrade」に配置します。
+- バッチマーケットメイキングトレード
+  - 必要に応じて、多数の placeMarketMakingTrades 呼び出しをバッチ方式で配置して、流動性曲線全体を展開します (たとえば、市場の状況に応じて異なる価格とサイズで 10 回のビッドと 10 回のアスク)。
+- getOutstandingStrategistTrades _view_
+  - ユーザーの未処理 (バッチ) オファーの一意の ID を返します
+- getStrategistTotalLiquidity _view_
+  - ユーザーが市場全体で管理する ERC-20 帳簿価額の合計と、MarketAid インスタンスにある値を返します
+- 再引用
+  - 新しい一意の ID を生成する新しいペアへのストラテジスト トレード (ビッドおよび/またはアスク ペア) の単一のリクオート
+- batchRequoteOffers
+  - requote() をバッチで呼び出して、流動性曲線全体を一度に更新します。これにより、識別されたすべての ID がキャンセルされ、指定された新しいオファー ペイロードに置き換えられます。
+- batchRequoteAllOffers
+  - `getOutstandingStrategistTrades()` を介してユーザーの未処理の本の ID を取得し、`batchRequoteOffers()` を介してそれらをすべて更新します
+- スクラブストラテジストトレード
+  - `strategistTrade` をキャンセルし、満たされていない/Market Aid に取られていない資金を返します
+- スクラブストラテジストトレード
+  - 1 回のトランザクションで複数の「strategistTrade」をキャンセルする
+- adminPullAllFunds
+  -管理者が必要なERC-20を指定することで、すべての資金を取り戻すのに役立つ機能
+- ストラテジストRebalanceFunds
+  - 外部の流動性ベニューを使用して、資金に対する裁定取引またはリバランスを行うオプション機能

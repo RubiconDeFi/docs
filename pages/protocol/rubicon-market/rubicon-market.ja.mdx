@@ -1,0 +1,151 @@
+---
+title: ルビコン/ルビコン市場
+pageTitle: ルビコン市場
+description: ルビコンの注文書契約の概要と文書
+---
+
+Rubicon のコア交換ロジックは [RubiconMarket](https://github.com/RubiconDeFi/rubicon_protocol/blob/master/contracts/RubiconMarket.sol) にあります。スマート コントラクト - ルビコンの中心的なオーダー ブック。このスマート コントラクトを、オーダー ブックを通じてデジタル資産のピアツーピア交換を容易にする中間層と考えると便利です。
+
+# 📊 ルビコン市場
+
+＃＃ 概要
+
+Rubicon Market スマート コントラクトは、オンチェーン オーダー ブックと、[ERC-20 tokens](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) のピア ツー ピア取引用のマッチング エンジンを実装しています。
+
+オーダーブックは、価格でソートされた資産の売買注文のリストです。このコントラクトは、各 ERC20/ERC20 オーダー ブックを 2 つの二重にリンクされたソート済みリストとして実装します。
+
+契約は、流動性のためにエスクロー モデルを使用します。指値注文がブックに配置されると、それらのトークンがコントラクトに送信されます。注文が約定された場合、契約はトレーダーと直接一致し、トークンは各当事者に送信されます。注文はキャンセルでき、コントラクトはトークンを送信者に返します。
+
+Rubicon Market は MakerDAO のオープンソース [OasisDEX](https://oasisdex.com/) の派生物です。 AGPL3 ライセンスを継承します。
+
+## 取引機能
+
+＃＃＃ オファー（）
+
+```
+    function offer(
+        uint256 pay_amt,
+        ERC20 pay_gem,
+        uint256 buy_amt,
+        ERC20 buy_gem,
+        uint256 pos,
+    ) public returns (uint256)
+```
+
+| Parameter Name         | Type        | Description                                                                                                                       |
+| ---------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| pay\_amt               | uint256     | Quantity of ERC-20 tokens the maker is selling                                                                                    |
+| pay\_gem               | address     | ERC-20 token the maker is selling                                                                                                 |
+| uint buy\_amt          | uint256     | Quantity of ERC-20 tokens the maker is buying                                                                                     |
+| ERC20 buy\_gem         | address     | ERC-20 token the maker is buying                                                                                                  |
+| uint pos               | uint256     | Position in the sorted list to place the order. Set this to 0 unless you know the exact position (closest ID) to insert the order |
+| \[Optional] matching   | bool        | Optional boolean to determine whether the offer should be automatically matched (placed in the sorted list)                       |
+
+The primary function for placing limit orders on Rubicon. The **pay_amt** quantity of the **pay_gem** token will be sent to the order book contract, sitting in escrow until it is filled or canceled. Always set pos to **0** unless you know the exact position in the sorted lost to insert the order.
+
+### cancel()
+
+```
+    function cancel(uint id)
+        public
+        can_cancel(id)
+        returns (bool success)
+```
+
+| Parameter Name         | Type        | Description                                    |
+| ---------------------- | ----------- | ---------------------------------------------- |
+| id                     | uint256     | The id of the order the user wants to cancel   |
+
+この関数は、ブック内の特定の注文を埋める、または「チェリー ピック」するために使用されます。コーラーはテイカー料金を支払います。または、 **take()** ルーティング関数を使用して同じ結果を達成し、特定のオファーを満たすことができます。
+
+### buyAllAmount()
+
+```
+     function buyAllAmount(
+        ERC20 buy_gem,
+        uint256 buy_amt,
+        ERC20 pay_gem,
+        uint256 max_fill_amount
+    ) external returns (uint256 fill_amt)
+```
+
+| Parameter Name         | Type        | Description                                    |
+| ---------------------- | ----------- | ---------------------------------------------- |
+| buy\_gem               | address     | ERC-20 token the taker is buying               |
+| buy\_amt               | uint256     | Quantity of tokens the taker is buying         |
+| pay\_gem               | address     | ERC-20 token the taker is selling              |
+| max\_fill\_amount      | uint256     | Maximum amount of pay tokens sold              |
+
+**sell_amt** 個の **sell_gem** トークンを、少なくとも **min_fill_amount** 個の **pay_gem** トークンと交換しようとします。トレーダーが指定された最低額よりも少ない金額を受け取る場合、トランザクションは元に戻ります。これは「Fill-or-Kill」売り注文です。
+
+## ビュー関数
+
+### getBestOffer()
+
+```
+function getBestOffer(ERC20 pay_gem, ERC20 buy_gem)
+    public
+    view
+    returns (uint256)
+```
+
+オーダーブックの上部にあるオファーの ID を返します。
+
+元。 WETH を **pay_gem**、USDC を **buy_gem** としてこの関数を呼び出すと、WETH/USDC で最良のアスクが返されます。トークンを切り替えると、最良の入札が返されます。
+
+### getWorseOffer()
+
+```
+function getWorseOffer(uint256 id)
+    public
+    view
+    returns (uint256)
+```
+
+ソートされたリストで次に悪いオファーを返します。悪いオファーとは、ターゲット注文がアスクの場合は高い方、ビッドの場合は低い方です。どちらの場合も、等しい場合は新しい方を返します。
+
+### getBuyAmount()
+
+```
+    function getBuyAmount(
+        ERC20 buy_gem,
+        ERC20 pay_gem,
+        uint256 pay_amt
+    ) external view returns (uint256 fill_amt)
+```
+
+指定された量の **pay_gem** トークンが使用された場合に、受け取った **buy_gem** トークンの量を返します。オーダーブックの現在の状態を確認するために使用されます。
+
+### getPayAmount()
+
+```
+function getPayAmount(
+        ERC20 pay_gem,
+        ERC20 buy_gem,
+        uint256 buy_amt
+    ) external view returns (uint256 fill_amt)
+```
+
+指定された量の **buy_gem** トークンを購入するために必要な **pay_gem** トークンの量を返します。オーダーブックの現在のステータスを確認するために使用されます。
+
+### getOfferCount()
+
+```
+function getOfferCount(ERC20 sell_gem, ERC20 buy_gem)
+        public
+        view
+        returns (uint256)
+```
+
+指定されたペアのオーダー ブック内のオファーの数を返します。
+
+### getFeeBPS()
+
+```
+function getFeeBPS()
+    public
+    view
+    returns (uint256)
+```
+
+プロトコルテイカー料金をベーシスポイントで返します。

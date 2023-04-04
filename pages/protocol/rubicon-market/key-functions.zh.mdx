@@ -1,0 +1,88 @@
+---
+title: Rubicon/市场关键功能
+pageTitle: 市场主要功能
+description: Rubicon市场合约的主要切入点和功能
+---
+
+## 主要功能
+
+＃＃＃＃ 提供
+
+```
+function offer(uint pay_amt, ERC20 pay_gem, uint buy_amt, ERC20 buy_gem, uint pos) 
+    public returns (uint)
+```
+
+**offer** 功能是在 Rubicon 市场下新的限价买入或限价卖出订单的主要功能。此函数获取给定_ERC-20 对_的用户资金，并将其放入智能合约的订单簿中。当另一个用户选择购买该订单或该订单与另一个订单匹配时，报价将被填写，交易将由 Rubicon Market 执行。
+
+| Parameter                 | Use                                                                                                                                          |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| uint pay\_amt             | The quantity of the asset that the user is _offering in wad_                                                                                 |
+| ERC20 pay\_gem            | The ERC-20 asset that the user is _offering_                                                                                                 |
+| uint buy\_amt             | The quantity of the asset that the user is hoping to _exchange for in wad_                                                                   |
+| ERC20 buy\_gem            | The asset the user is hoping to _exchange for_                                                                                               |
+| uint pos                  | The position in the _sorted order book_ to place the order. Set this to 0 unless you know the exact position (closest id) to place the order |
+| \[Optional] bool matching | Optional boolean that dictates _whether or not the offer should be automatically matched_ if possible                                        |
+
+重要的是要注意，offer 函数在 Rubicon 市场中有一些表示。 _可选地，_用户可以添加_pos_或_matching_参数。这些允许用户选择要约在排序的订单簿中的位置，以及要约是否应受订单的潜在自动匹配。
+
+＃＃＃＃ 买
+
+```
+function buy(uint id, uint amount) public can_buy(id) 
+    returns (bool)
+```
+
+| Parameter   | Use                                                          |
+| ----------- | ------------------------------------------------------------ |
+| uint id     | The id of the order the user wants to buy                    |
+| uint amount | The wad quantity/portion of the order the user wants to buy  |
+
+The buy function allows a user to buy a given order in the order book and ultimately calls super.buy() in the RubiconMarket.sol contract. Furthermore, the buy function will also result in the caller paying the trade fee (see fees).
+
+#### Cancel
+
+```
+function cancel(uint id)
+    public
+    can_cancel(id)
+    returns (bool success)
+```
+
+| Parameter | Use                                          |
+| --------- | -------------------------------------------- |
+| uint id   | The id of the order the user wants to cancel |
+
+此功能允许用户取消报价并将资金返还给用户。修饰符 **can\_cancel** 检查以确保调用者拥有报价并且报价处于活动状态。或者，用户也可以使用 **kill** 路由功能来实现相同的结果并取消他们在给定 ID 处的订单。
+
+### 路由函数
+
+#### 购买全部数量
+
+```
+    function buyAllAmount(
+    ERC20 buy_gem,
+    uint256 buy_amt,
+    ERC20 pay_gem,
+    uint256 max_fill_amount
+) external returns (uint256 fill_amt)
+```
+
+| Parameter | Use                                          |
+| --------- | -------------------------------------------- |
+| uint id   | The id of the order the user wants to cancel |
+
+This function allows a user to buy any amount of an asset (buy\_gem) through multiple orders in the book. The function will keep buying through orders until the desired buy-amt is acquired.
+
+#### Take
+
+```
+function take(bytes32 id, uint128 maxTakeAmount) public
+```
+
+| Parameter          | Use                                                          |
+| ------------------ | ------------------------------------------------------------ |
+| uint id            | The id of the order the user wants to buy                    |
+| uint maxTakeAmount | The wad quantity/portion of the order the user wants to buy  |
+
+这只是一个路由功能，允许用户通过 **take** 入口点轻松接受报价。这会将用户引导至然后_购买优惠。_

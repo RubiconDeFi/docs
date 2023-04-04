@@ -1,0 +1,384 @@
+---
+description:  루비콘 마켓 서브그래프의 주요 엔티티,계약 이벤트 개요 다양한 사용 사례에 대한 처리기 및 예제 쿼리.
+---
+
+# 루비콘마켓 API
+
+## **RubiconMarket 주요 엔티티**
+
+RubiconMarket 하위 그래프에는 프로토콜의 주문서에서 거래 활동과 관련된 데이터를 수집하고 저장하는 엔티티 모음이 포함되어 있습니다. 다음은 사용자가 자신의 데이터 요구 사항과 가장 관련이 있다고 생각하는 주요 엔터티입니다.
+
+### _**사용자 엔터티(ID: 지갑 주소)**_
+
+```graphql
+유형 사용자 @entity {
+    " <user address> "
+    아이디: 아이디!
+    " 파생 값 "
+    스왑: [스왑!]! @derivedFrom(필드: "사용자")
+    openOffers: [OpenOffer!]! @derivedFrom(필드: "사용자")
+    제공: [제공!]! @derivedFrom(필드: "사용자")
+    테이커: [테이커!]! @derivedFrom(필드: "사용자")
+}
+```
+
+사용자 엔터티는 지갑 주소와 관련된 모든 거래 활동을 수집하는 단일 참조 지점 역할을 합니다. 사용자 엔터티 내에서 Swap, OpenOffer, Offer 및 Taker 엔터티에 액세스할 수 있습니다.
+
+### _오퍼 및 OpenOffer 엔티티(ID: 오퍼 ID 해시)_
+
+```graphql
+오퍼 @엔티티 유형 {
+    " <offer id hash> "
+    아이디: 아이디!
+    "거래시간"
+    타임스탬프: BigInt!
+    " 사용자 엔터티 추적 "
+    사용자: 사용자!
+    " 트랜잭션 엔터티 추적 "
+    트랜잭션: 트랜잭션!
+    " 페어 엔티티로 추적 "
+    쌍: 쌍!
+    " DayPair 엔터티 추적 "
+    데이페어: 데이페어!
+    " HourPair 엔터티 추적 "
+    hourPair: 아워페어!
+    "테이커가 지불하는 자산"
+    takeAsset: 토큰!
+    " 제작자가 판매하는 자산 "
+    makeAsset: 토큰!
+    " makeAsset에 대한 takeAsset의 양 "
+    takeAmount: BigInt!
+    " takeAsset에 대한 makeAsset의 양 "
+    makeAmount: BigInt!
+    " ETH의 takeAmount 가격 "
+    priceTakeAssetETH: HistoricalAssetPriceETH!
+    " ETH의 makeAmount 가격 "
+    priceMakeAssetETH: HistoricalAssetPriceETH!
+    " ETH의 takeAmount 가격 "
+    priceTakeAssetUSD: HistoricalAssetPriceUSD!
+    " ETH의 makeAmount 가격 "
+    priceMakeAssetUSD: HistoricalAssetPriceUSD!
+    " takeAsset 받은 금액 "
+    receivedTakeAmount: BigInt!
+    " makeAsset의 부분 채우기 양 "
+    partialFillMakeAmount: BigInt!
+    " 제안이 종료된 경우 변수 "
+    살해: 부울!
+    " 주문이 죽거나 채워질 때 "
+    timeKilled: BigInt!
+}
+```
+
+오퍼 엔터티는 사용자가 Rubicon 오더북에서 수행한 모든 메이커 거래를 나타냅니다. 제안 엔터티는 연결된 여러 다른 엔터티에 매핑됩니다. 대부분의 사용 사례에서 가장 관련성이 높은 엔터티는 오퍼에 대한 모든 트랜잭션 세부 정보(시간, 블록 번호, 가스 비용)를 포함하는 트랜잭션 엔터티와 마지막 거래에 대한 세부 정보를 포함하는 "HistoricalAssetPriceETH/USD" 엔터티입니다. RubiconMarket에서 ETH 또는 USD로 자산을 전환합니다(이를 통해 사용자는 ETH 및 USD로 표시된 거래의 과거 성과를 추적할 수 있습니다). 모든 값은 해당 값이 나타내는 기본 ERC-20 토큰의 정수 값으로 표시됩니다.
+
+```graphql
+유형 OpenOffer @entity {
+    " <offer id hash> "
+    아이디: 아이디!
+    "거래시간"
+    타임스탬프: BigInt!
+    " 사용자 엔터티 추적 "
+    사용자: 사용자!
+    " 트랜잭션 엔터티 추적 "
+    트랜잭션: 트랜잭션!
+    " 페어 엔티티로 추적 "
+    쌍: 쌍!
+    " DayPair 엔터티 추적 "
+    데이페어: 데이페어!
+    " HourPair 엔터티 추적 "
+    hourPair: 아워페어!
+    "테이커가 지불하는 자산"
+    takeAsset: 토큰!
+    " 제작자가 판매하는 자산 "
+    makeAsset: 토큰!
+    " makeAsset에 대한 takeAsset의 양 "
+    takeAmount: BigInt!
+    " takeAsset에 대한 makeAsset의 양 "
+    makeAmount: BigInt!
+    " ETH의 takeAmount 가격 "
+    priceTakeAssetETH: HistoricalAssetPriceETH!
+    " ETH의 makeAmount 가격 "
+    priceMakeAssetETH: HistoricalAssetPriceETH!
+    " ETH의 takeAmount 가격 "
+    priceTakeAssetUSD: HistoricalAssetPriceUSD!
+    " ETH의 makeAmount 가격 "
+    priceMakeAssetUSD: HistoricalAssetPriceUSD!
+    " takeAsset 받은 금액 "
+    receivedTakeAmount: BigInt!
+    " makeAsset의 부분 채우기 양 "
+    partialFillMakeAmount: BigInt!
+}
+```
+
+OpenOffer 엔터티는 두 가지 주의 사항이 있는 Offer 엔터티의 복사본입니다. 1) 제안이 채워지거나 책에서 제거되면 연결된 OpenOffer 엔터티가 하위 그래프에서 제거됩니다(이 제거된 엔터티는 여전히 |*** *90****|) 및 2) OpenOffer 엔터티에는 변수 필드 "killed"(제안이 채워지거나 책에 있는 경우 false, 제안이 취소된 경우 true) 또는 "timeKilled"(제안의 경우 0) 변수 필드가 포함되지 않습니다. 여전히 책에 있고 제안이 책에서 제거된 시간으로 업데이트됨).
+
+### _테이커 엔터티(ID: 트랜잭션 해시)_
+
+```graphql
+유형 테이커 @entity {
+    " <transaction hash> "
+    아이디: 아이디!
+    "거래시간"
+    타임스탬프: BigInt!
+    " 사용자 엔터티 추적 "
+    사용자: 사용자!
+    " 트랜잭션 엔터티 추적 "
+    트랜잭션: 트랜잭션!
+    " 페어 엔티티로 추적 "
+    쌍: 쌍!
+    " DayPair 엔터티 추적 "
+    데이페어: 데이페어!
+    " HourPair 엔터티 추적 "
+    hourPair: 아워페어!
+    "테이커가 지불하는 자산"
+    takeAsset: 토큰!
+    " 제작자가 판매하는 자산 "
+    makeAsset: 토큰!
+    " makeAsset에 대한 takeAsset의 양 "
+    takeAmount: BigInt!
+    " takeAsset에 대한 makeAsset의 양 "
+    makeAmount: BigInt!
+    " ETH의 takeAmount 가격 "
+    priceTakeAssetETH: HistoricalAssetPriceETH!
+    " ETH의 makeAmount 가격 "
+    priceMakeAssetETH: HistoricalAssetPriceETH!
+    " ETH의 takeAmount 가격 "
+    priceTakeAssetUSD: HistoricalAssetPriceUSD!
+    " ETH의 makeAmount 가격 "
+    priceMakeAssetUSD: HistoricalAssetPriceUSD!
+    " 테이커 수수료 "
+    takerFee: BigInt!
+    " 거래의 메이커 주체 "
+    제작자: 제공!
+}
+```
+
+테이커 엔터티는 루비콘 오더북에서 발생한 모든 테이커 거래를 나타냅니다. Taker 엔터티는 연결된 여러 다른 엔터티에 매핑됩니다. 대부분의 사용 사례에서 매핑되는 가장 관련성이 높은 엔터티는 거래에 대한 모든 거래 세부 정보(시간, 블록 번호, 가스 비용)를 포함하는 거래 엔터티이며, 자산의 마지막 거래에 대한 세부 정보를 포함하는 "HistoricalAssetPriceETH/USD" 엔터티입니다. Rubicon Market의 ETH 또는 USD(이를 통해 사용자는 ETH 및 USD로 표시된 거래의 과거 실적을 추적할 수 있음)와 거래가 장부를 벗고 있다는 제안인 Offer 엔터티로 전송됩니다. 모든 값은 해당 값이 나타내는 기본 ERC-20 토큰의 정수 값으로 표시됩니다.
+
+### _스왑 엔터티(ID: 트랜잭션 해시)_
+
+```graphql
+유형 스왑 @entity {
+    " <transaction hash> "
+    아이디: 아이디!
+    "거래시간"
+    타임스탬프: BigInt!
+    " 사용자 엔터티 추적 "
+    사용자: 사용자!
+    " 트랜잭션 엔터티 추적 "
+    트랜잭션: 트랜잭션!
+    " 페어 엔티티로 추적 "
+    쌍: 쌍!
+    " DayPair 엔터티 추적 "
+    데이페어: 데이페어!
+    " HourPair 엔터티 추적 "
+    hourPair: 아워페어!
+    "테이커가 지불하는 자산"
+    takeAsset: 토큰!
+    " 제작자가 판매하는 자산 "
+    makeAsset: 토큰!
+    " makeAsset에 대한 takeAsset의 양 "
+    takeAmount: BigInt!
+    " takeAsset에 대한 makeAsset의 양 "
+    makeAmount: BigInt!
+    " ETH의 takeAmount 가격 "
+    priceTakeAssetETH: HistoricalAssetPriceETH!
+    " ETH의 makeAmount 가격 "
+    priceMakeAssetETH: HistoricalAssetPriceETH!
+    " ETH의 takeAmount 가격 "
+    priceTakeAssetUSD: HistoricalAssetPriceUSD!
+    " ETH의 makeAmount 가격 "
+    priceMakeAssetUSD: HistoricalAssetPriceUSD!
+    " 테이커 수수료 "
+    takerFee: BigInt!
+}
+```
+
+Swap 엔터티는 사용자가 Rubicon 주문서에서 수행한 모든 스왑 거래를 나타냅니다. Swap 엔터티는 연결된 여러 다른 엔터티에 매핑됩니다. 대부분의 사용 사례에서 가장 관련성이 높은 엔터티는 스왑에 대한 모든 트랜잭션 세부 정보(시간, 블록 번호, 가스 비용)를 포함하는 트랜잭션 엔터티와 마지막 거래에 대한 세부 정보를 포함하는 "HistoricalAssetPriceETH/USD" 엔터티입니다. Rubicon Market에서 ETH 또는 USD에 대한 자산(이를 통해 사용자는 ETH 및 USD로 표시된 거래의 과거 성과를 추적할 수 있습니다). 모든 값은 해당 값이 나타내는 기본 ERC-20 토큰의 정수 값으로 표시됩니다.
+
+### _AssetPriceETH/USD(ID: \<asset>#\<ETH/USD>) 및 HistoricalAssetPriceETH/USD 엔터티(ID: \<asset>#\<ETH/USD>#\<timestamp>)_
+
+```graphql
+유형 AssetPriceETH @entity {
+    " <asset>#<ETH> "
+    아이디: 아이디!
+    "마지막 가격 업데이트 시간"
+    타임스탬프: BigInt!
+    " 자산 "
+    자산: 토큰!
+    " ETH 자산 가격 "
+    assetPriceETH: BigDecimal!
+    " 가장 최근의 ETH 자산 가격 "
+    lastPriceETH: HistoricalAssetPriceETH!
+}
+
+AssetPriceUSD 유형 @entity {
+    " <asset>#<ETH> "
+    아이디: 아이디!
+    "마지막 가격 업데이트 시간"
+    타임스탬프: BigInt!
+    " 자산 "
+    자산: 토큰!
+    " ETH 자산 가격 "
+    assetPriceUSD: BigDecimal!
+    " 자산의 가장 최근 가격(USD) "
+    lastPriceUSD: HistoricalAssetPriceUSD!
+}
+```
+
+AssetPriceETH/USD 엔터티는 ETH 또는 스테이블코인에 대해 Rubicon 주문서에서 가장 최근에 거래된 자산의 가격을 나타냅니다. AssetPriceUSD 엔터티에는 가장 최근에 USD 가격을 얻기 위해 자산과 거래된 스테이블 코인이 포함되어 있으며, 이는 가격 계산에서 소수점 이하 몇 자리를 고려해야 하는지 알려줍니다. AssetPrice 엔터티는 HistoricalAssetPriceETH/USD 엔터티를 통해 가장 최근에 거래된 가격에 매핑됩니다.
+
+```graphql
+유형 HistoricalAssetPriceETH @entity {
+    " <asset>#<ETH>#<timestamp> "
+    아이디: 아이디!
+    "마지막 가격 업데이트 시간"
+    타임스탬프: BigInt!
+    "자산"
+    자산: 토큰!
+    " 자산 금액 "
+    자산금액: BigInt!
+    " ETH 금액 "
+    eth수량: BigInt!
+    " ETH 자산 가격 "
+    HistoricalAssetPriceETH: BigDecimal!
+}
+
+유형 HistoricalAssetPriceUSD @entity {
+    " <asset>#<ETH>#<timestamp> "
+    아이디: 아이디!
+    "마지막 가격 업데이트 시간"
+    타임스탬프: BigInt!
+    " 자산 "
+    자산: 토큰!
+    " usd 자산 "
+    usdAsset: 토큰
+    " 자산 금액 "
+    자산금액: BigInt!
+    " USD 금액 "
+    금액: BigInt!
+    "자산 가격(USD)"
+    HistoricalAssetPriceUSD: BigDecimal!
+}
+```
+
+모든 값은 해당 값이 나타내는 기본 ERC-20 토큰의 정수 값으로 표시됩니다.
+
+### _FullPair(ID: \<token0 address>#\<token1 address>) 및 엔티티 쌍(ID: \<pay\_token address>#\<buy\_token address>)_
+
+```graphql
+유형 FullPair @entity {
+    " <token0 address>#<token1 address> "
+    아이디: 아이디!
+    " <pay_token = token0>#<buy_token = token1> "
+    쌍0: 쌍
+    " <pay_token = token1>#<buy_token = token0> "
+    쌍1: 쌍
+    " 쌍 전체의 마지막 거래 "
+    lastTrade: 무역
+    " 쌍 전체의 모든 거래에 매핑 "
+    거래: [거래!]! @derivedFrom(필드: "fullPair")
+}
+```
+
+FullPair 엔티티는 Rubicon의 주문서에서 거래된 모든 ERC20-ERC20 쌍을 나타냅니다. 이 엔터티는 두 쌍의 엔터티에 매핑되며 쌍의 ERC20이 각각 지불/구매 토큰이라는 점에서 서로 다릅니다. 이는 ERC20-ERC20 쌍 간의 거래 방향을 나타냅니다. lastTrade 변수는 방향에 관계없이 이 쌍의 마지막 거래를 나타내며 쌍의 가장 최근 가격 데이터(ERC20에서 ERC20, ERC20에서 ETH, ERC20 및 USD)에 액세스하는 데 사용할 수 있습니다.
+
+```graphql
+유형 쌍 @entity {
+    " <pay_token address>#<buy_token address> "
+    아이디: 아이디!
+    "시장 주체"
+    시장: RubiconMarket!
+    "에서 처음 거래를 시작했습니다."
+    startAtTimestamp: BigInt!
+    " 쌍이 처음 거래를 시작한 블록 "
+    startBlockNumber: BigInt!
+    " pay_token "
+    pay_token: 토큰!
+    " buy_token "
+    buy_token: 토큰!
+    " pay_token 가격 - buy_token에서 파생된 가장 최근 거래 가격 "
+    pricePayToken: BigDecimal!
+    " buy_token 가격 - pay_token에서 파생된 가장 최근 거래 가격 "
+    priceBuyToken: BigDecimal!
+    " pay_token의 볼륨 "
+    volumePayToken: BigInt!
+    " buy_token의 볼륨 "
+    volumeBuyToken: BigInt!
+    " 해당 쌍의 총 거래 수 "
+    txCount: 빅인트!
+    " 이 쌍에 대한 pay_token의 총 수수료 징수 "
+    payTokenFees: BigInt!
+    " 이 쌍에 대한 buy_token의 총 수수료 징수 "
+    buyTokenFees: BigInt!
+    " 그날의 토큰 지표 "
+    데이페어: [데이페어!]! @derivedFrom(필드: "쌍")
+    " 해당 시간에 대한 토큰 지표 "
+    hourPairs: [시간쌍!]! @derivedFrom(필드: "쌍")
+    " 파생 값 "
+    스왑: [스왑!]! @derivedFrom(필드: "쌍")
+    openOffers: [OpenOffer!]! @derivedFrom(필드: "쌍")
+    제공: [제공!]! @derivedFrom(필드: "쌍")
+    테이커: [테이커!]! @derivedFrom(필드: "쌍")
+    거래: [거래!]! @derivedFrom(필드: "쌍")
+}
+```
+
+쌍 엔터티는 ERC20-ERC20 쌍에 걸친 모든 방향성 거래를 나타냅니다. 방향은 쌍의 어느 ERC20이 pay\_token(자산 가져오기)이고 어느 것이 buy\_token(자산 만들기)인지에 해당합니다. 또한 모든 쌍에는 1) MonthPair, 2) WeekPair, 3) DayPair 및 4) HourPair와 같이 설정된 기간 동안 쌍 통계를 추적하는 관련 쌍 엔터티가 있습니다. 이 쌍의 ID는 다음과 같습니다.
+
+* 월쌍(ID: \<pay\_token address>#\<buy\_token address>#\<timestamp rounded to current day by dividing by 2629743>)
+* 주쌍(ID: \<pay\__token address>#\<buy_\__token address>#\<timestamp rounded to current day by dividing by 604800>_)
+* 데이페어(ID: \<pay\_token address>#\<buy\_token address>#\<timestamp rounded to current day by dividing by 86400>)
+* HourPair(ID: \<pay\_token address>#\<buy\_token address>#\<timestamp rounded to current day by dividing by 3600>)
+
+모든 값은 해당 값이 나타내는 기본 ERC20 토큰의 정수 값으로 표시됩니다.
+
+### _토큰 엔터티(ID: 토큰 주소)_
+
+```graphql
+유형 토큰 @entity {
+    " <token address> "
+    아이디: 아이디!
+    "시장 주체"
+    시장: RubiconMarket!
+    "에서 처음 거래를 시작했습니다."
+    startAtTimestamp: BigInt!
+    " 토큰이 처음 거래를 시작한 블록 "
+    startBlockNumber: BigInt!
+    " 토큰 기호 "
+    기호: 문자열!
+    " 토큰 이름 "
+    이름: 스트링!
+    " 토큰 십진법 "
+    십진법: Int!
+    " 토큰 단위의 볼륨 "
+    볼륨: BigInt!
+    " 해당 토큰과 관련된 총 트랜잭션 수 "
+    txCount: 빅인트!
+    " 이 토큰에 대해 징수된 총 수수료 "
+    토큰 수수료: BigInt!
+    " 그날의 토큰 지표 "
+    dayTokens: [데이토큰!]! @derivedFrom(필드: "토큰")
+    " 해당 시간에 대한 토큰 지표 "
+    hourTokens: [HourToken!]! @derivedFrom(필드: "토큰")
+}
+```
+
+토큰 엔터티는 Rubicon 주문서에서 ERC20 토큰의 활동과 관련된 데이터를 추적합니다. 모든 토큰에는 DayToken 및 HourToken과 같이 일정 기간 동안 토큰 통계를 추적하는 관련 토큰 엔터티도 있습니다. 이러한 토큰 엔터티의 ID는 다음과 같습니다.
+
+* 데이토큰(ID: \<token address>#\<timestamp rounded to current day by dividing by 86400>)
+* HourToken(ID: \<token address>#\<timestamp rounded to current day by dividing by 86400>
+
+모든 값은 해당 값이 나타내는 기본 ERC20 토큰의 정수 값으로 표시됩니다.
+
+## _**예제 검색어**_
+
+다음 쿼리는 RubiconMarket 하위 그래프와 관련된 잠재적인 데이터 요구에 대한 몇 가지 일반적인 사용 사례 시나리오입니다.
+
+| Use Case                                                | Subgraph Studio Example                                                                                                          |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Access a User's trade history                           | [User Trade History](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=User%20Trade%20Activity) |
+| Access a User's open offers                             | [User Open Offer](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=User%20Open%20Offer)        |
+| Check the status of the entire order book               | [All Order Books](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=ORDERBOOK)                  |
+| Historical trading stats for tokens by day              | [Day Trading Stats](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=Day%20Token%20Stats)      |
+| Last trade and entire trade history of a pair of assets | [Pair Trade History](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=FullPairs)               |

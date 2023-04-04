@@ -1,0 +1,30 @@
+---
+title: ルビコン|流動性プール
+pageTitle: 流動性プール
+description: ルビコンの流動性プールについて知っておくべきことすべて
+---
+
+## 開発者
+
+流動性プール契約をチェックアウト [BathToken.sol](https://github.com/RubiconDeFi/rubicon-protocol-v1/blob/master/contracts/rubiconPools/BathToken.sol) GitHub で。
+
+また、プールをチェックしてください [contracts docs](/docs/protocol/rubicon-pools/rubicon-pools)と bathToken [API docs](/docs/api/subgraphs/bathtoken-api)
+
+### 流動性プールとは?
+
+ルビコンの流動性プールには [certain risks](/docs/protocol/rubicon-pools/risks) があります。注意を払い、失う余裕があるものだけを入金してください。
+
+ルビコンの流動性プールは、流動性プロバイダー (LP) が ERC-20 トークンをプールに入金できるようにする一連のスマート コントラクトです。プール内のトークンは、アクティブなマーケット メーカー (ストラテジスト) によって使用され、Rubicon オーダー ブックに流動性を提供します。マーケットメイキングによる収益は LP に支払われ、ストラテジストは管理費を受け取ります。
+
+流動性プロバイダー (LP) は、暗号資産をプールに預け入れるときに、bathToken を受け取ります。これらは、基礎となるプール資産の比例配分を表しています。\
+(例: LP は ETH を入金し、bathETH を受け取ります)
+
+当初から、誰でもプールの流動性を管理できるセキュリティ パラメーターを使用してこれらのプールを設計しました。システムはまだ開発中ですが、私たちのチームはプールの流動性の管理者として機能します。詳細については、[Current Pools Strategy](/docs/guides/liquidity-pools/current-pools-strategy) をご覧ください。ページ。 Rubicon 流動性プールの次のバージョンは、研究開発段階にあります。 [our blog](https://mirror.xyz/rubicon.eth) の最新情報を共有します!
+
+![Figure](/assets/image(3).png)
+
+### 利点
+
+多くのプロトコル/DEX は、パッシブ流動性またはアクティブ流動性のいずれかを選択します。 Rubicon は、パッシブ リクイディティ プロバイダーとアクティブ リクイディティ マネージャーの両方の役割とインセンティブを概説しています。
+
+Rubicon では、トークンごとに 1 つのプールしかありません。たとえば、USDC プールは、ETH-USDC、OP-USDC、およびその他の USDC オーダーブックで使用できます。これは、流動性が単一の取引ペアに固定されているシステムよりも資本効率が高くなります。

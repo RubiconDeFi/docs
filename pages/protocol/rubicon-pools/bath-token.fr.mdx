@@ -1,0 +1,24 @@
+---
+title: Rubicon | Jeton de bain
+pageTitle: Jeton de bain
+description: Un jeton ERC-20 qui représente la liquidité des utilisateurs dans les pools Rubicon
+---
+
+## BathToken
+
+Le [Bath Token contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathToken.sol) représente un seul pool d'actifs de liquidité au sein de Rubicon Pools. Ces pools sont nommés en ajoutant le préfixe "bath" au nom du jeton sous-jacent (par exemple, bathUSDC).
+
+Lorsqu'un fournisseur de liquidité (LP) dépose des jetons dans un pool Rubicon, il reçoit un montant correspondant de bathTokens. Ex : un LP déposant USDC recevra bathUSDC.
+
+Les BathTokens sont essentiellement une part du pool sous-jacent.
+
+Les LP gagnent des rendements de tenue de marché tandis que les stratèges utilisent des actifs de pool pour fournir des liquidités sur les carnets de commandes Rubicon.
+
+![](</assets/Rubicon v1\_ BathTokens.png>)
+
+### Fonctions des touches
+
+* `deposit` - cette fonction permet à un utilisateur de déposer un actif ERC-20 et de recevoir des bathTokens à un ratio de `totalSupply` / `underlyingBalance()` avec leur dépôt. Cela signifie qu'un utilisateur recevra des actions dans le pool qui sont proportionnelles à la performance des actions déjà dans le pool ; cela garantit qu'il n'y a aucun moyen de jouer avec le système et que les avantages sont correctement partagés entre tous les participants. Un « bathToken » représente une part de la liquidité sous-jacente et a une créance sur le rendement futur.
+  * Paramètre d'entrée : uint `amount` - la quantité de l'actif ERC-20 à déposer.
+* `retirer` - cette fonction retire les liquidités fournies et tout rendement accumulé que l'utilisateur a (via la gravure de BathTokens) récupéré dans son portefeuille.
+  * Paramètre d'entrée : uint `shares` - la quantité de `bathTokens` (actions du pool sous-jacent) à retirer en échange de l'actif ERC-20 sous-jacent.

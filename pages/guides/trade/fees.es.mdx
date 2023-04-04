@@ -1,0 +1,28 @@
+---
+title: Rubicon | Tarifas
+pageTitle: Tarifas
+description: Tarifas en Rubicon
+---
+
+## Tarifas de red
+
+Los libros de pedidos de Rubicon están en cadena, todas las transacciones requieren tarifas de red (gas) que se pagan en ETH. Tarifas de gas en [Optimism](https://www.optimism.io/) son 50-100 veces más baratos que Ethereum Mainnet, puede monitorearlos en este [public dashboard](https://public-grafana.optimism.io/d/9hkhMxn7z/public-dashboard?orgId=1&refresh=5m).
+
+### Tarifas comerciales
+
+import { Callout } from "/components/Callout";
+
+<Callout type="note" title="Comisión del tomador: 0.01%">
+Pagado por swaps, órdenes de mercado y órdenes que "toman" liquidez del libro de órdenes
+</Callout>
+
+<Callout type="note" title="Tarifa de Fabricante: 0%">
+Las Órdenes Limitadas que 'crean' liquidez en el libro de órdenes no pagan comisiones distintas al gas
+</Callout>
+
+### Tarifas del fondo de liquidez
+
+<Callout type="warning" title="Cargo por Retiro: 0.03%">
+Una tarifa de retiro se devuelve al grupo, recompensando efectivamente a los proveedores de liquidez restantes. Detiene el spam de la piscina. (Estos son parámetros de protocolo variables y
+podría cambiar)
+</Callout>

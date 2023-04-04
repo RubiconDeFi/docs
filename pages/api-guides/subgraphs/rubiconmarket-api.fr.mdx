@@ -1,0 +1,384 @@
+---
+description:  Un aperçu des entités clés du sous-graphe du marché Rubicon, événement contractuel gestionnaires et exemples de requêtes pour une variété de cas d'utilisation.
+---
+
+# API Rubicon Market
+
+## **Entités clés de RubiconMarket**
+
+Le sous-graphe RubiconMarket contient une collection d'entités qui collectent et stockent des données liées à l'activité de trading sur les carnets de commandes du protocole. Vous trouverez ci-dessous les entités clés que nous pensons que les utilisateurs trouveront les plus pertinentes pour leurs besoins en données.
+
+### _**Entité utilisateur (ID : adresse du portefeuille)**_
+
+```graphql
+tapez Utilisateur @entité {
+    " <user address> "
+    je l'ai fait!
+    " valeurs dérivées "
+    swaps : [Swap !] ! @derivedFrom(champ : "utilisateur")
+    openOffers : [OpenOffer !] ! @derivedFrom(champ : "utilisateur")
+    offres : [Offre !] ! @derivedFrom(champ : "utilisateur")
+    preneurs : [Preneur !] ! @derivedFrom(champ : "utilisateur")
+}
+```
+
+L'entité utilisateur agit comme un point de référence unique pour collecter toutes les activités commerciales liées à l'adresse d'un portefeuille. Depuis une entité utilisateur, vous pouvez accéder aux entités Swap, OpenOffer, Offer et Taker.
+
+### _Entités d'offre et d'offre ouverte (ID : hachage de l'ID d'offre)_
+
+```graphql
+type Offre @entité {
+    " <offer id hash> "
+    je l'ai fait!
+    " moment de la transaction "
+    horodatage : BigInt !
+    " suivre l'entité utilisateur "
+    utilisateur : utilisateur !
+    " suivi vers l'entité Transaction "
+    transaction : transaction !
+    " suivre vers l'entité Pair "
+    paire : paire !
+    " suivi vers l'entité DayPair "
+    dayPair : DayPair !
+    " suivi vers l'entité HourPair "
+    HourPair : HourPair !
+    " l'actif que le preneur paie "
+    takeAsset : Jeton !
+    " l'actif que le fabricant vend "
+    makeAsset : Jeton !
+    " quantité de takeAsset pour makeAsset "
+    takeAmount : BigInt !
+    " quantité de makeAsset pour takeAsset "
+    makeAmount : BigInt !
+    " prix de takeAmount en ETH "
+    priceTakeAssetETH: HistoricalAssetPriceETH !
+    " prix de makeAmount en ETH "
+    priceMakeAssetETH : HistoricalAssetPriceETH !
+    " prix de takeAmount en ETH "
+    priceTakeAssetUSD : HistoricalAssetPriceUSD !
+    " prix de makeAmount en ETH "
+    priceMakeAssetUSD : HistoricalAssetPriceUSD !
+    " montant reçu de takeAsset "
+    ReceiveTakeAmount : BigInt !
+    " quantité de remplissage partiel sur makeAsset "
+    partialFillMakeAmount : BigInt !
+    " variable pour si l'offre est tuée "
+    tué : booléen !
+    " lorsque l'ordre est tué ou exécuté "
+    timeKilled : BigInt !
+}
+```
+
+L'entité Offre représente toutes les transactions de fabricant qu'un utilisateur a effectuées sur les carnets de commandes Rubicon. L'entité Offre correspond à plusieurs autres entités auxquelles elle est associée. Pour la plupart des cas d'utilisation, les entités les plus pertinentes sont l'entité Transaction, qui contient tous les détails de la transaction (heure, numéro de bloc, coût du gaz) sur l'offre, et les entités "HistoricalAssetPriceETH/USD", qui contient des détails sur la dernière transaction d'un Actif en ETH ou en USD sur RubiconMarket (cela permet à l'utilisateur de suivre les performances historiques de sa transaction cotée en ETH et USD). Toutes les valeurs sont libellées dans la valeur entière du jeton ERC-20 sous-jacent qu'elles représentent.
+
+```graphql
+tapez OpenOffer @entité {
+    " <offer id hash> "
+    je l'ai fait!
+    " moment de la transaction "
+    horodatage : BigInt !
+    " suivre l'entité utilisateur "
+    utilisateur : utilisateur !
+    " suivi vers l'entité Transaction "
+    transaction : transaction !
+    " suivre vers l'entité Pair "
+    paire : paire !
+    " suivi vers l'entité DayPair "
+    dayPair : DayPair !
+    " suivi vers l'entité HourPair "
+    HourPair : HourPair !
+    " l'actif que le preneur paie "
+    takeAsset : Jeton !
+    " l'actif que le fabricant vend "
+    makeAsset : Jeton !
+    " quantité de takeAsset pour makeAsset "
+    takeAmount : BigInt !
+    " quantité de makeAsset pour takeAsset "
+    makeAmount : BigInt !
+    " prix de takeAmount en ETH "
+    priceTakeAssetETH: HistoricalAssetPriceETH !
+    " prix de makeAmount en ETH "
+    priceMakeAssetETH : HistoricalAssetPriceETH !
+    " prix de takeAmount en ETH "
+    priceTakeAssetUSD : HistoricalAssetPriceUSD !
+    " prix de makeAmount en ETH "
+    priceMakeAssetUSD : HistoricalAssetPriceUSD !
+    " montant reçu de takeAsset "
+    ReceiveTakeAmount : BigInt !
+    " quantité de remplissage partiel sur makeAsset "
+    partialFillMakeAmount : BigInt !
+}
+```
+
+L'entité OpenOffer est une copie de l'entité Offer avec deux mises en garde : 1) lorsqu'une offre est remplie ou supprimée du livre, l'entité OpenOffer associée est supprimée du sous-graphe (ces entités supprimées sont toujours accessibles via un |*** *90****|), et 2) l'entité OpenOffer ne contient pas les champs variables "killed" (false si l'offre est remplie ou sur le livre et true si une offre est annulée) ou "timeKilled" (zéro si l'offre est toujours sur le livre, mis à jour au moment où l'offre est retirée du livre).
+
+### _Entité du preneur (identifiant : hachage de la transaction)_
+
+```graphql
+tapez Preneur @entité {
+    " <transaction hash> "
+    je l'ai fait!
+    " moment de la transaction "
+    horodatage : BigInt !
+    " suivre l'entité utilisateur "
+    utilisateur : utilisateur !
+    " suivi vers l'entité Transaction "
+    transaction : transaction !
+    " suivre vers l'entité Pair "
+    paire : paire !
+    " suivi vers l'entité DayPair "
+    dayPair : DayPair !
+    " suivi vers l'entité HourPair "
+    HourPair : HourPair !
+    " l'actif que le preneur paie "
+    takeAsset : Jeton !
+    " l'actif que le fabricant vend "
+    makeAsset : jeton !
+    " quantité de takeAsset pour makeAsset "
+    takeAmount : BigInt !
+    " quantité de makeAsset pour takeAsset "
+    makeAmount : BigInt !
+    " prix de takeAmount en ETH "
+    priceTakeAssetETH: HistoricalAssetPriceETH !
+    " prix de makeAmount en ETH "
+    priceMakeAssetETH : HistoricalAssetPriceETH !
+    " prix de takeAmount en ETH "
+    priceTakeAssetUSD : HistoricalAssetPriceUSD !
+    " prix de makeAmount en ETH "
+    priceMakeAssetUSD : HistoricalAssetPriceUSD !
+    "frais pour le preneur"
+    takerFee : BigInt !
+    " entité maker du métier "
+    maker : offre !
+}
+```
+
+L'entité Taker représente toutes les transactions taker qui ont eu lieu sur les carnets de commandes Rubicon. L'entité Taker est mappée à plusieurs autres entités auxquelles elle est associée. Les entités les plus pertinentes auxquelles elle correspond pour la plupart des cas d'utilisation sont l'entité Transaction, contenant tous les détails de la transaction (heure, numéro de bloc, coût du gaz) sur la transaction, les entités "HistoricalAssetPriceETH/USD", contenant des détails sur la dernière transaction d'un actif. en ETH ou en USD sur le marché Rubicon (cela permet à l'utilisateur de suivre les performances historiques de sa transaction cotée en ETH et en USD), et l'entité Offre, l'offre que la transaction retire du livre. Toutes les valeurs sont libellées dans la valeur entière du jeton ERC-20 sous-jacent qu'elles représentent.
+
+### _Entité d'échange (identifiant : hachage de transaction)_
+
+```graphql
+tapez Swap @entité {
+    " <transaction hash> "
+    je l'ai fait!
+    " moment de la transaction "
+    horodatage : BigInt !
+    " suivre l'entité utilisateur "
+    utilisateur : utilisateur !
+    " suivi vers l'entité Transaction "
+    transaction : transaction !
+    " suivre vers l'entité Pair "
+    paire : paire !
+    " suivi vers l'entité DayPair "
+    dayPair : DayPair !
+    " suivi vers l'entité HourPair "
+    HourPair : HourPair !
+    " l'actif que le preneur paie "
+    takeAsset : Jeton !
+    " l'actif que le fabricant vend "
+    makeAsset : jeton !
+    " quantité de takeAsset pour makeAsset "
+    takeAmount : BigInt !
+    " quantité de makeAsset pour takeAsset "
+    makeAmount : BigInt !
+    " prix de takeAmount en ETH "
+    priceTakeAssetETH: HistoricalAssetPriceETH !
+    " prix de makeAmount en ETH "
+    priceMakeAssetETH : HistoricalAssetPriceETH !
+    " prix de takeAmount en ETH "
+    priceTakeAssetUSD : HistoricalAssetPriceUSD !
+    " prix de makeAmount en ETH "
+    priceMakeAssetUSD : HistoricalAssetPriceUSD !
+    "frais pour le preneur"
+    takerFee : BigInt !
+}
+```
+
+L'entité Swap représente toutes les transactions de swap qu'un utilisateur a effectuées sur les carnets de commandes Rubicon. L'entité Swap est mappée à plusieurs autres entités auxquelles elle est associée. Les entités les plus pertinentes auxquelles elle correspond pour la plupart des cas d'utilisation sont l'entité Transaction, contenant tous les détails de la transaction (heure, numéro de bloc, coût du gaz) sur le swap, et les entités "HistoricalAssetPriceETH/USD", contenant des détails sur la dernière transaction d'un Actif en ETH ou en USD sur le marché Rubicon (cela permet à l'utilisateur de suivre les performances historiques de sa transaction cotée en ETH et USD). Toutes les valeurs sont libellées dans la valeur entière du jeton ERC-20 sous-jacent qu'elles représentent.
+
+### _AssetPriceETH/USD (ID : \<asset>#\<ETH/USD>) & Entités HistoricalAssetPriceETH/USD (ID : \<asset>#\<ETH/USD>#\<timestamp>)_
+
+```graphql
+tapez AssetPriceETH @entité {
+    " <asset>#<ETH> "
+    je l'ai fait!
+    "heure de la dernière mise à jour des prix"
+    horodatage : BigInt !
+    " actif "
+    atout : Jeton !
+    " prix de l'actif en ETH "
+    assetPriceETH : BigDecimal !
+    " prix le plus récent de l'actif en ETH "
+    lastPriceETH : HistoricalAssetPriceETH !
+}
+
+tapez AssetPriceUSD @entité {
+    " <asset>#<ETH> "
+    je l'ai fait!
+    "heure de la dernière mise à jour des prix"
+    horodatage : BigInt !
+    " actif "
+    atout : Jeton !
+    " prix de l'actif en ETH "
+    assetPriceUSD : BigDecimal !
+    " prix le plus récent de l'actif en USD "
+    lastPriceUSD : HistoricalAssetPriceUSD !
+}
+```
+
+L'entité AssetPriceETH/USD représente le prix auquel un actif s'est négocié le plus récemment dans le carnet de commandes Rubicon contre ETH ou un stablecoin. L'entité AssetPriceUSD contient le stablecoin qui a été échangé le plus récemment contre l'actif pour obtenir le prix en USD, cela indique combien de décimales doivent être prises en compte dans le calcul du prix. L'entité AssetPrice correspond au prix négocié le plus récent via l'entité HistoricalAssetPriceETH/USD :
+
+```graphql
+type HistoricalAssetPriceETH @entity {
+    " <asset>#<ETH>#<timestamp> "
+    je l'ai fait!
+    "heure de la dernière mise à jour des prix"
+    horodatage : BigInt !
+    " actif "
+    atout : Jeton !
+    "montant de l'actif"
+    assetAmount : BigInt !
+    " eth montant "
+    ethAmount : BigInt !
+    " prix de l'actif en ETH "
+    historicAssetPriceETH : BigDecimal !
+}
+
+tapez HistoricalAssetPriceUSD @entity {
+    " <asset>#<ETH>#<timestamp> "
+    je l'ai fait!
+    "heure de la dernière mise à jour des prix"
+    horodatage : BigInt !
+    " actif "
+    atout : Jeton !
+    "actif en dollars américains"
+    Actif usd : jeton
+    "montant de l'actif"
+    assetAmount : BigInt !
+    « montant USD »
+    MontantUSD : BigInt !
+    " prix de l'actif en USD "
+    historicAssetPriceUSD : BigDecimal !
+}
+```
+
+Toutes les valeurs sont libellées dans la valeur entière du jeton ERC-20 sous-jacent qu'elles représentent.
+
+### _FullPair (ID : \<token0 address>#\<token1 address>) & Paire d'entités (ID : \<pay\_token address>#\<buy\_token address>)_
+
+```graphql
+tapez FullPair @entité {
+    " <token0 address>#<token1 address> "
+    je l'ai fait!
+    " <pay_token = token0>#<buy_token = token1> "
+    paire0 : paire
+    " <pay_token = token1>#<buy_token = token0> "
+    paire1 : paire
+    " dernier échange sur la paire "
+    lastTrade : Commerce
+    " carte à tous les trades de la paire "
+    échanges : [Échange !] ! @derivedFrom(champ : "fullPair")
+}
+```
+
+L'entité FullPair représente toute paire ERC20-ERC20 qui s'est négociée sur les carnets de commandes du Rubicon. Cette entité correspond à deux entités de paire, elles diffèrent l'une de l'autre dans lesquelles ERC20 de la paire est respectivement le jeton de paiement/achat. Cela représente les échanges dans les deux sens entre une paire ERC20-ERC20. La variable lastTrade représente la dernière transaction de cette paire, quelle que soit la direction, et peut être utilisée pour accéder aux données de prix les plus récentes (ERC20 à ERC20, ERC20 à ETH, ERC20 et à USD) de la paire.
+
+```graphql
+tapez Paire @entité {
+    " <pay_token address>#<buy_token address> "
+    je l'ai fait!
+    " entité marchande "
+    marché : RubiconMarket !
+    " a commencé à négocier à "
+    startAtTimestamp : BigInt !
+    " bloc dans lequel la paire a commencé à trader pour la première fois "
+    startBlockNumber : BigInt !
+    "pay_token"
+    pay_token : jeton !
+    " buy_token "
+    buy_token : jeton !
+    " prix pay_token - prix de transaction le plus récent dérivé de buy_token "
+    pricePayToken : BigDecimal !
+    " prix buy_token - prix de transaction le plus récent dérivé de pay_token "
+    priceBuyToken : BigDecimal !
+    " volume dans pay_token "
+    volumePayToken : BigInt !
+    " volume en buy_token "
+    volumeBuyToken : BigInt !
+    " nombre total de trades de cette paire "
+    txCount : BigInt !
+    " frais totaux perçus de pay_token pour cette paire "
+    payTokenFees : BigInt !
+    " frais totaux perçus de buy_token pour cette paire "
+    buyTokenFees : BigInt !
+    " métriques de jetons ce jour-là "
+    dayPairs : [DayPair !] ! @derivedFrom(champ : "paire")
+    " métriques de jetons pour cette heure "
+    hourPairs : [HourPair !] ! @derivedFrom(champ : "paire")
+    " valeurs dérivées "
+    swaps : [Swap !] ! @derivedFrom(champ : "paire")
+    openOffers : [OpenOffer !] ! @derivedFrom(champ : "paire")
+    offres : [Offre !] ! @derivedFrom(champ : "paire")
+    preneurs : [Preneur !] ! @derivedFrom(champ : "paire")
+    échanges : [Échange !] ! @derivedFrom(champ : "paire")
+}
+```
+
+L'entité Pair représente tout échange directionnel sur une paire ERC20-ERC20. La direction correspond à quel ERC20 de la paire est le pay\_token (take asset) et quel est le buy\_token (make asset). Chaque paire a également une entité de paire associée qui suit les statistiques de paire sur une période de temps définie : 1) MonthPair, 2) WeekPair, 3) DayPair et 4) HourPair. Les identifiants de ces paires sont les suivants :
+
+* MoisPaire(ID : \<pay\_token address>#\<buy\_token address>#\<timestamp rounded to current day by dividing by 2629743>)
+* SemainePaire(ID : \<pay\__token address>#\<buy_\__token address>#\<timestamp rounded to current day by dividing by 604800>_)
+* DayPair(ID : \<pay\_token address>#\<buy\_token address>#\<timestamp rounded to current day by dividing by 86400>)
+* HeurePaire(ID : \<pay\_token address>#\<buy\_token address>#\<timestamp rounded to current day by dividing by 3600>)
+
+Toutes les valeurs sont libellées dans la valeur entière du jeton ERC20 sous-jacent qu'elles représentent.
+
+### _Entité du jeton (ID : adresse du jeton)_
+
+```graphql
+tapez Jeton @entité {
+    " <token address> "
+    je l'ai fait!
+    " entité marchande "
+    marché : RubiconMarket !
+    " a commencé à négocier à "
+    startAtTimestamp : BigInt !
+    " bloc dans lequel le jeton a commencé à être échangé "
+    startBlockNumber : BigInt !
+    "symbole symbolique"
+    symbole : Corde !
+    " nom du jeton "
+    nom : Corde !
+    " décimales symboliques "
+    décimales : Int !
+    " volume en unités de jetons "
+    volume : BigInt !
+    " nombre total de transactions impliquant ce jeton "
+    txCount : BigInt !
+    " total des frais collectés pour ce jeton "
+    tokenFees : BigInt !
+    " métriques de jetons ce jour-là "
+    dayTokens : [DayToken !] ! @derivedFrom(champ : "jeton")
+    " métriques de jetons pour cette heure "
+    hourTokens : [HourToken !] ! @derivedFrom(champ : "jeton")
+}
+```
+
+L'entité Token suit les données liées à l'activité d'un token ERC20 sur les carnets de commandes Rubicon. Chaque jeton a également une entité de jeton associée qui suit les statistiques de jeton sur une période de temps définie : DayToken et HourToken. Les ID de ces entités Token sont les suivants :
+
+* DayToken(identifiant : \<token address>#\<timestamp rounded to current day by dividing by 86400>)
+* HourToken(ID : \<token address>#\<timestamp rounded to current day by dividing by 86400>
+
+Toutes les valeurs sont libellées dans la valeur entière du jeton ERC20 sous-jacent qu'elles représentent.
+
+## _**Exemples de requêtes**_
+
+Les requêtes suivantes sont des scénarios de cas d'utilisation courants pour les besoins potentiels en données liés au sous-graphe RubiconMarket.
+
+| Use Case                                                | Subgraph Studio Example                                                                                                          |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Access a User's trade history                           | [User Trade History](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=User%20Trade%20Activity) |
+| Access a User's open offers                             | [User Open Offer](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=User%20Open%20Offer)        |
+| Check the status of the entire order book               | [All Order Books](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=ORDERBOOK)                  |
+| Historical trading stats for tokens by day              | [Day Trading Stats](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=Day%20Token%20Stats)      |
+| Last trade and entire trade history of a pair of assets | [Pair Trade History](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=FullPairs)               |
