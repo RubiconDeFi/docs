@@ -16,13 +16,13 @@
 		"flexsearch": "^0.7.31",
 		"fs": "^0.0.1-security",
 		"next": "^13.2.4",
-		"nextra": "^2.2.19",
-		"nextra-theme-docs": "^2.2.19",
+		"nextra": "^2.3.0",
+		"nextra-theme-docs": "^2.3.0",
 		"path": "^0.12.7",
 		"postcss": "^8.4.21",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
-		"tailwindcss": "^3.2.7"
+		"tailwindcss": "^3.3.1"
 	},
 	"devDependencies": {
 		"@tailwindcss/typography": "^0.5.9"
