@@ -1,8 +1,8 @@
 {
-	"rubicon-market": "Rubicon Market",
-	"rubicon-pools": "Rubicon Pools",
-	"mainnet_deployments": "Mainnet Deployments",
-	"testnet_deployments": "Testnet Deployments",
-	"deployments": "v1 Deployments",
-	"audits": "Audits"
+	"rubicon-market": "루비콘 마켓",
+	"rubicon-pools": "루비콘 풀",
+	"mainnet_deployments": "메인넷 배포",
+	"testnet_deployments": "테스트넷 배포",
+	"deployments": "v1 배포",
+	"audits": "감사"
 }

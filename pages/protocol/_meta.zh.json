@@ -1,8 +1,8 @@
 {
-	"rubicon-market": "Rubicon Market",
-	"rubicon-pools": "Rubicon Pools",
-	"mainnet_deployments": "Mainnet Deployments",
-	"testnet_deployments": "Testnet Deployments",
-	"deployments": "v1 Deployments",
-	"audits": "Audits"
+	"rubicon-market": "Rubicon 市场",
+	"rubicon-pools": "Rubicon 池",
+	"mainnet_deployments": "主网部署",
+	"testnet_deployments": "测试网部署",
+	"deployments": "v1 部署",
+	"audits": "审计"
 }
