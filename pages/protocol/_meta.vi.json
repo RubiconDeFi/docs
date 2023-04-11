@@ -1,4 +1,8 @@
 {
-	"rubicon-market": "Thị Trường Rubicon",
-	"rubicon-pools": "Rubicon Hồ Bơi"
+	"rubicon-market": "Rubicon Market",
+	"rubicon-pools": "Rubicon Pools",
+	"mainnet_deployments": "Mainnet Deployments",
+	"testnet_deployments": "Testnet Deployments",
+	"deployments": "v1 Deployments",
+	"audits": "Audits"
 }

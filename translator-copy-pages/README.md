@@ -6,6 +6,7 @@ To run the project, follow these steps:
 Change the directory to the project folder: cd translator-copy-pages
 Run the script using one of the following options:
 a. Translate and copy: `node Translator-copy-pages.js <directory> <lang>`
+    - example: `node Translator-copy-pages.js ../pages/protocol vi`
 b. Copy only: `node Translator-copy-pages.js <directory> <lang> -С`
 Notes:
 
