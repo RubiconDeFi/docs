@@ -1,0 +1,24 @@
+---
+title: Rubicon | Ficha de Baño
+pageTitle: Token de Baño
+description: Un token ERC-20 que representa la liquidez del usuario en los Pools de Rubicon
+---
+
+## ficha de baño
+
+El [Bath Token contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathToken.sol) representa un conjunto único de activos de liquidez dentro de Rubicon Pools. Estos grupos se nombran agregando el prefijo "bath" al nombre del token subyacente (por ejemplo, bathUSDC).
+
+Cuando un proveedor de liquidez (LP) deposita tokens en un grupo Rubicon, recibe una cantidad correspondiente de bathTokens. Ej: un LP que deposite USDC recibirá bathUSDC.
+
+Los BathTokens son esencialmente una parte del grupo subyacente.
+
+Los LP obtienen rendimientos de creación de mercado, mientras que los estrategas utilizan activos de grupo para proporcionar liquidez en los libros de pedidos de Rubicon.
+
+![](</assets/Rubicon v1\_ BathTokens.png>)
+
+### Funciones clave
+
+* `depósito` - esta función permite a un usuario depositar un activo ERC-20 y recibir bathTokens en una proporción de `totalSupply` / `underlyingBalance()` con su depósito. Esto significa que un usuario recibirá acciones en el grupo que son proporcionales al rendimiento de las acciones en el grupo ya; esto garantiza que no haya forma de jugar con el sistema y que las ventajas se compartan correctamente entre todos los participantes. Un "token de baño" representa una parte de la liquidez subyacente y tiene un derecho sobre el rendimiento futuro.
+  * Parámetro de entrada: uint `amount` - la cantidad del activo ERC-20 a depositar.
+* `retirar`: esta función retira la liquidez proporcionada y cualquier rendimiento acumulado que el usuario haya obtenido (a través de la quema de BathTokens) devuelto a su billetera.
+  * Parámetro de entrada: uint `acciones`: la cantidad de `tokens de baño` (acciones en el grupo subyacente) para retirar a cambio del activo ERC-20 subyacente.

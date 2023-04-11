@@ -1,0 +1,174 @@
+---
+title: Rubicon | Mercado de Rubicon
+pageTitle: Mercado del Rubicón
+description: Descripción general y documentación del contrato del libro de pedidos de Rubicon
+---
+
+La lógica central de intercambio de Rubicon reside en [RubiconMarket](https://github.com/RubiconDeFi/rubicon_protocol/blob/master/contracts/RubiconMarket.sol) contrato inteligente: el libro de pedidos central de Rubicon. Es útil pensar en este contrato inteligente como una capa intermedia que facilita el intercambio de activos digitales entre pares a través de un libro de pedidos.
+
+# 📊 Mercado Rubicón
+
+## Descripción general
+
+El contrato inteligente de Rubicon Market implementa libros de pedidos en cadena y un motor de coincidencia para el comercio entre pares de [ERC-20 tokens](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/).
+
+Un libro de órdenes es una lista de órdenes de compra y venta de un activo, ordenadas por precio. Este contrato implementa cada libro de pedidos ERC20/ERC20 como dos listas ordenadas de doble enlace, una para el lado de compra y otra para el lado de venta del mercado dado.
+
+El contrato utiliza un modelo de depósito en garantía para la liquidez; cuando se coloca una orden de límite en el libro, esos tokens se envían al contrato. Si/cuando se completa una orden, el contrato coincide directamente con los comerciantes y los tokens se envían a cada parte. Se puede cancelar un pedido y el contrato devolverá los tokens al remitente.
+
+Rubicon Market es un trabajo derivado del código abierto de MakerDAO [OasisDEX](https://oasisdex.com/) y hereda la licencia AGPL3.
+
+## Funciones comerciales
+
+### oferta()
+
+```
+    function offer(
+        uint256 pay_amt,
+        ERC20 pay_gem,
+        uint256 buy_amt,
+        ERC20 buy_gem,
+        uint256 pos,
+    ) public returns (uint256)
+```
+
+| Parameter Name         | Type        | Description                                                                                                                       |
+| ---------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| pay\_amt               | uint256     | Quantity of ERC-20 tokens the maker is selling                                                                                    |
+| pay\_gem               | address     | ERC-20 token the maker is selling                                                                                                 |
+| uint buy\_amt          | uint256     | Quantity of ERC-20 tokens the maker is buying                                                                                     |
+| ERC20 buy\_gem         | address     | ERC-20 token the maker is buying                                                                                                  |
+| uint pos               | uint256     | Position in the sorted list to place the order. Set this to 0 unless you know the exact position (closest ID) to insert the order |
+| \[Optional] matching   | bool        | Optional boolean to determine whether the offer should be automatically matched (placed in the sorted list)                       |
+
+The primary function for placing limit orders on Rubicon. The **pay_amt** quantity of the **pay_gem** token will be sent to the order book contract, sitting in escrow until it is filled or canceled. Always set pos to **0** unless you know the exact position in the sorted lost to insert the order.
+
+### cancel()
+
+```
+    function cancel(uint id)
+        public
+        can_cancel(id)
+        returns (bool success)
+```
+
+| Parameter Name         | Type        | Description                                    |
+| ---------------------- | ----------- | ---------------------------------------------- |
+| id                     | uint256     | The id of the order the user wants to cancel   |
+
+Esta función cancela una oferta en el libro de pedidos y devuelve los tokens a la dirección del remitente. El modificador** can\_cancel * * comprueba que la orden de destino está activa y es propiedad de la persona que llama. Alternativamente, puede usar la función de enrutamiento * * kill ()* * para lograr el mismo resultado y cancelar una oferta.
+
+### buy()
+
+```
+    function buy(uint id, uint amount) public can_buy(id) 
+        returns (bool)
+```
+
+| Parameter Name         | Type        | Description                                    |
+| ---------------------- | ----------- | ---------------------------------------------- |
+| id                     | uint256     | The id of the target order                     |
+| amount                 | uint256     | Quantity of the target order to buy            |
+
+Esta función se utiliza para completar o "seleccionar" un pedido específico en el libro. La persona que llama pagará la tarifa del tomador. Alternativamente, puede usar la función de enrutamiento **tomar()** para lograr el mismo resultado y completar una oferta específica.
+
+### buyAllAmount()
+
+```
+     function buyAllAmount(
+        ERC20 buy_gem,
+        uint256 buy_amt,
+        ERC20 pay_gem,
+        uint256 max_fill_amount
+    ) external returns (uint256 fill_amt)
+```
+
+| Parameter Name         | Type        | Description                                    |
+| ---------------------- | ----------- | ---------------------------------------------- |
+| buy\_gem               | address     | ERC-20 token the taker is buying               |
+| buy\_amt               | uint256     | Quantity of tokens the taker is buying         |
+| pay\_gem               | address     | ERC-20 token the taker is selling              |
+| max\_fill\_amount      | uint256     | Maximum amount of pay tokens sold              |
+
+Intentos de intercambiar la cantidad **sell_amt** de tokens **sell_gem** por al menos la cantidad **min_fill_amount** de tokens **pay_gem**. La transacción se revertirá si el comerciante recibe menos de la cantidad mínima especificada. Esta es una orden de venta "Fill-or-Kill".
+
+## Ver funciones
+
+### sellAllAmount()
+
+```
+     function sellAllAmount(
+        ERC20 pay_gem,
+        uint256 pay_amt,
+        ERC20 buy_gem,
+        uint256 min_fill_amount
+    ) external returns (uint256 fill_amt)
+```
+
+| Parameter Name         | Type        | Description                                    |
+| ---------------------- | ----------- | ---------------------------------------------- |
+| pay\_gem               | address     | ERC-20 token the taker is selling              |
+| pay\_amt               | uint256     | Quantity of tokens the taker is selling        |
+| buy\_gem               | address     | ERC-20 token the taker is buying               |
+| min\_fill\_amount      | uint256     | Minimum amount of buy tokens received          |
+
+Devuelve el ID de la oferta en la parte superior del libro de pedidos.
+
+Ex. Llamar a esta función con WETH como **pay_gem** y USDC como **buy_gem** devolverá la mejor pregunta sobre WETH/USDC. Cambiar los tokens devolverá la mejor oferta.
+
+### getWorseOffer()
+
+```
+function getWorseOffer(uint256 id) 
+    public 
+    view 
+    returns (uint256)
+```
+
+Devuelve la siguiente peor oferta en la lista ordenada. La peor oferta es la más alta si la orden objetivo es una pregunta y la más baja si es una oferta. En ambos casos, devolverá uno más nuevo si son iguales.
+
+### getBuyAmount()
+
+```
+    function getBuyAmount(
+        ERC20 buy_gem,
+        ERC20 pay_gem,
+        uint256 pay_amt
+    ) external view returns (uint256 fill_amt)
+```
+
+Devuelve la cantidad de tokens **buy_gem** recibidos si se gasta una cantidad específica de tokens **pay_gem**. Se utiliza para comprobar el estado actual de la cartera de pedidos.
+
+### getPayAmount()
+
+```
+function getPayAmount(
+        ERC20 pay_gem,
+        ERC20 buy_gem,
+        uint256 buy_amt
+    ) external view returns (uint256 fill_amt)
+```
+
+Devuelve la cantidad de tokens **pay_gem** necesarios para comprar una cantidad específica de tokens **buy_gem**. Se utiliza para comprobar el estado actual del libro de pedidos.
+
+### getOfferCount()
+
+```
+function getOfferCount(ERC20 sell_gem, ERC20 buy_gem)
+        public
+        view
+        returns (uint256)
+```
+
+Devuelve el número de ofertas en el libro de órdenes para un par específico.
+
+### getFeeBPS()
+
+```
+function getFeeBPS() 
+    public 
+    view 
+    returns (uint256)
+```
+
+Devuelve la tarifa del tomador de protocolo, en puntos básicos.

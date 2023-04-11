@@ -1,0 +1,23 @@
+---
+title: ルビコン/バスハウス
+pageTitle: お風呂の家
+description: ルビコンプールの管理者契約
+---
+
+## バスハウス
+
+[BathHouse contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathHouse.sol)システムに主要な高レベル機能を提供しながら、Rubicon Pools システムの管理者として機能します。 BathHouse の最も重要な機能は、新しい BathPair を初期化し、戦略を承認し、流動性プールの編成とルーティングを管理することです。
+
+### 主な機能
+
+* `initBathPair`- この関数は、BathPair を初期化します。実際には、これにより、ルビコンの新しいペア全体で新しい流動性プールを形成し、そのペアを既存のクオート流動性プール (例: bathUSDC) と統合することができます (まだ存在しない場合)。
+* `getBathPair` - 呼び出し側が、`(アドレス アセット、アドレス クォート)` の特定の組み合わせの BathPair アドレスを簡単に判別できるようにするゲッター関数。
+* **戦略管理**
+  * この契約は、どの「戦略」がルビコン プールによってサポートされているかを管理します。現在、v0 で許可されている唯一の戦略は PairsTrade です。この戦略では、ストラテジストは関数呼び出しごとに単一のペア取引を行います。
+  * `isApprovedStrat` - 指定された発信者またはアドレスが承認された戦略であるかどうかを検証する関数。
+  * `approveStrategy` - ルビコン プールに新しい戦略を追加するための管理機能。
+* **パラメータ管理**
+  * このコントラクトは、ストラテジストと LP に同様に関連するいくつかのシステム レベルのパラメーターを制御します。
+  * `setCancelTimeDelay` - この関数は、BathPair.sol に `timeDelay` を設定します。その後、オーダー ブックで約定されていない注文がキャンセルされます。
+  * `setMaxOutstandingPairCount` - この関数は、指定された BathPair の `maxOutstandingPairCount` 値を設定します。この値は、特定の取引ペアのオーダーブックで未処理の注文数を定義します。
+* `onlyAdmin` - BathHouse は現在、Rubicon チームによって運営されており、DAO マルチシグなど、任意のアドレスで管理することができます。

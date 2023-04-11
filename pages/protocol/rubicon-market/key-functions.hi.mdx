@@ -1,0 +1,88 @@
+---
+title: रूबिकॉन | बाजार प्रमुख कार्य
+pageTitle: बाजार प्रमुख कार्य
+description: रूबिकॉन बाजार अनुबंध के मुख्य प्रवेश बिंदु और कार्य
+---
+
+## महत्वपूर्ण कार्यों
+
+#### प्रस्ताव
+
+```
+function offer(uint pay_amt, ERC20 pay_gem, uint buy_amt, ERC20 buy_gem, uint pos) 
+    public returns (uint)
+```
+
+रुबिकॉन बाजार पर नई लिमिट खरीद या लिमिट सेल ऑर्डर देने के लिए **ऑफ़र** फ़ंक्शन प्राथमिक कार्य है। यह फ़ंक्शन दिए गए _ERC-20 जोड़े_ के लिए उपयोगकर्ता के पैसे लेता है और उन्हें स्मार्ट अनुबंध की ऑर्डर बुक में रखता है। जब कोई अन्य उपयोगकर्ता ऑर्डर खरीदने का विकल्प चुनता है या ऑर्डर किसी अन्य ऑर्डर के साथ मेल खाता है, तो प्रस्ताव भरा जाएगा और रूबिकॉन मार्केट द्वारा निष्पादित व्यापार।
+
+| Parameter                 | Use                                                                                                                                          |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| uint pay\_amt             | The quantity of the asset that the user is _offering in wad_                                                                                 |
+| ERC20 pay\_gem            | The ERC-20 asset that the user is _offering_                                                                                                 |
+| uint buy\_amt             | The quantity of the asset that the user is hoping to _exchange for in wad_                                                                   |
+| ERC20 buy\_gem            | The asset the user is hoping to _exchange for_                                                                                               |
+| uint pos                  | The position in the _sorted order book_ to place the order. Set this to 0 unless you know the exact position (closest id) to place the order |
+| \[Optional] bool matching | Optional boolean that dictates _whether or not the offer should be automatically matched_ if possible                                        |
+
+यह ध्यान रखना महत्वपूर्ण है कि रूबिकॉन बाजार में ऑफ़र फ़ंक्शन के कुछ प्रतिनिधित्व हैं। _वैकल्पिक रूप से,_ कोई उपयोगकर्ता _pos_ या _मिलान_ पैरामीटर जोड़ सकता है। ये उपयोगकर्ता को यह चुनने की अनुमति देते हैं कि सॉर्ट की गई ऑर्डर बुक में ऑफ़र कहाँ रहना चाहिए और क्या ऑर्डर के संभावित स्वचालित मिलान के अधीन होना चाहिए या नहीं।
+
+#### खरीदना
+
+```
+function buy(uint id, uint amount) public can_buy(id) 
+    returns (bool)
+```
+
+| Parameter   | Use                                                          |
+| ----------- | ------------------------------------------------------------ |
+| uint id     | The id of the order the user wants to buy                    |
+| uint amount | The wad quantity/portion of the order the user wants to buy  |
+
+The buy function allows a user to buy a given order in the order book and ultimately calls super.buy() in the RubiconMarket.sol contract. Furthermore, the buy function will also result in the caller paying the trade fee (see fees).
+
+#### Cancel
+
+```
+function cancel(uint id)
+    public
+    can_cancel(id)
+    returns (bool success)
+```
+
+| Parameter | Use                                          |
+| --------- | -------------------------------------------- |
+| uint id   | The id of the order the user wants to cancel |
+
+यह फ़ंक्शन उपयोगकर्ता को ऑफ़र रद्द करने और उपयोगकर्ता को धन वापस करने की अनुमति देता है। संशोधक **रद्द कर सकता है** यह सुनिश्चित करने के लिए जांच करता है कि कॉलर प्रस्ताव का मालिक है और प्रस्ताव सक्रिय है। वैकल्पिक रूप से, उपयोगकर्ता समान परिणाम प्राप्त करने के लिए **किल** रूटिंग फ़ंक्शन का भी उपयोग कर सकता है और किसी दिए गए आईडी पर अपना ऑर्डर रद्द कर सकता है।
+
+### रूटिंग फ़ंक्शंस
+
+#### BuyAllAmount
+
+```
+    function buyAllAmount(
+    ERC20 buy_gem,
+    uint256 buy_amt,
+    ERC20 pay_gem,
+    uint256 max_fill_amount
+) external returns (uint256 fill_amt)
+```
+
+| Parameter | Use                                          |
+| --------- | -------------------------------------------- |
+| uint id   | The id of the order the user wants to cancel |
+
+This function allows a user to buy any amount of an asset (buy\_gem) through multiple orders in the book. The function will keep buying through orders until the desired buy-amt is acquired.
+
+#### Take
+
+```
+function take(bytes32 id, uint128 maxTakeAmount) public
+```
+
+| Parameter          | Use                                                          |
+| ------------------ | ------------------------------------------------------------ |
+| uint id            | The id of the order the user wants to buy                    |
+| uint maxTakeAmount | The wad quantity/portion of the order the user wants to buy  |
+
+यह केवल एक रूटिंग फ़ंक्शन है जो उपयोगकर्ता को **टेक** एंट्री पॉइंट के माध्यम से आसानी से ऑफ़र लेने की अनुमति देता है। यह उपयोगकर्ता को _ऑफ़र खरीदने के लिए रूट करेगा._

@@ -1,0 +1,198 @@
+---
+title: API de token Rubicon | Bath
+description: Una descripción general de las entidades clave del subgrafo de tokens de Bath, controladores de eventos de contrato, y consultas de ejemplo para una variedad de casos de uso.
+---
+
+#API de BathToken
+
+## **Entidades clave de BathToken**
+
+El subgráfico BathToken contiene una colección de entidades que recopilan y almacenan datos relacionados con la actividad del proveedor de liquidez y la utilización del grupo para la creación de mercado en los libros de pedidos del protocolo. A continuación se encuentran las entidades clave que creemos que los usuarios encontrarán más relevantes para sus necesidades de datos.
+
+### _**Entidad proveedora de liquidez (ID: dirección de la billetera)**_
+
+```graphql
+tipo LiquidityProvider @entity {
+    " <user adddress> "
+    ¡hice!
+    "campos derivados"
+    posiciones: [PosiciónPosición!]! @derivedFrom(campo: "proveedordeliquidez")
+    depósitos: [¡Depósito!]! @derivedFrom(campo: "proveedordeliquidez")
+    se retira: [¡Retirarse!]! @derivedFrom(campo: "proveedordeliquidez")
+}
+```
+
+La entidad LiquidityProvider actúa como un único punto de referencia para recopilar toda la actividad con los fondos de liquidez de Rubicon desde la dirección de una billetera. Desde dentro de una entidad LiquidityProvider, puede acceder a las entidades PoolPosition, Deposit y Withdraw.
+
+### _PoolPosition Entidad (ID: \<user address>#\<pool underlying asset address>)_
+
+```graphql
+tipo PoolPosition @entidad {
+    " <user address>#<pool underlying asset address> "
+    ¡hice!
+    "el proveedor de liquidez es"
+    proveedor de liquidez: proveedor de liquidez!
+    "la piscina es"
+    piscina: piscina!
+    "saldo actual de tokens de baño"
+    bathTokenAmount: BigInt!
+    "valor total de los depósitos de la piscina"
+    depositado total: BigInt!
+    " valor total de los retiros del pool "
+    totalRetirado: BigInt!
+}
+```
+
+La entidad PoolPosition representa el estado activo de las tenencias de un usuario en un grupo de liquidez de Rubicon. Para acceder al estado actual del pool, incluido el volumen total, el monto pendiente y el precio del bathToken, se puede acceder a la entidad Pool. Todos los valores están denominados en el valor entero del token ERC20 subyacente que representan.
+
+### Entidad de grupo (ID: \<pool underlying asset address>)
+
+```graphql
+tipo Grupo @entidad {
+    " <pool underlying asset address> "
+    ¡hice!
+    " derivado de "
+    casa de baños: ¡casa de baños!
+    "nombre del grupo"
+    nombre: Cuerda!
+    "dirección de activos del grupo"
+    token subyacente: Cadena!
+    " tiempo de creación "
+    creado en la marca de tiempo: BigInt!
+    " el grupo de bloques se creó en "
+    creado en número de bloque: BigInt!
+    "dirección del creador del token de baño"
+    bathTokenCreator: Cadena!
+    " saldo subyacente del grupo (cantidad en el grupo y en libros) "
+    saldo subyacente: BigInt!
+    "cantidad de activos del grupo pendientes en el libro de órdenes"
+    cantidad sobresaliente: BigInt!
+    " acciones en circulación (BathTokens) "
+    tokenSupply: BigInt!
+    "valor total de los depósitos de la piscina"
+    depositado total: BigInt!
+    " valor total de los retiros del pool "
+    totalRetirado: BigInt!
+    " Precio de BathToken: suministro total / saldo subyacente "
+    precio: BigDecimal!
+    "total obtenido de la actividad de creación de mercado"
+    totalEarned: BigInt!
+    "instantáneas diarias de los datos del grupo"
+    poolDayData: [PoolDayData!]! @derivedFrom(campo: "grupo")
+    "instantáneas por hora de los datos del grupo"
+    poolHourData: [PoolHourData!]! @derivedFrom(campo: "grupo")
+    "campos derivados"
+    depósitos: [¡Depósito!]! @derivedFrom(campo: "grupo")
+    se retira: [¡Retirarse!]! @derivedFrom(campo: "grupo")
+    PoolBuffers: [¡PoolBuffer!]! @derivedFrom(campo: "grupo")
+}
+```
+
+La entidad Pool contiene toda la información relevante sobre el estado actual e histórico, o un pool de liquidez. La entidad Pool se asigna a varias otras entidades con las que está asociada. Las entidades más relevantes que mapea son las entidades PoolDayData, PoolHourData y PoolBuffer. La variable totalEarned de la entidad Pool se calcula de la siguiente manera
+
+$$
+total ganado = saldo subyacente - (total depositado - total retirado)
+$$
+
+Cada entidad de Pool también tiene dos entidades asociadas que rastrean las estadísticas del pool durante un período de tiempo determinado: PoolDayData y PoolHourData. Los ID para estos pares son los siguientes:
+
+- PoolDayData(ID: \<pool underlying asset address>#\<timestamp rounded to current day by dividing by 86400>)
+- PoolHourData(ID: \<pool underlying asset address>#_\<timestamp rounded to current hour by dividing by 3600>_)
+
+Todos los valores están denominados en el valor entero del token ERC-20 subyacente que representan.
+
+### Entidad PoolBuffer (ID: \<pool underlying asset address>#\<buffer asset address>)
+
+```graphql
+escriba PoolBuffer @entidad {
+    " <pool underlying asset address>#<buffer asset address> "
+    ¡hice!
+    "la piscina es"
+    piscina: piscina!
+    "dirección del token del activo en el búfer"
+    ficha: ¡Cuerda!
+    "nombre del activo en el búfer"
+    nombre: Cuerda!
+    "cantidad de token en el búfer"
+    Cantidad de búfer: BigInt!
+}
+```
+
+La entidad PoolBuffer corresponde a la cantidad de un activo de pares hermanos que se encuentra en el grupo de liquidez a la espera de ser reequilibrado. La siguiente imagen ayudará a explicar este proceso y a qué corresponde la cantidad de Pool Buffer.
+
+TODO: \*insertar visualización desde arriba\*
+
+Cada entidad de PoolBuffer también tiene dos entidades asociadas que rastrean las estadísticas de PoolBuffer durante un período de tiempo determinado: PoolDayData y PoolHourData. Los ID para estos pares son los siguientes:
+
+- PoolBufferDay(ID: \<pool underlying asset address>#\<buffer asset address>#\<timestamp rounded to current day by dividing by 86400>)
+- PoolBufferHour(ID: \<pool underlying asset address>#\<buffer asset address>#_\<timestamp rounded to current hour by dividing by 3600>_)
+
+Todos los valores están denominados en el valor entero del token ERC-20 subyacente que representan.
+
+### Entidad de Depósito (ID: \<transaction hash>#\<user address>)
+
+```graphql
+escriba Depósito @entidad {
+    " <transaction hash>#<user address> "
+    ¡hice!
+    "tiempo de txn"
+    marca de tiempo: BigInt!
+    " Detalles de la transacción "
+    transacción: ¡Transacción!
+    " piscina para depositar en "
+    piscina: piscina!
+    "cantidad depositada en la piscina"
+    depositAmount: BigInt!
+    "Tokens de baño recibidos"
+    bathTokenAmount: BigInt!
+    " Precio de BathToken: suministro total / saldo subyacente "
+    precio: BigDecimal!
+    "proveedor de liquidez"
+    proveedor de liquidez: proveedor de liquidez!
+    " mapear a la entidad PoolDayData "
+    poolDayData: PoolDayData!
+    " mapear a la entidad PoolHourData "
+    poolHourData: PoolHourData!
+}
+```
+
+La entidad de Depósito corresponde a cualquier depósito colocado por un proveedor de liquidez en los fondos de Rubicon. La entidad de depósito contiene todos los datos relevantes relacionados con el depósito, como el monto del depósito y las acciones recibidas, junto con el mapeo a otras entidades relevantes. Todos los valores están denominados en el valor entero del token ERC20 subyacente que representan.
+
+### Retirar entidad (ID: \<transaction hash>#\<user address>)
+
+```graphql
+escriba Retirar @entidad {
+    " <transaction hash>#<user address> "
+    ¡hice!
+    "tiempo de txn"
+    marca de tiempo: BigInt!
+    " Detalles de la transacción "
+    transacción: ¡Transacción!
+    "piscina de la que retirarse"
+    piscina: piscina!
+    "cantidad retirada del fondo común"
+    retirarCantidad: BigInt!
+    "Fichas de baño quemadas"
+    bathTokenBurned: BigInt!
+    " Precio de BathToken: suministro total / saldo subyacente "
+    precio: BigDecimal!
+    "proveedor de liquidez"
+    proveedor de liquidez: proveedor de liquidez!
+    " mapear a la entidad PoolDayData "
+    poolDayData: PoolDayData!
+    " mapear a la entidad PoolHourData "
+    poolHourData: PoolHourData!
+}
+```
+
+La entidad de retiro corresponde a cualquier depósito colocado por un proveedor de liquidez en los fondos de Rubicon. La entidad Retiro contiene todos los datos relevantes relacionados con el depósito, como el monto del retiro y las acciones recibidas, junto con el mapeo a otras entidades relevantes. Todos los valores están denominados en el valor entero del token ERC20 subyacente que representan.
+
+## _**Consultas de ejemplo**_
+
+Las siguientes consultas son algunos escenarios de casos de uso comunes para posibles necesidades de datos relacionadas con el subgráfico BathToken.
+
+| Use Case                                               | Subgraph Studio Example                                                                                                                  |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Access a User's liquidity pool positions               | [Pool Positions](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/bathtoken?query=liquidityProviders)                      |
+| Check on the current statistics of the liquidity pools | [Current Pool Statistics](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/bathtoken?query=Pools)                          |
+| Load in the historical pools data                      | [Historical Pools Data](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/bathtoken?query=Pools%20Historical%20Performance) |

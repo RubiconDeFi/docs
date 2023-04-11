@@ -1,0 +1,30 @@
+---
+title: Rubicon | Kumpulan Likuiditas
+pageTitle: Kumpulan Likuiditas
+description: Semua yang perlu Anda ketahui tentang kumpulan likuiditas Rubicon
+---
+
+## Pengembang
+
+Lihat kontrak kumpulan likuiditas [BathToken.sol](https://github.com/RubiconDeFi/rubicon-protocol-v1/blob/master/contracts/rubiconPools/BathToken.sol) di GitHub.
+
+Juga, periksa kolam [contracts docs](/docs/protocol/rubicon-pools/rubicon-pools) dan bathToken [API docs](/docs/api/subgraphs/bathtoken-api)
+
+### Apakah pool likuiditas itu?
+
+Pool likuiditas Rubicon memiliki [certain risks](/docs/protocol/rubicon-pools/risks). Berhati-hatilah dan hanya setorkan apa yang Anda mampu untuk kehilangan.
+
+Kumpulan likuiditas Rubicon adalah sekumpulan kontrak pintar yang memungkinkan penyedia likuiditas (LP) menyetor token ERC-20 ke dalam kumpulan. Token di kumpulan digunakan oleh pembuat pasar aktif (ahli strategi) untuk menyediakan likuiditas pada buku pesanan Rubicon. Hasil dari pembuatan pasar masuk ke piringan hitam, sementara ahli strategi mendapatkan biaya manajemen.
+
+Penyedia likuiditas (LP) menerima bathToken saat mereka menyetor aset crypto ke dalam kumpulan. Mereka mewakili bagian proporsional mereka dari aset kumpulan yang mendasarinya.\
+(Mis. LP mendepositkan ETH, menerima bathETH)
+
+Sejak awal, kami merancang kumpulan ini dengan parameter keamanan yang akan memungkinkan siapa saja untuk mengelola likuiditas kumpulan. Sementara sistem masih dalam pengembangan, tim kami bertindak sebagai pengelola likuiditas pool. Anda dapat mempelajari lebih lanjut di [Current Pools Strategy](/docs/guides/liquidity-pools/current-pools-strategy) halaman. Versi berikutnya dari kumpulan likuiditas Rubicon sedang dalam tahap penelitian dan pengembangan. Kami akan membagikan pembaruan tentang [our blog](https://mirror.xyz/rubicon.eth)!
+
+![Figure](/assets/image(3).png)
+
+### Keuntungan
+
+Banyak protokol/DEX memilih antara likuiditas pasif atau aktif. Rubicon menguraikan peran dan insentif untuk penyedia likuiditas pasif dan manajer likuiditas aktif.
+
+Di Rubicon, hanya ada satu kumpulan untuk setiap token. Misalnya, kumpulan USDC dapat digunakan pada ETH-USDC, OP-USDC, dan buku pesanan USDC lainnya. Ini lebih hemat modal daripada sistem di mana likuiditas dikunci ke dalam satu pasangan perdagangan.

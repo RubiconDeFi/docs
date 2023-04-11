@@ -1,0 +1,23 @@
+---
+title: Rubicon/浴室
+pageTitle: 浴室
+description: Rubicon池的管理合同
+---
+
+## 浴室
+
+[BathHouse contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathHouse.sol)充当 Rubicon Pools 系统的管理员，同时为系统提供关键的高级功能。 BathHouse 最重要的功能是初始化新的 BathPairs、批准策略以及管理流动资金池组织和路由。
+
+### 主要功能
+
+* `initBathPair`- 这个函数初始化一个 BathPair。在实践中，这允许在一对新的 Rubicon 上形成新的流动性池，同时将所述对与现有的报价流动性池（例如 bathUSDC）整合，如果它不存在的话。
+* `getBathPair` - 一个 getter 函数，允许调用者轻松确定给定的 `(address asset, address quote)` 组合的 BathPair 地址。
+* **战略管理**
+  * 该合约管理 Rubicon Pools 支持哪些“策略”。目前，v0 中唯一允许的策略是 PairsTrade——策略师在每次函数调用时进行单对交易。
+  * `isApprovedStrat` - 验证给定调用者或地址是否为已批准策略的函数。
+  * `approveStrategy` - 向 Rubicon 池添加新策略的管理功能。
+* **参数管理**
+  * 该合约控制一些与策略师和 LP 等相关的系统级参数。
+  * `setCancelTimeDelay` - 此函数在 BathPair.sol 上设置 `timeDelay`，之后未成交的订单将在订单簿中取消。
+  * `setMaxOutstandingPairCount` - 此函数为给定的 BathPair 设置 `maxOutstandingPairCount` 值。该值定义了给定交易对的订单簿中可以未完成的订单数量。
+* `onlyAdmin` - BathHouse 目前由 Rubicon 团队运营，可以通过任何地址进行管理，例如 DAO 多重签名。

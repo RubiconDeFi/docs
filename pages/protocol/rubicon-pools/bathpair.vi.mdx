@@ -1,0 +1,37 @@
+---
+title: Rubicon | Cặp Tắm
+pageTitle: Cặp Tắm
+description: Thực hiện chiến lược và tạo thị trường theo cặp cụ thể
+---
+
+## Cặp tắm
+
+[BathPair contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathPair.sol) đại diện cho trái tim của Rubicon Pools bằng cách cho phép các chiến lược gia, tính thanh khoản của người dùng và các cân nhắc bảo mật chính có khả năng kết hợp với nhau cho một cặp giao dịch nhất định. Hợp đồng này cho phép các nhà chiến lược triển khai tính thanh khoản của người dùng để tạo ra thị trường trên Thị trường Rubicon. Hơn nữa, hợp đồng này đảm bảo rằng tiền của người dùng được an toàn khỏi các tác nhân độc hại tiềm tàng và nằm trong hệ thống vòng kín là Rubicon Pools.
+
+### Chức năng chính
+
+* `initializePair` - chức năng này được gọi khi Nhà tắm khởi tạo hợp đồng này. Chức năng này tạo Mã thông báo tắm mới nếu chúng không tồn tại đối với phiên bản Cặp tắm đã cho và trỏ Cặp tới Mã thông báo tắm trích dẫn hiện có nếu nó đã tồn tại.
+* `executeStrategy` - đây là chức năng cốt lõi của BathPair.sol. Trong phiên bản 0 của Rubicon Pools, nó cho phép một chiến lược gia đặt giao dịch theo cặp (yêu cầu và đặt giá thầu) với tính thanh khoản cơ bản của bathToken do Cặp này quản lý. _Chức năng này là điểm khởi đầu để các chiến lược gia tạo thị trường và tận dụng tính thanh khoản của người dùng._
+  * Các tham số được cung cấp bởi chiến lược gia khi gọi chức năng này là:
+
+      ```
+          address targetStrategy,
+          uint256 askNumerator, // *Asset Amt* / Quote Amt
+          uint256 askDenominator, // Asset Amt / *Quote Amt*
+          uint256 bidNumerator, // *Quote Amt* / Asset Amt
+          uint256 bidDenominator // Quote Amt / *Asset Amt*
+      ```
+* `getMaxOrderSize` - hàm này trả về kích thước đơn đặt hàng lớn nhất cho một giá thầu hoặc một yêu cầu mà nhà chiến lược có thể đặt bằng tiền của người dùng. Hơn nữa, chức năng này đảm bảo rằng kích thước thứ tự tương đối và động [inventory management](/docs/protocol/rubicon-pools/rubicon-pools#constraints-and-risk-parameters) được thi hành.
+* `strategistBootyClaim` - chức năng này được các chiến lược gia gọi để tự động trả về lợi nhuận kiếm được cho họ mà có thể kiếm được khi tạo thị trường thành công. Phép tính chính để xác nhận lợi tức là (Số lượng đơn đặt hàng được thực hiện do chiến lược gia này) / (Tổng số lượng đơn đặt hàng được thực hiện cho nội dung nhất định) \* (Lượng lợi nhuận cơ bản).
+
+### Tham số bảo mật chính và quy trình thực thi
+
+Có một số tham số bảo mật được áp dụng để đảm bảo rằng các tác nhân độc hại hoặc nhà tạo lập thị trường kém không thể triển khai vốn người dùng một cách không hiệu quả trên Thị trường Rubicon. Tất cả các hàm và tham số này đóng một vai trò trong lệnh gọi hàm duy nhất được thực hiện bởi chiến lược gia: `executeStrategy`. Vui lòng xem chúng bên dưới theo thứ tự chúng xảy ra trong suốt quá trình thực hiện lệnh gọi hàm.
+
+* `onlyApprovedStrategy` - chiến lược mục tiêu của lệnh gọi chức năng này phải được Nhà tắm phê duyệt.
+* `enforceReserveRatio` - công cụ sửa đổi này đảm bảo rằng `reserveRatio` cho mỗi nhóm thanh khoản cơ bản (batoken tài sản và báo giá) được quan sát _trước và sau khi thực thi chức năng_.
+* `getMaxOrderSize` - chức năng này được sử dụng ở đây để đảm bảo rằng tử số (những gì đang được sử dụng từ nhóm thanh khoản) của giá thầu và yêu cầu tuân thủ các ràng buộc quản lý khoảng không quảng cáo động của cặp.
+* `enforceSpread` - chức năng này đảm bảo rằng (a) có chênh lệch trên các lệnh được gửi cho một giao dịch theo cặp và (b) rằng giao dịch theo cặp đó có giá chào bán/giá mua nằm ở nửa bên phải của sổ lệnh (giá chào bán /bid là yêu cầu/giá thầu hợp lệ `/` midpoint price of the order book). A price oracle will be implemented in future versions to further ensure that midpoint of the order book is respected as a valid point of reference.
+* `IPairsTrade(targetStrategy).execute` - the strategy is then called and a pairs trade is placed. See PairsTrade.sol.
+* `cancelPartialFills` - this crucial function parses through the outstanding orders for this pair in the order book and (a) cancels any orders whose counterparts (the bid to an ask) of the pairs trade have been filled. This represents a yield event in which a pair's trade was partially filled. (b) Any orders that have exceeded the `timeDelay` for this pair are canceled to ensure no liquidity is locked in old orders.
+* `rebalancePair` - this simple function sends any filled orders that send ERC-20 assets to a Bath Token's sister pool (Asset `< - >` Trích dẫn) trở lại nhóm thanh khoản chính xác để có thể nhận ra lợi nhuận.

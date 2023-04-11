@@ -1,0 +1,151 @@
+---
+title: Rubicon | Rubicon Market
+pageTitle: Rubicon Market
+description: Tinjauan umum dan dokumentasi untuk kontrak buku pesanan Rubicon
+---
+
+Logika pertukaran inti Rubicon hidup di [RubiconMarket](https://github.com/RubiconDeFi/rubicon_protocol/blob/master/contracts/RubiconMarket.sol) kontrak pintar - buku pesanan utama Rubicon. Sangat berguna untuk menganggap kontrak pintar ini sebagai lapisan tengah yang memfasilitasi pertukaran aset digital peer-to-peer melalui buku pesanan.
+
+# 📊 Pasar Rubicon
+
+## Ringkasan
+
+Kontrak pintar Pasar Rubicon mengimplementasikan buku pesanan on-chain dan mesin pencocokan untuk perdagangan peer-to-peer [ERC-20 tokens](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/).
+
+Buku pesanan adalah daftar pesanan beli dan jual untuk suatu aset, diurutkan berdasarkan harga. Kontrak ini menerapkan setiap buku pesanan ERC20/ERC20 sebagai dua daftar terurut yang ditautkan ganda, satu untuk sisi Beli dan satu lagi untuk sisi Jual dari pasar tertentu.
+
+Kontrak menggunakan model escrow untuk likuiditas; ketika pesanan batas ditempatkan pada buku, token tersebut dikirim ke kontrak. Jika/ketika pesanan diisi, kontraknya cocok dengan pedagang secara langsung dan token dikirim ke masing-masing pihak. Pesanan dapat dibatalkan dan kontrak akan mengembalikan token ke pengirim.
+
+Rubicon Market adalah karya turunan dari sumber terbuka MakerDAO [OasisDEX](https://oasisdex.com/) dan mewarisi lisensi AGPL3.
+
+## Fungsi Perdagangan
+
+### menawarkan()
+
+```
+    function offer(
+        uint256 pay_amt,
+        ERC20 pay_gem,
+        uint256 buy_amt,
+        ERC20 buy_gem,
+        uint256 pos,
+    ) public returns (uint256)
+```
+
+| Parameter Name         | Type        | Description                                                                                                                       |
+| ---------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| pay\_amt               | uint256     | Quantity of ERC-20 tokens the maker is selling                                                                                    |
+| pay\_gem               | address     | ERC-20 token the maker is selling                                                                                                 |
+| uint buy\_amt          | uint256     | Quantity of ERC-20 tokens the maker is buying                                                                                     |
+| ERC20 buy\_gem         | address     | ERC-20 token the maker is buying                                                                                                  |
+| uint pos               | uint256     | Position in the sorted list to place the order. Set this to 0 unless you know the exact position (closest ID) to insert the order |
+| \[Optional] matching   | bool        | Optional boolean to determine whether the offer should be automatically matched (placed in the sorted list)                       |
+
+The primary function for placing limit orders on Rubicon. The **pay_amt** quantity of the **pay_gem** token will be sent to the order book contract, sitting in escrow until it is filled or canceled. Always set pos to **0** unless you know the exact position in the sorted lost to insert the order.
+
+### cancel()
+
+```
+    function cancel(uint id)
+        public
+        can_cancel(id)
+        returns (bool success)
+```
+
+| Parameter Name         | Type        | Description                                    |
+| ---------------------- | ----------- | ---------------------------------------------- |
+| id                     | uint256     | The id of the order the user wants to cancel   |
+
+Fungsi ini digunakan untuk mengisi atau “cherry pick” suatu urutan tertentu dalam buku. Penelepon akan membayar biaya taker. Atau, Anda dapat menggunakan fungsi perutean **take()** untuk mencapai hasil yang sama dan mengisi penawaran tertentu.
+
+### beliSemuaJumlah()
+
+```
+     function buyAllAmount(
+        ERC20 buy_gem,
+        uint256 buy_amt,
+        ERC20 pay_gem,
+        uint256 max_fill_amount
+    ) external returns (uint256 fill_amt)
+```
+
+| Parameter Name         | Type        | Description                                    |
+| ---------------------- | ----------- | ---------------------------------------------- |
+| buy\_gem               | address     | ERC-20 token the taker is buying               |
+| buy\_amt               | uint256     | Quantity of tokens the taker is buying         |
+| pay\_gem               | address     | ERC-20 token the taker is selling              |
+| max\_fill\_amount      | uint256     | Maximum amount of pay tokens sold              |
+
+Mencoba memperdagangkan jumlah **sell_amt** token **sell_gem** untuk setidaknya jumlah **min_fill_amount** token **pay_gem**. Transaksi akan dikembalikan jika pedagang akan menerima kurang dari jumlah minimum yang ditentukan. Ini adalah pesanan jual "Isi atau Bunuh".
+
+## Lihat Fungsi
+
+### getBestOffer()
+
+```
+function getBestOffer(ERC20 pay_gem, ERC20 buy_gem)
+    public
+    view
+    returns (uint256)
+```
+
+Mengembalikan ID penawaran di bagian atas buku pesanan.
+
+Mantan. Memanggil fungsi ini dengan WETH sebagai **pay_gem** dan USDC sebagai **buy_gem** akan mengembalikan permintaan terbaik di WETH/USDC. Mengalihkan token akan mengembalikan tawaran terbaik.
+
+### getWorseOffer()
+
+```
+function getWorseOffer(uint256 id)
+    public
+    view
+    returns (uint256)
+```
+
+Mengembalikan tawaran terburuk berikutnya dalam daftar yang diurutkan. Tawaran yang lebih buruk adalah yang lebih tinggi jika pesanan targetnya adalah permintaan, dan yang lebih rendah jika itu adalah tawaran. Dalam kedua kasus, itu akan mengembalikan yang lebih baru jika sama.
+
+### getBuyAmount()
+
+```
+    function getBuyAmount(
+        ERC20 buy_gem,
+        ERC20 pay_gem,
+        uint256 pay_amt
+    ) external view returns (uint256 fill_amt)
+```
+
+Mengembalikan jumlah token **buy_gem** yang diterima jika jumlah tertentu dari token **pay_gem** dihabiskan. Digunakan untuk memeriksa status buku pesanan saat ini.
+
+### dapatkanJumlahBayar()
+
+```
+function getPayAmount(
+        ERC20 pay_gem,
+        ERC20 buy_gem,
+        uint256 buy_amt
+    ) external view returns (uint256 fill_amt)
+```
+
+Mengembalikan jumlah token **pay_gem** yang diperlukan untuk membeli token **buy_gem** dalam jumlah tertentu. Digunakan untuk memeriksa status buku pesanan saat ini.
+
+### getOfferCount()
+
+```
+function getOfferCount(ERC20 sell_gem, ERC20 buy_gem)
+        public
+        view
+        returns (uint256)
+```
+
+Mengembalikan jumlah penawaran di buku pesanan untuk pasangan tertentu.
+
+### dapatkanFeeBPS()
+
+```
+function getFeeBPS()
+    public
+    view
+    returns (uint256)
+```
+
+Mengembalikan biaya pengambil protokol, dalam basis poin.

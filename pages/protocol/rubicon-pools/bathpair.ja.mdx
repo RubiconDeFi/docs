@@ -1,0 +1,37 @@
+---
+title: ルビコン/バスペア
+pageTitle: バスペア
+description: ペア固有の市場作りと戦略の実行
+---
+
+## バスペア
+
+[BathPair contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathPair.sol)ストラテジスト、ユーザーの流動性、および重要なセキュリティ上の考慮事項を特定の取引ペアにまとめることができるようにすることで、Rubicon Pools の心臓部を表しています。この契約により、ストラテジストはルビコン マーケットでマーケット メイクを行うためにユーザーの流動性を展開できます。さらに、このコントラクトにより、ユーザーの資金が潜在的に悪意のある攻撃者から保護され、ルビコン プールであるクローズド ループ システム内にとどまることが保証されます。
+
+### 主な機能
+
+* `initializePair` - この関数は、Bath House がこのコントラクトを初期化するときに呼び出されます。この関数は、指定されたバス ペア インスタンスに存在しない場合は新しいバス トークンを作成し、既に存在する場合はペアを既存の見積もりバス トークンにポイントします。
+* `executeStrategy` - これは BathPair.sol のコア機能です。 Rubicon Pools のバージョン 0 では、ストラテジストは、このペアによって管理される基礎となる bathToken の流動性を使用して、ペアの取引 (アスクとビッド) を行うことができます。 _この機能は、ストラテジストがユーザーの流動性をマーケットメイクして活用するためのエントリーポイントです._
+  * この関数を呼び出すときにストラテジストによって提供されるパラメーターは次のとおりです。
+
+      ```
+          address targetStrategy,
+          uint256 askNumerator, // *Asset Amt* / Quote Amt
+          uint256 askDenominator, // Asset Amt / *Quote Amt*
+          uint256 bidNumerator, // *Quote Amt* / Asset Amt
+          uint256 bidDenominator // Quote Amt / *Asset Amt*
+      ```
+* `getMaxOrderSize` - この関数は、ストラテジストがユーザーの資金で発注できるビッドまたはアスクの最大注文サイズを返します。さらに、この関数は、相対的な順序のサイジングと動的 [inventory management](/docs/protocol/rubicon-pools/rubicon-pools#constraints-and-risk-parameters) を保証します。実施されます。
+* `strategistBootyClaim` - この関数はストラテジストによって呼び出され、マーケット メイキングの成功によって獲得された可能性のある獲得利回りをストラテジストに自動的に返します。利回りを主張するための重要な計算は、(このストラテジストの結果としての注文約定の数量) / (特定の資産の注文約定の合計数量) \* (基礎となる利回りの金額) です。
+
+### 主要なセキュリティ パラメータと実行フロー
+
+悪意のあるアクターや貧弱なマーケット メーカーがルビコン マーケットでユーザー資本を効果的に展開できないようにするために、多数のセキュリティ パラメーターが用意されています。これらの関数とパラメーターはすべて、ストラテジストが行う単一の関数呼び出しで役割を果たします: `executeStrategy`。関数呼び出しの実行中に発生する順序で以下を参照してください。
+
+* `onlyApprovedStrategy` - この関数呼び出しのターゲット戦略は、Bath House によって承認される必要があります。
+* `enforceReserveRatio` - この修飾子は、基礎となる各流動性プール (asset および quote bathTokens) の `reserveRatio` が_関数実行の前後_で観察されることを保証します。
+* `getMaxOrderSize` - この関数は、ビッドとアスクの分子 (流動性プールから使用されるもの) がペアの動的な在庫管理の制約に従うことを保証するためにここで使用されます。
+* `enforceSpread` - この関数は、(a) ペア取引のために送信された注文にスプレッドがあること、および (b) ペア取引のアスク/ビッド価格がオーダー ブックの正しい半分 (アスク) であることを保証します。 /bid は有効なアスク/ビッド `/` midpoint price of the order book). A price oracle will be implemented in future versions to further ensure that midpoint of the order book is respected as a valid point of reference.
+* `IPairsTrade(targetStrategy).execute` - the strategy is then called and a pairs trade is placed. See PairsTrade.sol.
+* `cancelPartialFills` - this crucial function parses through the outstanding orders for this pair in the order book and (a) cancels any orders whose counterparts (the bid to an ask) of the pairs trade have been filled. This represents a yield event in which a pair's trade was partially filled. (b) Any orders that have exceeded the `timeDelay` for this pair are canceled to ensure no liquidity is locked in old orders.
+* `rebalancePair` - this simple function sends any filled orders that send ERC-20 assets to a Bath Token's sister pool (Asset `< - >` Quote) を正しい流動性プールに戻して、利回りを実現できるようにします。

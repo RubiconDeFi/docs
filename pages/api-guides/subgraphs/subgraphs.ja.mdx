@@ -1,0 +1,34 @@
+---
+description: サブグラフは、Rubiconデータを照会するために使用されます
+---
+
+## 💻 サブグラフ
+
+[The Graph](https://thegraph.com/en/)ブロックチェーンからのデータのインデックス作成とクエリを行うための分散型プロトコルであり、直接クエリするのが難しいデータに簡単にアクセスできます。 Rubicon のサブグラフは、The Graph のホストされたサービスにあります。
+
+サブグラフは、プロトコルからのデータ (スワップ、取引、預金など) を保存および整理します。標準の GraphQL API を介して Rubicon データにアクセスできます。
+
+### **主要なサブグラフ**
+
+Rubicon プロトコルには、2 つの主要なサブグラフがあります。
+
+* [RubiconMarket](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket): ルビコンのオーダーブックで取引活動 (メーカー/テイカー取引) を追跡し、市場データと過去のトークン価格を照会するために使用されます
+* [BathToken Subgraph](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/bathtoken): ルビコンの流動性プールでのアクティビティ (入金/引き出し/利回り) を追跡し、プールのメトリクスと過去のパフォーマンスをクエリするために使用されます
+
+### **展開**
+
+私たちのチームは、プロトコルの展開ごとにこれらのサブグラフを維持しています。以下のアクティブな展開を見つけることができます。
+
+#### _楽観主義_
+
+* [RubiconMarket](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarketoptimism)
+* [BathToken](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/bathtokenoptimism)
+
+#### _Optimism-Kovan (テストネット)_
+
+* [RubiconMarket](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket)
+* [BathToken](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/bathtoken)
+
+
+
+[**Discord**](https://discord.com/invite/E7pS24J)**.** でルビコン サブグラフについて質問してください。

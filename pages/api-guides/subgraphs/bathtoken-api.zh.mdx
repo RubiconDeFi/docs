@@ -1,0 +1,198 @@
+---
+title: Rubicon/Bath令牌API
+description: Bath令牌子图的关键实体、合同事件处理程序的概述, 和各种用例的示例查询。
+---
+
+# 巴斯令牌 API
+
+## **BathToken 关键实体**
+
+BathToken 子图包含一组实体，这些实体收集和存储与流动性提供者活动和池利用相关的数据，以便在协议的订单簿上做市。以下是我们认为用户会发现与其数据需求最相关的关键实体。
+
+### _**LiquidityProvider 实体（ID：钱包地址）**_
+
+```graphql
+输入 LiquidityProvider @entity {
+    “ <user adddress>”
+    编号：编号！
+    “衍生领域”
+    职位：[PoolPosition！]！ @derivedFrom（字段：“liquidityProvider”）
+    存款：【存款！】！ @derivedFrom（字段：“liquidityProvider”）
+    退出：【退出！】！ @derivedFrom（字段：“liquidityProvider”）
+}
+```
+
+LiquidityProvider 实体充当单一参考点，从钱包地址收集 Rubicon 流动性池的所有活动。从 LiquidityProvider 实体中，您可以访问 PoolPosition、Deposit 和 Withdraw 实体。
+
+### _PoolPosition 实体（ID：\<user address>#\<pool underlying asset address>）_
+
+```graphql
+输入 PoolPosition @entity {
+    “<user address>#<pool underlying asset address>”
+    编号：编号！
+    “流动性提供者是”
+    流动性提供者：流动性提供者！
+    “游泳池是”
+    游泳池：游泳池！
+    “当前 bathToken 余额”
+    bathTokenAmount：BigInt！
+    《池存款总值》
+    总存款：BigInt！
+    《提款池总价值》
+    totalWithdrawn：BigInt！
+}
+```
+
+PoolPosition 实体表示用户在 Rubicon 流动性池中持有的资产的活跃状态。要访问池的当前状态，包括总交易量、未偿还金额和 bathToken 价格，可以访问 Pool 实体。所有值均以它们所代表的基础 ERC20 代币的整数值计价。
+
+### 池实体（ID：\<pool underlying asset address>）
+
+```graphql
+输入池@entity {
+    “ <pool underlying asset address>”
+    编号：编号！
+    “源自”
+    浴室：浴室！
+    “池名”
+    名称：字符串！
+    《矿池资产地址》
+    underlyingToken：字符串！
+    《创作时间》
+    createdAtTimestamp：BigInt！
+    “块池创建于”
+    createdAtBlockNumber：BigInt！
+    “沐浴令牌创建者的地址”
+    bathTokenCreator：字符串！
+    " 池基础余额（池中和账簿上的金额）"
+    底层余额：BigInt！
+    “订单簿上未偿还的池资产数量”
+    outstandingAmount：BigInt！
+    “流通股（BathTokens）”
+    tokenSupply：BigInt！
+    《池存款总值》
+    总存款：BigInt！
+    《提款池总价值》
+    totalWithdrawn：BigInt！
+    “ BathToken 价格：总供应量/基础余额”
+    价格：BigDecimal！
+    “从做市活动中赚取的总收入”
+    总收入：BigInt！
+    《池数据每日快照》
+    poolDayData：[PoolDayData！]！ @derivedFrom（字段：“池”）
+    “池数据的每小时快照”
+    poolHourData：[PoolHourData！]！ @derivedFrom（字段：“池”）
+    “衍生领域”
+    存款：【存款！】！ @derivedFrom（字段：“池”）
+    退出：【退出！】！ @derivedFrom（字段：“池”）
+    PoolBuffers：[PoolBuffer！]！ @derivedFrom（字段：“池”）
+}
+```
+
+Pool 实体包含有关当前和历史状态或流动资金池的所有相关信息。 Pool 实体映射到与之关联的多个其他实体。它映射的最相关实体是 PoolDayData、PoolHourData 和 PoolBuffer 实体。 Pool实体的totalEarned变量计算如下
+
+$$
+totalEarned = underlyingBalance - (totalDeposited - totalWithdrawn)
+$$
+
+每个 Pool 实体还有两个关联实体，用于跟踪一段时间内的池统计信息：PoolDayData 和 PoolHourData。这些对的 ID 如下：
+
+* PoolDayData(ID: \<pool underlying asset address>#\<timestamp rounded to current day by dividing by 86400>)
+* PoolHourData(ID: \<pool underlying asset address>#_\<timestamp rounded to current hour by dividing by 3600>_)
+
+所有值都以它们所代表的基础 ERC-20 代币的整数值计价。
+
+### PoolBuffer 实体（ID：\<pool underlying asset address>#\<buffer asset address>）
+
+```graphql
+输入 PoolBuffer @entity {
+    “<pool underlying asset address>#<buffer asset address>”
+    编号：编号！
+    “游泳池是”
+    游泳池：游泳池！
+    “缓冲区中资产的代币地址”
+    令牌：字符串！
+    “缓冲区中的资产名称”
+    名称：字符串！
+    “缓冲区中的令牌数量”
+    缓冲区数量：BigInt！
+}
+```
+
+PoolBuffer 实体对应于等待重新平衡的流动资金池中姐妹对资产的数量。下面的视觉图将有助于解释这个过程以及池缓冲区数量对应的内容。
+
+TODO：\*从上面插入可视化\*
+
+每个 PoolBuffer 实体还有两个关联的实体，它们在设定的时间段内跟踪 PoolBuffer 统计信息：PoolDayData 和 PoolHourData。这些对的 ID 如下：
+
+* PoolBufferDay(ID: \<pool underlying asset address>#\<buffer asset address>#\<timestamp rounded to current day by dividing by 86400>)
+* PoolBufferHour(ID: \<pool underlying asset address>#\<buffer asset address>#_\<timestamp rounded to current hour by dividing by 3600>_)
+
+所有值都以它们所代表的基础 ERC-20 代币的整数值计价。
+
+###充值实体（ID：\<transaction hash>#\<user address>）
+
+```graphql
+输入存款@entity {
+    “<transaction hash>#<user address>”
+    编号：编号！
+    “交易时间”
+    时间戳：BigInt！
+    “ 交易明细 ”
+    交易：交易！
+    “存入池”
+    游泳池：游泳池！
+    《入池金额》
+    存款金额：BigInt！
+    “已收到沐浴代币”
+    bathTokenAmount：BigInt！
+    “ BathToken 价格：总供应量/基础余额”
+    价格：BigDecimal！
+    “流动性提供者”
+    流动性提供者：流动性提供者！
+    “映射到 PoolDayData 实体”
+    池日数据：池日数据！
+    “映射到 PoolHourData 实体”
+    poolHourData：PoolHourData！
+}
+```
+
+存款实体对应于流动性提供者存入 Rubicon 池的任何存款。 Deposit 实体包含有关存款的所有相关数据，例如存款金额和收到的股份，以及到其他相关实体的映射。所有值均以它们所代表的基础 ERC20 代币的整数值计价。
+
+###撤回实体（ID：\<transaction hash>#\<user address>）
+
+```graphql
+输入撤回@entity {
+    “<transaction hash>#<user address>”
+    编号：编号！
+    “交易时间”
+    时间戳：BigInt！
+    “ 交易明细 ”
+    交易：交易！
+    《退出池》
+    游泳池：游泳池！
+    “从池中提取的金额”
+    取款金额：BigInt！
+    “沐浴代币被烧毁”
+    bathTokenBurned：BigInt！
+    “ BathToken 价格：总供应量/基础余额”
+    价格：BigDecimal！
+    “流动性提供者”
+    流动性提供者：流动性提供者！
+    “映射到 PoolDayData 实体”
+    池日数据：池日数据！
+    “映射到 PoolHourData 实体”
+    poolHourData：PoolHourData！
+}
+```
+
+提款实体对应于流动性提供者存入 Rubicon 池的任何存款。 Withdraw 实体包含有关存款的所有相关数据，例如提取金额和收到的股份，以及到其他相关实体的映射。所有值均以它们所代表的基础 ERC20 代币的整数值计价。
+
+## _**示例查询**_
+
+以下查询是与 BathToken 子图相关的潜在数据需求的一些常见用例场景。
+
+| Use Case                                               | Subgraph Studio Example                                                                                                                  |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Access a User's liquidity pool positions               | [Pool Positions](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/bathtoken?query=liquidityProviders)                      |
+| Check on the current statistics of the liquidity pools | [Current Pool Statistics](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/bathtoken?query=Pools)                          |
+| Load in the historical pools data                      | [Historical Pools Data](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/bathtoken?query=Pools%20Historical%20Performance) |

@@ -1,0 +1,23 @@
+---
+title: 루비콘/바스 하우스
+pageTitle: 목욕탕
+description: 루비콘 풀에 대한 관리 계약
+---
+
+## 목욕탕
+
+[BathHouse contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathHouse.sol) Rubicon Pools 시스템의 관리자 역할을 하면서 시스템에 주요 고급 기능을 제공합니다. BathHouse의 가장 중요한 기능은 새로운 BathPair를 초기화하고 전략을 승인하며 유동성 풀 구성 및 라우팅을 관리하는 것입니다.
+
+### 주요 기능
+
+* `initBathPair` - 이 함수는 BathPair를 초기화합니다. 실제로 이것은 새로운 유동성 풀이 이미 존재하지 않는 경우 기존 호가 유동성 풀(예: bathUSDC)과 해당 쌍을 통합하면서 새로운 루비콘 쌍에 걸쳐 새로운 유동성 풀을 형성할 수 있게 합니다.
+* `getBathPair` - 호출자가 `(주소 자산, 주소 인용)`의 주어진 조합에 대해 BathPair 주소를 쉽게 결정할 수 있도록 하는 getter 함수입니다.
+* **전략 관리**
+  * 이 계약은 Rubicon Pools가 지원하는 "전략"을 관리합니다. 현재 v0에서 허용되는 유일한 전략은 전략가가 함수 호출당 단일 쌍 거래를 수행하는 PairsTrade입니다.
+  * `isApprovedStrat` - 주어진 발신자 또는 주소가 승인된 전략인지 확인하는 기능.
+  * `approveStrategy` - Rubicon 풀에 새 전략을 추가하는 관리 기능.
+* **매개변수 관리**
+  * 이 계약은 전략가와 LP 모두와 관련된 몇 가지 시스템 수준 매개변수를 제어합니다.
+  * `setCancelTimeDelay`- 이 기능은 주문서에서 채워지지 않은 주문이 취소된 후 BathPair.sol에 `timeDelay`를 설정합니다.
+  * `setMaxOutstandingPairCount` - 이 함수는 주어진 BathPair에 대한 `maxOutstandingPairCount` 값을 설정합니다. 이 값은 주어진 거래쌍에 대해 주문장에서 얼마나 많은 주문이 남아있을 수 있는지를 정의합니다.
+* `onlyAdmin` - BathHouse는 현재 Rubicon 팀에서 운영하고 있으며 예를 들어 DAO 다중 서명을 포함한 모든 주소로 관리할 수 있는 기능이 있습니다.

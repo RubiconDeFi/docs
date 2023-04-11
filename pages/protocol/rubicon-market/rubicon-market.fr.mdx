@@ -1,0 +1,163 @@
+---
+title: Rubicon | Marché Rubicon
+pageTitle: Marché Rubicon
+description: Aperçu et documentation du contrat de carnet de commandes de Rubicon
+---
+
+La logique d'échange de base de Rubicon réside dans le [RubiconMarket](https://github.com/RubiconDeFi/rubicon_protocol/blob/master/contracts/RubiconMarket.sol) contrat intelligent - le carnet de commandes central de Rubicon. Il est utile de considérer ce contrat intelligent comme une couche intermédiaire qui facilite l'échange d'actifs numériques entre pairs via un carnet de commandes.
+
+# 📊 Marché Rubicon
+
+## Aperçu
+
+Le contrat intelligent Rubicon Market implémente des carnets de commandes en chaîne et un moteur de correspondance pour le trading peer-to-peer de [ERC-20 tokens](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/).
+
+Un carnet d'ordres est une liste d'ordres d'achat et de vente pour un actif, triés par prix. Ce contrat implémente chaque carnet de commandes ERC20/ERC20 sous la forme de deux listes triées à double lien, une pour le côté achat et une pour le côté vente du marché donné.
+
+Le contrat utilise un modèle de séquestre pour la liquidité ; lorsqu'un ordre à cours limité est placé sur le livre, ces jetons sont envoyés au contrat. Si/quand une commande est exécutée, le contrat correspond directement aux commerçants et les jetons sont envoyés à chaque partie. Une commande peut être annulée et le contrat renverra les jetons à l'expéditeur.
+
+Rubicon Market est une œuvre dérivée de l'open-source de MakerDAO [OasisDEX](https://oasisdex.com/) et hérite de la licence AGPL3.
+
+## Fonctions de négociation
+
+### offre()
+
+```
+    function offer(
+        uint256 pay_amt,
+        ERC20 pay_gem,
+        uint256 buy_amt,
+        ERC20 buy_gem,
+        uint256 pos,
+    ) public returns (uint256)
+```
+
+| Parameter Name         | Type        | Description                                                                                                                       |
+| ---------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| pay\_amt               | uint256     | Quantity of ERC-20 tokens the maker is selling                                                                                    |
+| pay\_gem               | address     | ERC-20 token the maker is selling                                                                                                 |
+| uint buy\_amt          | uint256     | Quantity of ERC-20 tokens the maker is buying                                                                                     |
+| ERC20 buy\_gem         | address     | ERC-20 token the maker is buying                                                                                                  |
+| uint pos               | uint256     | Position in the sorted list to place the order. Set this to 0 unless you know the exact position (closest ID) to insert the order |
+| \[Optional] matching   | bool        | Optional boolean to determine whether the offer should be automatically matched (placed in the sorted list)                       |
+
+The primary function for placing limit orders on Rubicon. The **pay_amt** quantity of the **pay_gem** token will be sent to the order book contract, sitting in escrow until it is filled or canceled. Always set pos to **0** unless you know the exact position in the sorted lost to insert the order.
+
+### cancel()
+
+```
+    function cancel(uint id)
+        public
+        can_cancel(id)
+        returns (bool success)
+```
+
+| Parameter Name         | Type        | Description                                    |
+| ---------------------- | ----------- | ---------------------------------------------- |
+| id                     | uint256     | The id of the order the user wants to cancel   |
+
+Cette fonction est utilisée pour remplir ou "choisir" une commande spécifique dans le livre. L'appelant paiera les frais de prise en charge. Alternativement, vous pouvez utiliser la fonction de routage **take()** pour obtenir le même résultat et remplir une offre spécifique.
+
+### buy()
+
+```
+    function buy(uint id, uint amount) public can_buy(id) 
+        returns (bool)
+```
+
+| Parameter Name         | Type        | Description                                    |
+| ---------------------- | ----------- | ---------------------------------------------- |
+| id                     | uint256     | The id of the target order                     |
+| amount                 | uint256     | Quantity of the target order to buy            |
+
+### buyAllAmount()
+
+```
+     function buyAllAmount(
+        ERC20 buy_gem,
+        uint256 buy_amt,
+        ERC20 pay_gem,
+        uint256 max_fill_amount
+    ) external returns (uint256 fill_amt)
+```
+
+| Parameter Name         | Type        | Description                                    |
+| ---------------------- | ----------- | ---------------------------------------------- |
+| buy\_gem               | address     | ERC-20 token the taker is buying               |
+| buy\_amt               | uint256     | Quantity of tokens the taker is buying         |
+| pay\_gem               | address     | ERC-20 token the taker is selling              |
+| max\_fill\_amount      | uint256     | Maximum amount of pay tokens sold              |
+
+Tente d'échanger la quantité **sell_amt** de jetons **sell_gem** contre au moins la quantité **min_fill_amount** de jetons **pay_gem**. La transaction sera annulée si le commerçant reçoit moins que le montant minimum spécifié. Il s'agit d'un ordre de vente "Fill-or-Kill".
+
+## Afficher les fonctions
+
+### getBestOffer()
+
+```
+function getBestOffer(ERC20 pay_gem, ERC20 buy_gem)
+    public
+    view
+    returns (uint256)
+```
+
+Renvoie l'ID de l'offre en haut du carnet de commandes.
+
+Ex. Appeler cette fonction avec WETH comme **pay_gem** et USDC comme **buy_gem** renverra la meilleure demande sur WETH/USDC. Changer les jetons renverra la meilleure enchère.
+
+### getWorseOffer()
+
+```
+function getWorseOffer(uint256 id)
+    public
+    view
+    returns (uint256)
+```
+
+Renvoie l'offre la moins bonne suivante dans la liste triée. La pire offre est la plus élevée si l'ordre cible est une demande, et la plus basse s'il s'agit d'une offre. Dans les deux cas, il en renverra un plus récent s'ils sont égaux.
+
+### getBuyAmount()
+
+```
+    function getBuyAmount(
+        ERC20 buy_gem,
+        ERC20 pay_gem,
+        uint256 pay_amt
+    ) external view returns (uint256 fill_amt)
+```
+
+Renvoie le nombre de jetons **buy_gem** reçus si un montant spécifié de jetons **pay_gem** est dépensé. Utilisé pour vérifier l'état actuel du carnet de commandes.
+
+### getPayAmount()
+
+```
+function getPayAmount(
+        ERC20 pay_gem,
+        ERC20 buy_gem,
+        uint256 buy_amt
+    ) external view returns (uint256 fill_amt)
+```
+
+Renvoie le nombre de jetons **pay_gem** nécessaires pour acheter un nombre spécifié de jetons **buy_gem**. Utilisé pour vérifier l'état actuel du carnet de commandes.
+
+### getOfferCount()
+
+```
+function getOfferCount(ERC20 sell_gem, ERC20 buy_gem)
+        public
+        view
+        returns (uint256)
+```
+
+Renvoie le nombre d'offres dans le carnet de commandes pour une paire spécifiée.
+
+### getFeeBPS()
+
+```
+function getFeeBPS()
+    public
+    view
+    returns (uint256)
+```
+
+Renvoie les frais du preneur de protocole, en points de base.

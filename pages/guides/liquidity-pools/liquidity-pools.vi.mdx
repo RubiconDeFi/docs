@@ -1,0 +1,30 @@
+---
+title: Rubicon | Hồ Bơi Thanh Khoản
+pageTitle: Nhóm Thanh Khoản
+description: Mọi thứ bạn cần biết Về Rubicon liquidity pool
+---
+
+## Nhà phát triển
+
+Kiểm tra hợp đồng nhóm thanh khoản [BathToken.sol](https://github.com/RubiconDeFi/rubicon-protocol-v1/blob/master/contracts/rubiconPools/BathToken.sol) trên GitHub.
+
+Ngoài ra, hãy kiểm tra nhóm [contracts docs](/docs/protocol/rubicon-pools/rubicon-pools) và bathToken |****3***|
+
+### Pool thanh khoản là gì?
+
+Nhóm thanh khoản Rubicon có [certain risks](/docs/protocol/rubicon-pools/risks). Hãy thận trọng và chỉ gửi những gì bạn có thể đủ khả năng để mất.
+
+Nhóm thanh khoản Rubicon là một tập hợp các hợp đồng thông minh cho phép các nhà cung cấp thanh khoản (LP) gửi mã thông báo ERC-20 vào một nhóm. Mã thông báo trong nhóm được sử dụng bởi các nhà tạo lập thị trường tích cực (nhà chiến lược) để cung cấp tính thanh khoản trên sổ đặt hàng Rubicon. Lợi nhuận từ việc tạo thị trường được chuyển đến LP, trong khi các chiến lược gia kiếm được phí quản lý.
+
+Các nhà cung cấp thanh khoản (LP) nhận được bathTokens khi họ gửi tài sản tiền điện tử vào một nhóm. Chúng đại diện cho tỷ lệ chia sẻ của họ đối với tài sản nhóm cơ bản.\
+(Ví dụ: LP gửi ETH, nhận bathETH)
+
+Ngay từ đầu, chúng tôi đã thiết kế các nhóm này với các tham số bảo mật cho phép mọi người quản lý tính thanh khoản của nhóm. Trong khi hệ thống vẫn đang được phát triển, nhóm của chúng tôi đóng vai trò là người quản lý tính thanh khoản của nhóm. Bạn có thể tìm hiểu thêm trên |****5***| trang. Phiên bản tiếp theo của nhóm thanh khoản Rubicon đang trong giai đoạn nghiên cứu và phát triển. Chúng tôi sẽ chia sẻ thông tin cập nhật về [our blog](https://mirror.xyz/rubicon.eth)!
+
+![Figure](/assets/image(3).png)
+
+### Thuận lợi
+
+Nhiều giao thức/DEX chọn giữa thanh khoản thụ động hoặc chủ động. Rubicon vạch ra các vai trò và ưu đãi cho cả nhà cung cấp thanh khoản thụ động và nhà quản lý thanh khoản tích cực.
+
+Trên Rubicon, chỉ có một nhóm cho mỗi mã thông báo. Ví dụ: nhóm USDC có thể được sử dụng trên ETH-USDC, OP-USDC và bất kỳ sổ lệnh USDC nào khác. Điều này hiệu quả hơn về vốn so với các hệ thống mà tính thanh khoản bị khóa trong một cặp giao dịch duy nhất.

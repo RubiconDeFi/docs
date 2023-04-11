@@ -1,0 +1,88 @@
+---
+title: Rubicon | Funciones Clave del Mercado
+pageTitle: Funciones Clave del Mercado
+description: Los principales puntos de entrada y funciones del contrato Rubicon Market
+---
+
+## Funciones clave
+
+#### Oferta
+
+```
+function offer(uint pay_amt, ERC20 pay_gem, uint buy_amt, ERC20 buy_gem, uint pos)
+    public returns (uint)
+```
+
+La función **oferta** es la función principal para colocar una nueva orden de compra limitada o de venta limitada en el mercado Rubicon. Esta función toma los fondos de un usuario para un par _ERC-20_ dado y los coloca en el libro de pedidos del contrato inteligente. Cuando otro usuario elige comprar el pedido o el pedido coincide con otro pedido, Rubicon Market completará la oferta y ejecutará la operación.
+
+| Parameter                 | Use                                                                                                                                          |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| uint pay_amt              | The quantity of the asset that the user is _offering in wad_                                                                                 |
+| ERC20 pay_gem             | The ERC-20 asset that the user is _offering_                                                                                                 |
+| uint buy_amt              | The quantity of the asset that the user is hoping to _exchange for in wad_                                                                   |
+| ERC20 buy_gem             | The asset the user is hoping to _exchange for_                                                                                               |
+| uint pos                  | The position in the _sorted order book_ to place the order. Set this to 0 unless you know the exact position (closest id) to place the order |
+| \[Optional] bool matching | Optional boolean that dictates _whether or not the offer should be automatically matched_ if possible                                        |
+
+Es importante tener en cuenta que la función de oferta tiene algunas representaciones en el mercado de Rubicon. _Opcionalmente,_ un usuario puede agregar un parámetro _pos_ o _matching_. Estos permiten al usuario elegir en qué parte del libro de pedidos clasificados debe vivir la oferta y si la oferta debe estar sujeta o no a una posible coincidencia automática del pedido.
+
+#### Comprar
+
+```
+function buy(uint id, uint amount) public can_buy(id)
+    returns (bool)
+```
+
+| Parameter   | Use                                                         |
+| ----------- | ----------------------------------------------------------- |
+| uint id     | The id of the order the user wants to buy                   |
+| uint amount | The wad quantity/portion of the order the user wants to buy |
+
+The buy function allows a user to buy a given order in the order book and ultimately calls super.buy() in the RubiconMarket.sol contract. Furthermore, the buy function will also result in the caller paying the trade fee (see fees).
+
+#### Cancel
+
+```
+function cancel(uint id)
+    public
+    can_cancel(id)
+    returns (bool success)
+```
+
+| Parameter | Use                                          |
+| --------- | -------------------------------------------- |
+| uint id   | The id of the order the user wants to cancel |
+
+Esta función permite a un usuario cancelar una oferta y devolver los fondos al usuario. El modificador **can_cancel** comprueba para asegurarse de que la persona que llama es propietaria de la oferta y la oferta está activa. Alternativamente, el usuario también puede usar la función de enrutamiento **kill** para lograr el mismo resultado y cancelar su pedido en una identificación determinada.
+
+### Funciones de enrutamiento
+
+#### ComprarTodaLaCantidad
+
+```
+    function buyAllAmount(
+    ERC20 buy_gem,
+    uint256 buy_amt,
+    ERC20 pay_gem,
+    uint256 max_fill_amount
+) external returns (uint256 fill_amt)
+```
+
+| Parameter | Use                                          |
+| --------- | -------------------------------------------- |
+| uint id   | The id of the order the user wants to cancel |
+
+This function allows a user to buy any amount of an asset (buy_gem) through multiple orders in the book. The function will keep buying through orders until the desired buy-amt is acquired.
+
+#### Take
+
+```
+function take(bytes32 id, uint128 maxTakeAmount) public
+```
+
+| Parameter          | Use                                                         |
+| ------------------ | ----------------------------------------------------------- |
+| uint id            | The id of the order the user wants to buy                   |
+| uint maxTakeAmount | The wad quantity/portion of the order the user wants to buy |
+
+Esta es simplemente una función de enrutamiento que permite a un usuario tomar fácilmente una oferta a través del punto de entrada **tomar**. Esto enrutará a un usuario para luego _comprar la oferta._

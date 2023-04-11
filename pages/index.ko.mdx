@@ -1,0 +1,64 @@
+---
+title: 루비콘/개요
+pageTitle: 개요
+description: 루비콘 가이드 및 개발자 문서에 오신 것을 환영합니다
+---
+
+Rubicon 가이드 및 개발자 문서에 오신 것을 환영합니다.
+
+import { QuickLinks, QuickLink } from "/components/QuickLinks.jsx";
+
+<QuickLinks>
+<QuickLink title="제품소개" icon="installation" href="/faq" description="루비콘에 새로운? 자주 묻는 질문 방문"></QuickLink>
+<QuickLink
+		title="가이드"
+		icon="presets"
+		href="/guides/trade/trade"
+		description="루비콘 앱에서 거래,스왑,브리지 및 유동성을 제공하는 방법을 배우십시오!"
+	></QuickLink>
+<QuickLink
+		title="루비콘마켓"
+		icon="plugins"
+		href="/api-guides/subgraphs/rubiconmarket-api"
+		description="주문 도서 계약에 대한 문서."
+	></QuickLink>
+<QuickLink
+		title="아피스"
+		icon="theming"
+		href="/api-guides/subgraphs/subgraphs"
+		description="하위 그래프를 사용하여 시장 데이터를 쿼리하거나 파이썬 및 러스트를 사용하여 루비콘과 상호 작용합니다."
+	></QuickLink>
+</QuickLinks>
+
+## 루비콘이란?
+
+[Rubicon](https://rubicon.finance/) [Ethereum](https://ethereum.org/en/)에 대한 주문서 프로토콜입니다. 거래에 사용 [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) 스왑, 제한 주문 및 시장 주문이 있는 토큰을 사용하거나 풀에서 유동성을 제공합니다.
+
+Rubicon은 저비용의 초고속 이더리움인 [Optimism](https://www.optimism.io/)에 구축되었습니다. .) 사슬.
+
+## 프로토콜 개요
+
+RubiconMarket.sol은 [limit order book](https://en.wikipedia.org/wiki/Central_limit_order_book) 스마트 계약. ERC-20 토큰의 P2P 거래를 위한 매칭 엔진 및 오더북을 구현합니다.
+
+Rubicon 풀은 수동적 유동성 공급자(LP)가 풀에 토큰을 예치할 수 있도록 하는 스마트 계약 시스템입니다. 여기서 활성 마켓 메이커(전략가)는 오더 북에서 풀 자산을 사용합니다. 시장 조성의 수익은 LP에게 돌아가고 전략가는 성과 수수료를 받습니다.
+
+![Rubicon v1 Architecture](/assets/Rubicon_v1_RubiconMarket.png)
+
+## 개발자: 로컬에서 Rubicon 프로토콜 시작
+
+```bash
+$ git clone https://www.github.com/RubiconDeFi/rubicon_protocol.git   
+$ cd rubicon_protocol && npm i
+$ npm i --save-dev openzeppelin-solidity@2.5.1
+$ truffle init
+$ 'n' for overwriting contracts
+$ 'n' for overwriting migrations
+$ (in separate terminal) ganache-cli
+```
+
+또한 `development:`라고 말하는 truffle-config.js의 줄을 주석 처리하고 Ganache에 연결할 수 있도록 네트워크 아래에 localhost를 포함해야 합니다.
+
+```bash
+$ truffle migrate -- deploys contracts to development network, i.e. localhost
+$ truffle test -- run the set of tests provided in the test folder of repo
+```

@@ -1,0 +1,85 @@
+---
+title: Rubicon | Hỗ Trợ Thị Trường
+pageTitle: Hỗ Trợ Thị Trường
+description: hợp đồng và chức năng tạo thị trường tần số cao trên Chuỗi Cho Rubicon
+---
+
+## Hỗ trợ thị trường
+
+`MarketAid.sol` là một hợp đồng trợ giúp cho phép chủ sở hữu gửi các lô lệnh giới hạn và hủy các lệnh trên `RubiconMarket.sol` . Nó giúp các nhà giao dịch tích cực và nhà tạo lập thị trường dễ dàng đặt và hủy nhiều lệnh chưa thanh toán trong một giao dịch! Bạn có thể coi MarketAid như một hợp đồng trung gian cho phép các nhà giao dịch thực hiện các giao dịch lớn hơn, hiệu quả hơn và phức tạp hơn trên sổ lệnh Rubicon.
+
+Sau khi tạo phiên bản MarketAid, nhà giao dịch có thể sử dụng các hàm lô mạnh mẽ để mở rộng các hàm 'RubiconMarket.sol' cấp thấp `offer` và `cancel` cũng như kết hợp cả hai. Gửi một loạt lớn lệnh giới hạn bằng `batchMarketMakingTrades()` , hủy một loạt lệnh đang mở và thay thế chúng bằng `batchRequoteOffers()` hoặc hủy nhiều lệnh đang mở bằng `scrubStrategistTrades()`. Tiếp tục đọc để có hướng dẫn bắt đầu nhanh và tổng quan về các chức năng của MarketAid. Nếu bạn có bất kỳ câu hỏi hoặc rắc rối nào với MarketAid, hãy tham gia [Discord server](https://discord.com/invite/E7pS24J) của chúng tôi, nhóm của chúng tôi sẵn lòng giúp bạn bắt đầu với giao dịch tự động trên Rubicon!
+
+### Tuyên bố miễn trừ rủi ro
+
+MarketAid đang ở giai đoạn thử nghiệm và chỉ dành cho các nhà giao dịch và nhà phát triển chuyên nghiệp. Nhóm của chúng tôi sử dụng mã này, nhưng mã này chưa được kiểm tra nên bạn tự chịu rủi ro khi sử dụng.
+
+### Triển khai
+
+Mainnet lạc quan:
+
+- [Factory](https://optimistic.etherscan.io/address/0x267D94C6e67e4436EFfE092b08d040cFF36B2DA7)
+- [MarketAid Instance Example](https://optimistic.etherscan.io/address/0x40e20121f46237Ae5d6822fd75847CedD17c449F)
+
+Goerli lạc quan:
+
+- [Factory](https://goerli-optimism.etherscan.io/address/0x6838dd21aa01Bde8E600d499A95f9AE02f2bB376)
+- [MarketAid Instance](https://goerli-optimism.etherscan.io/address/0xd3757c79df77cfac54501b5dadf7ec47a38e1a65)
+
+### Bắt đầu nhanh
+
+Bắt đầu với `MarketAid.sol` bằng cách tạo một phiên bản cá nhân, tài trợ cho hợp đồng bằng mã thông báo ERC-20 và gửi lô đơn đặt hàng đầu tiên của bạn đến `RubiconMarket.sol`! Bạn có thể sử dụng `ethers.js` để tích hợp tính năng này vào một bot hiện có và chúng tôi đang thực hiện các hướng dẫn để giúp việc này trở nên dễ dàng hơn nữa! Bắt đầu nào:
+
+1. Tạo một phiên bản mới của hợp đồng `MarketAid`
+   1. Triển khai phiên bản `MarketAid` bằng cách gọi `createMarketAidInstance()` trên hợp đồng `MarketAidFactory`. Thao tác này sẽ tạo ra một phiên bản mới của `MarketAid` được cấp phép cho người gọi `createMarketAidInstance()` và tự động phê duyệt họ với tư cách là nhà chiến lược có quyền truy cập vào hợp đồng.
+2. Nạp tiền cho phiên bản MarketAid của bạn bằng ERC-20 mà bạn muốn giao dịch (WETH, USDC, DAI, v.v.)
+
+   1. Phiên bản MarketAid của bạn có thể được truy vấn thông qua `getUserMarketAid()` trên `MarketAidFactory` hoặc bằng cách đọc sự kiện phát ra từ lệnh gọi `createMarketAidInstance()`.
+   2. Xác minh rằng bạn kiểm soát hợp đồng trước qua Etherscan bằng cách kiểm tra biến `admin` là địa chỉ của bạn và bạn cũng là `approvedStrategist` .
+   3. Xác minh rằng bạn đang gửi tiền đến đúng địa chỉ!
+
+3. Gửi các lô đơn đặt hàng Rubicon từ hợp đồng MarketAid của bạn bằng cách sử dụng các chức năng được mô tả bên dưới
+
+Lưu ý: Chủ sở hữu của phiên bản `MarketAid` có thể phê duyệt các địa chỉ bổ sung để sử dụng và truy cập hợp đồng (nhiều địa chỉ có thể xóa kiểm tra `onlyApprovedStrategist`)
+
+## Xử lý sự cố
+
+Đảm bảo kiểm tra những điều sau:
+
+- Phiên bản MarketAid của tôi ở đâu?
+  - Truy vấn với `getUserMarketAid()` -> trả về một mảng gồm tất cả các phiên bản bạn đã tạo
+- Phiên bản MarketAid của bạn đã phê duyệt các hợp đồng mà bạn muốn tương tác
+  - Nếu không, giao dịch sẽ. Việc sử dụng `placeMarketMakingTrades()` sẽ tự động phê duyệt hợp đồng `RubiconMarket`
+- Bạn là quản trị viên của phiên bản Market Aid của bạn
+  - Truy vấn bằng `admin()` trên phiên bản của bạn -> trả về EOA sở hữu phiên bản
+- Bất kỳ EOA nào mà bạn đang cố gắng quản lý một cặp ERC20, thông qua MarketAid đều là _một chiến lược gia được phê duyệt_
+  - Kiểm tra bảo mật chính trong hợp đồng, quản trị viên được tự động phê duyệt làm chiến lược gia
+
+## Chức năng (Đang tiến hành)
+
+Nói chung, mỗi đầu vào đều giống hệt như đầu vào sẽ đặt trên RubiconMarket cấp thấp: giá trị uint thô của ERC20 mà bạn muốn đặt giá thầu và/hoặc yêu cầu khi đặt ưu đãi ( `offer()` ). Để phân lô, hãy chuyển các giá trị cho tất cả các ưu đãi dưới dạng mảng, với tất cả các biến tương tự (ví dụ: tử số yêu cầu) được ghép nối với nhau. Các mảng được truyền vào phải khớp với nhau - điều này có thể hữu ích khi đặt một số phiếu mua hàng cùng một lúc với các mức giá khác nhau. Lưu ý việc sử dụng `formatUnits()` và `parseUnits()` thông qua `ethers` giúp xử lý các số và giá trị ERC-20 khi xử lý các chuyển đổi số `=` wei của con người.
+
+Một khái niệm quan trọng là mỗi đơn đặt hàng được đặt thông qua MarketAid (thông qua `placeMarketMakingTrades` ) sẽ tạo một ID duy nhất có thể xác định các đơn đặt hàng chưa thanh toán của nhà tạo lập thị trường. Sách nổi bật có thể được truy vấn bất cứ lúc nào cho bất kỳ EOA cụ thể nào thông qua `getOutstandingStrategistTrades()` - điều này rất hữu ích để quản lý sách chưa xuất sắc và nhận danh sách ID duy nhất hoặc `strategistTrades` mà một người dùng nhất định kiểm soát. Nhà tạo lập thị trường có thể truy vấn sách của họ, sau đó báo giá lại ( `batchRequoteOffers` ) hoặc hủy bỏ ( `scrubStrategistTrades` ) nếu cần. Lưu ý rằng việc điền tự động tích lũy vào phiên bản `MarketAid` mà người dùng kiểm soát.
+
+- placeMarketMakingGiao dịch
+  - Đặt một BID và/hoặc một ASK trong một "strategistTrade" duy nhất
+- giao dịch hàng loạtMarketMaking
+  - Tùy chọn đặt nhiều lệnh gọi placeMarketMakingTrades theo kiểu hàng loạt để triển khai toàn bộ đường cong thanh khoản (ví dụ: 10 giá thầu và 10 yêu cầu ở các mức giá và quy mô khác nhau tùy thuộc vào điều kiện thị trường)
+- getOutstandingStrategistTrades _view_
+  - Trả về ID duy nhất của ưu đãi (lô) nổi bật của người dùng
+- getStrategistTotalLiquidity _view_
+  - Trả về tổng giá trị sổ sách ERC-20 mà người dùng kiểm soát trên toàn thị trường VÀ giá trị trong phiên bản MarketAid
+- báo giá lại
+  - Báo giá lại một lần của chiến lược gia Giao dịch (cặp giá thầu và/hoặc giá yêu cầu) thành một cặp mới tạo ra một id duy nhất mới
+- hàng loạtRequoteOffers
+  - Gọi requote() hàng loạt để cập nhật toàn bộ đường cong thanh khoản trong một lần. Thao tác này sẽ hủy tất cả id đã xác định và thay thế chúng bằng tải trọng ưu đãi mới được chỉ định
+- batchRequoteAllOffers
+  - Lấy ID sách chưa thanh toán của người dùng qua `getOutstandingStrategistTrades()` sau đó cập nhật tất cả chúng qua `batchRequoteOffers()`
+- chàStrategistTrade
+  - Hủy bỏ `strategistTrade` và trả lại số tiền chưa được nạp/đưa vào Market Aid
+- chàStrategistGiao dịch
+  - Hủy nhiều `strategistTrade` trong một giao dịch
+- quản trị viênPullAllFunds
+  - Chức năng hữu ích để quản trị viên lấy lại tất cả tiền của họ bằng cách chỉ định các ERC-20 mà họ muốn
+- chiến lược giaRebalanceFunds
+  - Chức năng tùy chọn để sử dụng một địa điểm thanh khoản bên ngoài để chênh lệch giá hoặc tái cân bằng tiền thông qua

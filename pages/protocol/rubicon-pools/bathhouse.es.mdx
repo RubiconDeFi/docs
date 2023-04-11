@@ -1,0 +1,23 @@
+---
+title: Rubicon | Casa de Baños
+pageTitle: Casa de Baños
+description: El contrato de administrador para Rubicon Pools
+---
+
+## Casa de baños
+
+El [BathHouse contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathHouse.sol) actúa como administrador del sistema Rubicon Pools y proporciona funciones clave de alto nivel al sistema. Las funciones más importantes de BathHouse son inicializar nuevos BathPairs, aprobar estrategias y administrar la organización y el enrutamiento del fondo de liquidez.
+
+### Funciones clave
+
+* `initBathPair`: esta función inicializa un BathPair. En la práctica, esto permite que se formen nuevos grupos de liquidez a través de un nuevo par de Rubicon mientras se integra dicho par con un grupo de liquidez de cotización existente (por ejemplo, bathUSDC) si aún no existe.
+* `getBathPair`: una función captadora que permite a la persona que llama determinar fácilmente la dirección de BathPair para una combinación determinada de `(activo de dirección, cotización de dirección)`.
+* **Gestión de la estrategia**
+  * Este contrato administra qué "estrategias" son compatibles con Rubicon Pools. Actualmente, la única estrategia permitida en v0 es PairsTrade, en la que un estratega realiza una transacción de pares individuales por llamada de función.
+  * `isApprovedStrat`: función para verificar si una persona que llama o una dirección determinada es una estrategia aprobada.
+  * `approveStrategy`: función de administración para agregar una nueva estrategia a Rubicon Pools.
+* **Gestión de parámetros**
+  * Este contrato controla algunos parámetros a nivel de sistema que son relevantes tanto para los estrategas como para los LP.
+  * `setCancelTimeDelay`: esta función establece `timeDelay` en BathPair.sol, después de lo cual se cancelan los pedidos no completados en los libros de pedidos.
+  * `setMaxOutstandingPairCount`: esta función establece el valor `maxOutstandingPairCount` para un BathPair determinado. Este valor define cuántas órdenes pueden estar pendientes en el libro de órdenes para un par comercial determinado.
+* `onlyAdmin`: BathHouse actualmente está a cargo del equipo de Rubicon y tiene la capacidad de ser administrado por cualquier dirección, incluido, por ejemplo, un DAO multi-sig.

@@ -1,0 +1,41 @@
+---
+title: Rubicon | Tutorial de Estratega
+pageTitle: Tutorial de Estratega
+description: Una descripción general de cómo ser un estratega para Rubicon Pools
+---
+
+## estratega
+
+Los estrategas tienen la capacidad de realizar una oferta y/o una demanda utilizando la liquidez de BathToken para fines de creación de mercado en el libro de órdenes de Rubicon. Utilizan estrategias fuera de la cadena para colocar operaciones dentro de los límites del sistema de Pools y ganar recompensas.
+
+### Puntos de entrada y palancas del estratega
+
+El estratega en el sistema Pools tiene tres funciones clave que puede utilizar para comercializar en Rubicon. El estratega disfruta del beneficio de ganar una proporción de todos los rellenos que crea mientras crea el mercado (ver `strategistBootyClaim`) con fondos `bathToken`. Las tres funciones principales son las siguientes:
+
+* `executeStrategy`: esta es la función central que utiliza un estratega para colocar operaciones dentro del sistema de ciclo cerrado. Permite la colocación de una oferta y/o una demanda en el libro de órdenes mientras se registra el estratega y los datos clave para que puedan ser recompensados ​​por un comportamiento de creación de mercado con NPV positivo.
+* `bathScrub`: esta función es la función de "limpieza" obligatoria que se debe realizar en Rubicon Pools para que funcione de manera eficiente. Esta función analiza los pedidos pendientes en un 'BathPair' dado. Esto asegura que después de la "caducidad del tiempo" cualquier pedido que aún esté en el libro de pedidos se registre para el rendimiento y la liquidez se devuelva al grupo. Además, se debe llamar a esta función para reducir la cantidad pendiente de pedidos para que un par determinado se adhiera a `maxOutstandingPairCount`
+* `removeLiquidity`: esta función le permite a un estratega "eliminar el riesgo" y eliminar la liquidez del libro de pedidos que colocó con la liquidez de Pools.
+
+### Ideas claves
+
+Los estrategas tienen un punto de entrada central para utilizar los fondos de los usuarios y crear mercado en Rubicon Market: la función `executeStrategy` en BathPair.sol. El papel de un estratega es encontrar ofertas exactas para hacer con los fondos de los usuarios que se colocan automática y exclusivamente en el libro de pedidos de Rubicon; Los grupos permiten que se coloque una oferta o demanda en el libro de pedidos de Rubicon.
+
+Esta función tiene una cantidad de entradas __ que se asignan directamente a la función `oferta` en RubiconMarket.sol:
+
+```
+function executeStrategy(
+        address targetStrategy, //address of the strategy to use - PairsTrade in v0
+        uint256 askNumerator, // *Asset Amt* / Quote Amt
+        uint256 askDenominator, // Asset Amt / *Quote Amt*
+        uint256 bidNumerator, // *Quote Amt* / Asset Amt
+        uint256 bidDenominator // Quote Amt / *Asset Amt*
+    )
+```
+
+* `targetStrategy`: la dirección del contrato que ejecuta una estrategia de creación de mercado con las entradas dadas. En la versión actual de Pools, el [_only approved strategy is the Pairs Trade_](/docs/protocol/rubicon-pools/bathpair).
+* `askNumerator`: el numerador exacto ([pay\_am](/docs/protocol/rubicon-market/key-functions#offer)[t](https://www.youtube.com/watch?v=dQw4w9WgXcQ)) que se utilizará para realizar una operación con fondos LP en una cantidad de activos (por ejemplo, WBTC ).
+* `askDenominator`: el denominador exacto ([buy\_amt](/docs/protocol/rubicon-market/key-functions#offer)) que se usará para realizar una operación con fondos LP en un monto de activo cotizado (por ejemplo, USDC).
+* `bidNumerator`: el numerador exacto ([pay\_am](/docs/protocol/rubicon-market/key-functions#offer)[t](https://www.youtube.com/watch?v=dQw4w9WgXcQ)) que se usará para realizar una transacción con fondos LP en un monto de activo cotizado (p. USDC).
+* `bidDenominator`: el denominador exacto ([buy\_amt](/docs/protocol/rubicon-market/key-functions#offer)) que se usará para hacer esta oferta en una cantidad de activo (por ejemplo, WETH).
+
+El estratega debe determinar fuera de la cadena las mejores ofertas y solicitudes basadas en las condiciones del mercado para los fondos de los usuarios con el fin de recibir un pago por rellenos exitosos.

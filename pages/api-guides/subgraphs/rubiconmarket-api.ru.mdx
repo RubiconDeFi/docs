@@ -1,0 +1,380 @@
+---
+description: Обзор ключевых объектов подграфа Rubicon Market, обработчиков событий контрактов и примеров запросов для различных вариантов использования.
+---
+
+# API РубиконМаркета
+
+## **Ключевые лица RubiconMarket**
+
+Подграф RubiconMarket содержит набор сущностей, которые собирают и хранят данные, связанные с торговой активностью, в книгах заказов протокола. Ниже приведены ключевые объекты, которые, по нашему мнению, пользователи сочтут наиболее подходящими для своих потребностей в данных.
+
+### _**Сущность пользователя (идентификатор: адрес кошелька)**_
+
+```graphql
+type User @entity { 
+    " <user address> "
+    id: ID!
+    " derived values "
+    swaps: [Swap!]! @derivedFrom(field: "user")
+    openOffers: [OpenOffer!]! @derivedFrom(field: "user")
+    offers: [Offer!]! @derivedFrom(field: "user")
+    takers: [Taker!]! @derivedFrom(field: "user")
+}
+```
+
+Объект пользователя действует как единая точка отсчета для сбора всей торговой активности, связанной с адресом кошелька. Из сущности пользователя вы можете получить доступ к сущностям Swap, OpenOffer, Offer и Taker.
+
+### _Offer & OpenOffer Entities (ID: хэш идентификатора предложения)_
+
+```graphql
+type OpenOffer @entity { 
+    " <offer id hash> "
+    id: ID!
+    " time of transaction "
+    timestamp: BigInt!
+    " track to User entity "
+    user: User!
+    " track to Transaction entity "
+    transaction: Transaction!
+    " track to Pair entity "
+    pair: Pair!
+    " track to DayPair entity "
+    dayPair: DayPair!
+    " track to HourPair entity "
+    hourPair: HourPair!
+    " asset the taker is paying in "
+    takeAsset: Token!
+    " asset the maker is selling "
+    makeAsset: Token!
+    " amout of takeAsset for makeAsset "
+    takeAmount: BigInt!
+    " amount of makeAsset for takeAsset "
+    makeAmount: BigInt!
+    " price of takeAmount in ETH "
+    priceTakeAssetETH: HistoricalAssetPriceETH!
+    " price of makeAmount in ETH "
+    priceMakeAssetETH: HistoricalAssetPriceETH!
+    " price of takeAmount in ETH "
+    priceTakeAssetUSD: HistoricalAssetPriceUSD!
+    " price of makeAmount in ETH "
+    priceMakeAssetUSD: HistoricalAssetPriceUSD!
+    " amount received of takeAsset "
+    receivedTakeAmount: BigInt!
+    " amount of partial fill on makeAsset "
+    partialFillMakeAmount: BigInt!
+} 
+```
+
+Сущность Offer представляет все сделки мейкера, совершенные пользователем в книгах заказов Rubicon. Сущность Offer сопоставляется с несколькими другими сущностями, с которыми она связана. В большинстве случаев наиболее важными объектами являются объект «Транзакция», который содержит все сведения о транзакции (время, номер блока, стоимость газа) по предложению, и объект «HistoricalAssetPriceETH/USD», который содержит сведения о последней сделке данного актива. Активируйте в ETH или долларах США на RubiconMarket (это позволяет пользователю отслеживать историческую эффективность своей торговли, котируемой в ETH и долларах США). Все значения выражены в целочисленном значении базового токена ERC-20, который они представляют.
+
+```graphql
+type OpenOffer @entity { 
+    " <offer id hash> "
+    id: ID!
+    " time of transaction "
+    timestamp: BigInt!
+    " track to User entity "
+    user: User!
+    " track to Transaction entity "
+    transaction: Transaction!
+    " track to Pair entity "
+    pair: Pair!
+    " track to DayPair entity "
+    dayPair: DayPair!
+    " track to HourPair entity "
+    hourPair: HourPair!
+    " asset the taker is paying in "
+    takeAsset: Token!
+    " asset the maker is selling "
+    makeAsset: Token!
+    " amout of takeAsset for makeAsset "
+    takeAmount: BigInt!
+    " amount of makeAsset for takeAsset "
+    makeAmount: BigInt!
+    " price of takeAmount in ETH "
+    priceTakeAssetETH: HistoricalAssetPriceETH!
+    " price of makeAmount in ETH "
+    priceMakeAssetETH: HistoricalAssetPriceETH!
+    " price of takeAmount in ETH "
+    priceTakeAssetUSD: HistoricalAssetPriceUSD!
+    " price of makeAmount in ETH "
+    priceMakeAssetUSD: HistoricalAssetPriceUSD!
+    " amount received of takeAsset "
+    receivedTakeAmount: BigInt!
+    " amount of partial fill on makeAsset "
+    partialFillMakeAmount: BigInt!
+} 
+```
+
+
+Объект OpenOffer является копией объекта Offer с двумя оговорками: 1) когда предложение заполнено или удалено из книги, связанный объект OpenOffer удаляется из подграфа (к этим удаленным объектам по-прежнему можно получить доступ через |**\* \*90\*\***|), и 2) объект OpenOffer не содержит переменных полей "killed" (false, если предложение заполнено или в книге, и true, если предложение отменено) или "timeKilled" (ноль, если предложение все еще в книге, обновленной до момента, когда предложение снято с книги).
+
+### _Taker Entity (ID: Хэш транзакции)_
+
+```graphql
+type Taker @entity { 
+    " <transaction hash> "
+    id: ID!
+    " time of transaction "
+    timestamp: BigInt!
+    " track to User entity "
+    user: User!
+    " track to Transaction entity "
+    transaction: Transaction!
+    " track to Pair entity "
+    pair: Pair!
+    " track to DayPair entity "
+    dayPair: DayPair!
+    " track to HourPair entity "
+    hourPair: HourPair!
+    " asset the taker is paying in "
+    takeAsset: Token!
+    " asset the maker is selling "
+    makeAsset: Token!
+    " amout of takeAsset for makeAsset "
+    takeAmount: BigInt!
+    " amount of makeAsset for takeAsset "
+    makeAmount: BigInt!
+    " price of takeAmount in ETH "
+    priceTakeAssetETH: HistoricalAssetPriceETH!
+    " price of makeAmount in ETH "
+    priceMakeAssetETH: HistoricalAssetPriceETH!
+    " price of takeAmount in ETH "
+    priceTakeAssetUSD: HistoricalAssetPriceUSD!
+    " price of makeAmount in ETH "
+    priceMakeAssetUSD: HistoricalAssetPriceUSD!
+    " fee for the taker "
+    takerFee: BigInt!
+    " maker entity of the trade "
+    maker: Offer!
+}
+```
+
+Сущность Taker представляет все сделки Taker, которые произошли в книгах заказов Rubicon. Сущность Taker сопоставляется с несколькими другими сущностями, с которыми она связана. Наиболее релевантными сущностями, с которыми он сопоставляется для большинства случаев использования, является сущность «Транзакция», содержащая все сведения о транзакции (время, номер блока, стоимость газа) о сделке, сущности «HistoricalAssetPriceETH/USD», содержащие сведения о последней сделке актива. либо в ETH, либо в доллары США на Rubicon Market (это позволяет пользователю отслеживать историческую эффективность своей сделки, котируемой в ETH и долларах США), и сущность предложения, предложение о том, что сделка снимается с учета. Все значения выражены в целочисленном значении базового токена ERC-20, который они представляют.
+
+### _Swap Entity (ID: Хэш транзакции)_
+
+```graphql
+type Swap @entity { 
+    " <transaction hash> "
+    id: ID!
+    " time of transaction "
+    timestamp: BigInt!
+    " track to User entity "
+    user: User!
+    " track to Transaction entity "
+    transaction: Transaction!
+    " track to Pair entity "
+    pair: Pair!
+    " track to DayPair entity "
+    dayPair: DayPair!
+    " track to HourPair entity "
+    hourPair: HourPair!
+    " asset the taker is paying in "
+    takeAsset: Token!
+    " asset the maker is selling "
+    makeAsset: Token!
+    " amout of takeAsset for makeAsset "
+    takeAmount: BigInt!
+    " amount of makeAsset for takeAsset "
+    makeAmount: BigInt!
+    " price of takeAmount in ETH "
+    priceTakeAssetETH: HistoricalAssetPriceETH!
+    " price of makeAmount in ETH "
+    priceMakeAssetETH: HistoricalAssetPriceETH!
+    " price of takeAmount in ETH "
+    priceTakeAssetUSD: HistoricalAssetPriceUSD!
+    " price of makeAmount in ETH "
+    priceMakeAssetUSD: HistoricalAssetPriceUSD!
+    " fee for the taker "
+    takerFee: BigInt!
+} 
+```
+
+Сущность Swap представляет все своп-сделки, совершенные пользователем в книгах заказов Rubicon. Сущность Swap сопоставляется с несколькими другими сущностями, с которыми она связана. Наиболее важными сущностями, с которыми он сопоставляется для большинства случаев использования, является сущность Транзакция, содержащая все сведения о транзакции (время, номер блока, стоимость газа) о свопе, и сущности «HistoricalAssetPriceETH/USD», содержащие сведения о последней сделке данного актива. Активируйте активы в ETH или долларах США на рынке Rubicon (это позволяет пользователю отслеживать историческую эффективность своей торговли, котируемой в ETH и долларах США). Все значения выражены в целочисленном значении базового токена ERC-20, который они представляют.
+
+### _AssetPriceETH/USD (ID: \<asset>#\<ETH/USD>) и HistoricalAssetPriceETH/USD Entities (ID: \<asset>#\<ETH/USD>#\<timestamp>)_
+
+```graphql
+type AssetPriceETH @entity {
+    " <asset>#<ETH> "
+    id: ID!
+    " time of last price update "
+    timestamp: BigInt!
+    " asset "
+    asset: Token!
+    " price of asset in ETH "
+    assetPriceETH: BigDecimal!
+    " most recent price of asset in ETH "
+    lastPriceETH: HistoricalAssetPriceETH!
+}
+
+type AssetPriceUSD @entity {
+    " <asset>#<ETH> "
+    id: ID!
+    " time of last price update "
+    timestamp: BigInt!
+    " asset "
+    asset: Token!
+    " price of asset in ETH "
+    assetPriceUSD: BigDecimal!
+    " most recent price of asset in USD "
+    lastPriceUSD: HistoricalAssetPriceUSD!
+}
+```
+
+Сущность AssetPriceETH/USD представляет собой цену, по которой актив последний раз торговался в книге заказов Rubicon по отношению либо к ETH, либо к стабильной монете. Сущность AssetPriceUSD содержит стейблкоин, который в последний раз торговался с активом для получения цены в долларах США. Это сообщает, сколько знаков после запятой следует учитывать при расчете цены. Сущность AssetPrice сопоставляется с самой последней торгуемой ценой через сущность HistoricalAssetPriceETH/USD:
+
+```graphql
+type HistoricalAssetPriceETH @entity {
+    " <asset>#<ETH>#<timestamp> "
+    id: ID!
+    " time of last price update "
+    timestamp: BigInt!
+    " asset "
+    asset: Token!
+    " asset amount "
+    assetAmount: BigInt!
+    " eth amount "
+    ethAmount: BigInt!
+    " price of asset in ETH "
+    historicalAssetPriceETH: BigDecimal!
+}
+
+type HistoricalAssetPriceUSD @entity {
+    " <asset>#<ETH>#<timestamp> "
+    id: ID!
+    " time of last price update "
+    timestamp: BigInt!
+    " asset "
+    asset: Token!
+    " usd asset "
+    usdAsset: Token
+    " asset amount "
+    assetAmount: BigInt!
+    " usd amount "
+    usdAmount: BigInt!
+    " price of asset in USD "
+    historicalAssetPriceUSD: BigDecimal!
+}
+
+Все значения выражены в целочисленном значении базового токена ERC-20, который они представляют.
+
+### _FullPair (ID: \<token0 address>#\<token1 address>) и парные объекты (ID: \|\***\*53\*\*** |#\<buy_token address>)_
+
+```graphql
+type FullPair @entity {
+    " <token0 address>#<token1 address> "
+    id: ID!
+    " <pay_token = token0>#<buy_token = token1> "
+    pair0: Pair
+    " <pay_token = token1>#<buy_token = token0> "
+    pair1: Pair
+    " last trade across the pair "
+    lastTrade: Trade
+    " map to all trades across the pair "
+    trades: [Trade!]! @derivedFrom(field: "fullPair")
+}
+```
+
+Сущность FullPair представляет любую пару ERC20-ERC20, которая торговалась в книгах заявок Rubicon. Эта сущность сопоставляется с двумя парными сущностями, они отличаются друг от друга тем, что ERC20 пары является токеном оплаты/покупки соответственно. Это представляет собой оба направления сделок между парой ERC20-ERC20. Переменная lastTrade представляет последнюю сделку этой пары, независимо от направления, и может использоваться для доступа к самым последним ценовым данным (от ERC20 до ERC20, от ERC20 до ETH, ERC20 и к доллару США) пары.
+
+```graphql
+type Pair @entity { 
+    " <pay_token address>#<buy_token address> "
+    id: ID!
+    " market entity "
+    market: RubiconMarket!
+    " first started trading at "
+    startAtTimestamp: BigInt!
+    " block in which pair first started trading "
+    startBlockNumber: BigInt!
+    " pay_token "
+    pay_token: Token!
+    " buy_token "
+    buy_token: Token!
+    " pay_token price - most recent trade price derived from buy_token "
+    pricePayToken: BigDecimal!
+    " buy_token price - most recent trade price derived from pay_token "
+    priceBuyToken: BigDecimal!
+    " volume in pay_token "
+    volumePayToken: BigInt!
+    " volume in buy_token "
+    volumeBuyToken: BigInt!
+    " total number of trades of that pair "
+    txCount: BigInt!
+    " total fees collected of pay_token for this pair "
+    payTokenFees: BigInt!
+    " total fees collected of buy_token for this pair "
+    buyTokenFees: BigInt!
+    " token metrics on that day "
+    dayPairs: [DayPair!]! @derivedFrom(field: "pair")
+    " token metrics for that hour "
+    hourPairs:  [HourPair!]! @derivedFrom(field: "pair")
+    " derived values "
+    swaps: [Swap!]! @derivedFrom(field: "pair")
+    openOffers: [OpenOffer!]! @derivedFrom(field: "pair")
+    offers: [Offer!]! @derivedFrom(field: "pair")
+    takers: [Taker!]! @derivedFrom(field: "pair")
+    trades: [Trade!]! @derivedFrom(field: "pair")
+} 
+```
+
+Сущность Pair представляет любую направленную сделку по паре ERC20-ERC20. Направление соответствует тому, какой ERC20 пары является pay_token (забрать актив), а какой buy_token (забрать актив). Каждая пара также имеет связанный объект пары, который отслеживает статистику пары за заданный период времени: 1) MonthPair, 2) WeekPair, 3) DayPair и 4) HourPair. Идентификаторы для этой пары следующие:
+
+- MonthPair(ID: \<pay_token address>#\<buy_token address>#\<timestamp rounded to current day by dividing by 2629743>)
+- WeekPair(ID: \<pay\__token address>#\<buy_\__token address>#\<timestamp rounded to current day by dividing by 604800>_)
+- DayPair(ID: \<pay_token address>#\<buy_token address>#\<timestamp rounded to current day by dividing by 86400>)
+- HourPair(ID: \<pay_token address>#\<buy_token address>#\<timestamp rounded to current day by dividing by 3600>)
+
+Все значения выражены в целочисленном значении базового токена ERC20, который они представляют.
+
+### _Token Entity (ID: адрес токена)_
+
+```graphql
+type Token @entity { 
+    " <token address> "
+    id: ID!
+    " market entity "
+    market: RubiconMarket!
+    " first started trading at "
+    startAtTimestamp: BigInt!
+    " block in which token first started trading "
+    startBlockNumber: BigInt!
+    " token symbol "
+    symbol: String!
+    " token name "
+    name: String!
+    " token decimals "
+    decimals: Int!
+    " volume in token units "
+    volume: BigInt!
+    " total number of transactions involving that token "
+    txCount: BigInt!
+    " total fees collected for this token "
+    tokenFees: BigInt!
+    " token metrics on that day "
+    dayTokens: [DayToken!]! @derivedFrom(field: "token")
+    " token metrics for that hour "
+    hourTokens:  [HourToken!]! @derivedFrom(field: "token")
+} 
+```
+
+Сущность Token отслеживает данные, связанные с активностью токена ERC20 в книгах заказов Rubicon. Каждый токен также имеет связанную сущность токена, которая отслеживает статистику токена за заданный период времени: DayToken и HourToken. Идентификаторы для этих объектов токена следующие:
+
+- DayToken(ID: \<token address>#\<timestamp rounded to current day by dividing by 86400>)
+- HourToken(ID: \<token address>#\<timestamp rounded to current day by dividing by 86400>
+
+Все значения выражены в целочисленном значении базового токена ERC20, который они представляют.
+
+## _**Примеры запросов**_
+
+Следующие запросы представляют собой некоторые распространенные сценарии использования для потенциальных потребностей в данных, связанных с подграфом RubiconMarket.
+
+| Use Case                                                | Subgraph Studio Example                                                                                                          |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Access a User's trade history                           | [User Trade History](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=User%20Trade%20Activity) |
+| Access a User's open offers                             | [User Open Offer](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=User%20Open%20Offer)        |
+| Check the status of the entire order book               | [All Order Books](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=ORDERBOOK)                  |
+| Historical trading stats for tokens by day              | [Day Trading Stats](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=Day%20Token%20Stats)      |
+| Last trade and entire trade history of a pair of assets | [Pair Trade History](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=FullPairs)               |

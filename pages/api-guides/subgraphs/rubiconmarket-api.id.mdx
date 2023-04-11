@@ -1,0 +1,384 @@
+---
+description: Gambaran umum entitas utama subgraf Pasar Rubicon, peristiwa kontrak penangan, dan contoh kueri untuk berbagai kasus penggunaan.
+---
+
+# RubiconMarket API
+
+## **Entitas Utama RubiconMarket**
+
+Subgraf RubiconMarket berisi kumpulan entitas yang mengumpulkan dan menyimpan data terkait aktivitas perdagangan di buku pesanan protokol. Di bawah ini adalah entitas utama yang menurut kami paling relevan bagi pengguna dengan kebutuhan data mereka.
+
+### _**Entitas Pengguna (ID: Alamat Dompet)**_
+
+``` graphql
+ketik Pengguna @entitas {
+    " <user address> "
+    ya!
+    "nilai turunan"
+    bertukar: [Tukar!]! @derivedFrom(kolom: "pengguna")
+    openOffers: [BukaOffer!]! @derivedFrom(kolom: "pengguna")
+    penawaran: [Penawaran!]! @derivedFrom(kolom: "pengguna")
+    taker: [Taker!]! @derivedFrom(kolom: "pengguna")
+}
+```
+
+Entitas pengguna bertindak sebagai satu titik referensi untuk mengumpulkan semua aktivitas perdagangan yang terkait dengan alamat dompet. Dari dalam entitas pengguna, Anda dapat mengakses entitas Swap, OpenOffer, Offer, dan Taker.
+
+### _Entitas Penawaran & Penawaran Terbuka (ID: Hash ID Penawaran)_
+
+``` graphql
+ketik Penawaran @entitas {
+    " <offer id hash> "
+    ya!
+    "waktu transaksi"
+    cap waktu: BigInt!
+    " lacak ke entitas Pengguna "
+    pengguna: Pengguna!
+    " lacak ke entitas Transaksi "
+    transaksi: Transaksi!
+    " lacak ke entitas Pasangan "
+    pasangan: pasangan!
+    " lacak ke entitas DayPair "
+    dayPair: DayPair!
+    " lacak ke entitas HourPair "
+    jamPair: HourPair!
+    " aset yang dibayar oleh pengambil "
+    takeAsset: Token!
+    "aset yang dijual pembuatnya"
+    makeAsset: Token!
+    " jumlah takeAsset untuk makeAsset "
+    takeAmount: BigInt!
+    " jumlah makeAsset untuk takeAsset "
+    makeAmount: BigInt!
+    " harga takeAmount dalam ETH "
+    priceTakeAssetETH: HistorisAssetHargaETH!
+    " harga makeAmount dalam ETH "
+    priceMakeAssetETH: HistorisAssetHargaETH!
+    " harga takeAmount dalam ETH "
+    hargaTakeAssetUSD: HistorisAsetHargaUSD!
+    " harga makeAmount dalam ETH "
+    priceMakeAssetUSD: HistorisAsetHargaUSD!
+    " jumlah yang diterima dari takeAsset "
+    menerimaTakeAmount: BigInt!
+    " jumlah pengisian sebagian pada makeAsset "
+    partialFillMakeAmount: BigInt!
+    "variabel untuk jika penawaran dimatikan"
+    terbunuh: Boolean!
+    "ketika perintah dimatikan atau dipenuhi"
+    timeKilled: BigInt!
+}
+```
+
+Entitas Penawaran mewakili semua perdagangan pembuat yang telah dilakukan pengguna pada buku pesanan Rubicon. Entitas Penawaran memetakan ke beberapa entitas lain yang terkait dengannya. Untuk sebagian besar kasus penggunaan, entitas yang paling relevan adalah entitas Transaksi, yang berisi semua perincian transaksi (waktu, nomor blok, biaya bahan bakar) tentang penawaran, dan entitas "HistoricalAssetPriceETH/USD", yang berisi perincian tentang perdagangan terakhir suatu Aset ke ETH atau USD di RubiconMarket (ini memungkinkan pengguna untuk melacak kinerja historis perdagangan mereka yang dikutip dalam ETH & USD). Semua nilai didenominasi dalam nilai bilangan bulat dari token ERC-20 yang mendasari yang diwakilinya.
+
+``` graphql
+ketik OpenOffer @entity {
+    " <offer id hash> "
+    ya!
+    "waktu transaksi"
+    cap waktu: BigInt!
+    " lacak ke entitas Pengguna "
+    pengguna: Pengguna!
+    " lacak ke entitas Transaksi "
+    transaksi: Transaksi!
+    " lacak ke entitas Pasangan "
+    pasangan: pasangan!
+    " lacak ke entitas DayPair "
+    dayPair: DayPair!
+    " lacak ke entitas HourPair "
+    jamPair: HourPair!
+    " aset yang dibayar oleh pengambil "
+    takeAsset: Token!
+    "aset yang dijual pembuatnya"
+    makeAsset: Token!
+    " jumlah takeAsset untuk makeAsset "
+    takeAmount: BigInt!
+    " jumlah makeAsset untuk takeAsset "
+    makeAmount: BigInt!
+    " harga takeAmount dalam ETH "
+    priceTakeAssetETH: HistorisAssetHargaETH!
+    " harga makeAmount dalam ETH "
+    priceMakeAssetETH: HistorisAssetHargaETH!
+    " harga takeAmount dalam ETH "
+    hargaTakeAssetUSD: HistorisAsetHargaUSD!
+    " harga makeAmount dalam ETH "
+    priceMakeAssetUSD: HistorisAsetHargaUSD!
+    " jumlah yang diterima dari takeAsset "
+    menerimaTakeAmount: BigInt!
+    " jumlah pengisian sebagian pada makeAsset "
+    partialFillMakeAmount: BigInt!
+}
+```
+
+Entitas OpenOffer adalah salinan entitas Penawaran dengan dua peringatan: 1) saat penawaran diisi atau dihapus dari buku, entitas OpenOffer terkait dihapus dari subgraf (entitas yang dihapus ini masih dapat diakses melalui |*** *90****|), dan 2) entitas OpenOffer tidak berisi bidang variabel "terbunuh" (false jika penawaran diisi atau di buku dan benar jika penawaran dibatalkan) atau "timeKilled" (nol jika penawaran masih ada di buku, diperbarui hingga penawaran dihapus dari buku).
+
+### _Entitas Pengambil (ID: Transaksi Hash)_
+
+``` graphql
+ketik Pengambil @entitas {
+    " <transaction hash> "
+    ya!
+    "waktu transaksi"
+    cap waktu: BigInt!
+    " lacak ke entitas Pengguna "
+    pengguna: Pengguna!
+    " lacak ke entitas Transaksi "
+    transaksi: Transaksi!
+    " lacak ke entitas Pasangan "
+    pasangan: pasangan!
+    " lacak ke entitas DayPair "
+    dayPair: DayPair!
+    " lacak ke entitas HourPair "
+    jamPair: HourPair!
+    " aset yang dibayar oleh pengambil "
+    takeAsset: Token!
+    "aset yang dijual pembuatnya"
+    makeAsset: Token!
+    " jumlah takeAsset untuk makeAsset "
+    takeAmount: BigInt!
+    " jumlah makeAsset untuk takeAsset "
+    makeAmount: BigInt!
+    " harga takeAmount dalam ETH "
+    priceTakeAssetETH: HistorisAssetHargaETH!
+    " harga makeAmount dalam ETH "
+    priceMakeAssetETH: HistorisAssetHargaETH!
+    " harga takeAmount dalam ETH "
+    hargaTakeAssetUSD: HistorisAsetHargaUSD!
+    " harga makeAmount dalam ETH "
+    priceMakeAssetUSD: HistorisAsetHargaUSD!
+    "biaya untuk pengambil"
+    takerFee: BigInt!
+    "entitas pembuat perdagangan"
+    pembuat: Tawarkan!
+}
+```
+
+Entitas Pengambil mewakili semua perdagangan pengambil yang telah terjadi pada buku pesanan Rubicon. Entitas Taker memetakan ke beberapa entitas lain yang terkait dengannya. Entitas paling relevan yang dipetakan untuk sebagian besar kasus penggunaan adalah entitas Transaksi, yang berisi semua detail transaksi (waktu, nomor blok, biaya gas) tentang perdagangan, entitas "HistoricalAssetPriceETH/USD", yang berisi detail tentang perdagangan terakhir Aset ke ETH atau USD di Pasar Rubicon (ini memungkinkan pengguna untuk melacak kinerja historis dari perdagangan mereka yang dikutip dalam ETH & USD), dan entitas Penawaran, tawaran yang dibuka oleh perdagangan. Semua nilai didenominasi dalam nilai bilangan bulat dari token ERC-20 yang mendasari yang diwakilinya.
+
+### _Tukar Entitas (ID: Transaksi Hash)_
+
+``` graphql
+ketik Tukar @entitas {
+    " <transaction hash> "
+    ya!
+    "waktu transaksi"
+    cap waktu: BigInt!
+    " lacak ke entitas Pengguna "
+    pengguna: Pengguna!
+    " lacak ke entitas Transaksi "
+    transaksi: Transaksi!
+    " lacak ke entitas Pasangan "
+    pasangan: pasangan!
+    " lacak ke entitas DayPair "
+    dayPair: DayPair!
+    " lacak ke entitas HourPair "
+    jamPair: HourPair!
+    " aset yang dibayar oleh pengambil "
+    takeAsset: Token!
+    "aset yang dijual pembuatnya"
+    makeAsset: Token!
+    " jumlah takeAsset untuk makeAsset "
+    takeAmount: BigInt!
+    " jumlah makeAsset untuk takeAsset "
+    makeAmount: BigInt!
+    " harga takeAmount dalam ETH "
+    priceTakeAssetETH: HistorisAssetHargaETH!
+    " harga makeAmount dalam ETH "
+    priceMakeAssetETH: HistorisAssetHargaETH!
+    " harga takeAmount dalam ETH "
+    hargaTakeAssetUSD: HistorisAsetHargaUSD!
+    " harga makeAmount dalam ETH "
+    priceMakeAssetUSD: HistorisAsetHargaUSD!
+    "biaya untuk pengambil"
+    takerFee: BigInt!
+}
+```
+
+Entitas Swap mewakili semua perdagangan swap yang dilakukan pengguna pada buku pesanan Rubicon. Entitas Swap memetakan ke beberapa entitas lain yang terkait dengannya. Entitas paling relevan yang dipetakan untuk sebagian besar kasus penggunaan adalah entitas Transaksi, yang berisi semua detail transaksi (waktu, nomor blok, biaya gas) tentang swap, dan entitas "HistoricalAssetPriceETH/USD", yang berisi detail tentang perdagangan terakhir suatu Aset ke ETH atau USD di Pasar Rubicon (ini memungkinkan pengguna untuk melacak kinerja historis perdagangan mereka yang dikutip dalam ETH & USD). Semua nilai didenominasi dalam nilai bilangan bulat dari token ERC-20 yang mendasari yang diwakilinya.
+
+### _AssetPriceETH/USD (ID: \<asset>#\<ETH/USD>) & Entitas HistorisAssetPriceETH/USD (ID: \<asset>#\<ETH/USD>#\<timestamp>)_
+
+``` graphql
+ketik AssetPriceETH @entitas {
+    " <asset>#<ETH> "
+    ya!
+    " waktu update harga terakhir "
+    cap waktu: BigInt!
+    "aset"
+    aset: Token!
+    " harga aset dalam ETH "
+    asetHargaETH: BigDecimal!
+    " harga aset terbaru dalam ETH "
+    lastPriceETH: HistorisAssetPriceETH!
+}
+
+ketik HargaAsetUSD @entitas {
+    " <asset>#<ETH> "
+    ya!
+    " waktu update harga terakhir "
+    cap waktu: BigInt!
+    "aset"
+    aset: Token!
+    " harga aset dalam ETH "
+    asetHargaUSD: BigDecimal!
+    " harga aset terbaru dalam USD "
+    lastPriceUSD: HistorisAssetPriceUSD!
+}
+```
+
+Entitas AssetPriceETH/USD mewakili harga aset yang terakhir diperdagangkan di buku pesanan Rubicon terhadap ETH atau stablecoin. Entitas AssetPriceUSD berisi stablecoin yang terakhir diperdagangkan terhadap aset untuk mendapatkan harga USD, ini menginformasikan berapa desimal yang harus diperhitungkan dalam perhitungan harga. Entitas AssetPrice memetakan ke harga perdagangan terbaru melalui entitas HistoricalAssetPriceETH/USD:
+
+``` graphql
+ketik HistoricalAssetPriceETH @entity {
+    " <asset>#<ETH>#<timestamp> "
+    ya!
+    " waktu update harga terakhir "
+    cap waktu: BigInt!
+    "aset"
+    aset: Token!
+    "jumlah aset"
+    jumlah aset: BigInt!
+    "et jumlah"
+    etAmount: BigInt!
+    " harga aset dalam ETH "
+    historisAssetPriceETH: BigDecimal!
+}
+
+ketik HistoricalAssetPriceUSD @entity {
+    " <asset>#<ETH>#<timestamp> "
+    ya!
+    " waktu update harga terakhir "
+    cap waktu: BigInt!
+    "aset"
+    aset: Token!
+    "usd aset"
+    usdAsset: Token
+    "jumlah aset"
+    jumlah aset: BigInt!
+    "jumlah usd"
+    usdAmount: BigInt!
+    " harga aset dalam USD "
+    historicalAssetPriceUSD: BigDecimal!
+}
+```
+
+Semua nilai didenominasi dalam nilai bilangan bulat dari token ERC-20 yang mendasari yang diwakilinya.
+
+### _FullPair (ID: \<token0 address>#\<token1 address>) & Pasangkan Entitas (ID: \<pay\_token address>#\<buy\_token address>)_
+
+``` graphql
+ketik FullPair @entitas {
+    " <token0 address>#<token1 address> "
+    ya!
+    " <pay_token = token0>#<buy_token = token1> "
+    pasangan0: pasangan
+    " <pay_token = token1>#<buy_token = token0> "
+    pasangan1: pasangan
+    "perdagangan terakhir di seluruh pasangan"
+    lastTrade: Perdagangan
+    "petakan ke semua perdagangan di seluruh pasangan"
+    perdagangan: [Perdagangan!]! @derivedFrom(kolom: "fullPair")
+}
+```
+
+Entitas FullPair mewakili setiap pasangan ERC20-ERC20 yang telah diperdagangkan di buku pesanan Rubicon. Entitas ini memetakan ke dua pasangan entitas, mereka berbeda satu sama lain di mana ERC20 dari pasangan tersebut masing-masing adalah token bayar/beli. Ini mewakili kedua arah perdagangan antara pasangan ERC20-ERC20. Variabel lastTrade mewakili perdagangan terakhir dari pasangan ini, terlepas dari arahnya, dan dapat digunakan untuk mengakses data harga terbaru (ERC20 ke ERC20, ERC20 ke ETH, ERC20 dan ke USD) dari pasangan tersebut.
+
+``` graphql
+ketik Pasangan @entitas {
+    " <pay_token address>#<buy_token address> "
+    ya!
+    "entitas pasar"
+    pasar: Pasar Rubicon!
+    "pertama mulai berdagang di"
+    startAtTimestamp: BigInt!
+    " blok di mana pasangan pertama memulai perdagangan "
+    startBlockNumber: BigInt!
+    "token_bayar"
+    pay_token: Token!
+    "beli_token"
+    buy_token: Token!
+    " harga_token_pembayaran - harga perdagangan terbaru yang diperoleh dari token_pembelian "
+    hargaPayToken: BigDecimal!
+    " harga_buy_token - harga perdagangan terbaru yang berasal dari pay_token "
+    hargaBuyToken: BigDecimal!
+    " volume dalam token_pembayaran "
+    volumePayToken: BigInt!
+    " volume dalam buy_token "
+    volumeBuyToken: BigInt!
+    " jumlah total perdagangan dari pasangan itu "
+    txCount: BigInt!
+    " total biaya yang dikumpulkan dari pay_token untuk pasangan ini "
+    PayTokenFees: BigInt!
+    " total biaya yang dikumpulkan dari buy_token untuk pasangan ini "
+    biaya beliToken: BigInt!
+    " metrik token pada hari itu "
+    dayPairs: [DayPair!]! @derivedFrom(bidang: "pasangan")
+    " metrik token untuk jam itu "
+    hourPairs: [HourPair!]! @derivedFrom(bidang: "pasangan")
+    "nilai turunan"
+    bertukar: [Tukar!]! @derivedFrom(bidang: "pasangan")
+    openOffers: [BukaOffer!]! @derivedFrom(bidang: "pasangan")
+    penawaran: [Penawaran!]! @derivedFrom(bidang: "pasangan")
+    taker: [Taker!]! @derivedFrom(bidang: "pasangan")
+    perdagangan: [Perdagangan!]! @derivedFrom(bidang: "pasangan")
+}
+```
+
+Entitas Pasangan mewakili setiap perdagangan terarah melintasi pasangan ERC20-ERC20. Arahnya sesuai dengan ERC20 pasangan mana yang merupakan token pembayaran\_ (mengambil aset) dan mana yang merupakan token pembelian\_ (membuat aset). Setiap pasangan juga memiliki entitas pasangan terkait yang melacak statistik pasangan selama periode waktu tertentu: 1) MonthPair, 2) WeekPair, 3) DayPair, dan 4) HourPair. ID untuk pasangan ini adalah sebagai berikut:
+
+* BulanPair(ID: \<pay\_token address>#\<buy\_token address>#\<timestamp rounded to current day by dividing by 2629743>)
+* Pasangan Minggu(ID: \<pay\__token address>#\<buy_\__token address>#\<timestamp rounded to current day by dividing by 604800>_)
+* DayPair(ID: \<pay\_token address>#\<buy\_token address>#\<timestamp rounded to current day by dividing by 86400>)
+* HourPair(ID: \<pay\_token address>#\<buy\_token address>#\<timestamp rounded to current day by dividing by 3600>)
+
+Semua nilai didenominasi dalam nilai integer dari token ERC20 yang mendasarinya yang diwakilinya.
+
+### _Entitas Token (ID: Alamat Token)_
+
+``` graphql
+ketik Token @entitas {
+    " <token address> "
+    ya!
+    "entitas pasar"
+    pasar: Pasar Rubicon!
+    "pertama mulai berdagang di"
+    startAtTimestamp: BigInt!
+    " blok di mana token pertama kali memulai perdagangan "
+    startBlockNumber: BigInt!
+    "simbol token"
+    simbol: Tali!
+    "nama token"
+    nama: Tali!
+    "token desimal"
+    desimal: Int!
+    "volume dalam satuan token"
+    volume: BigInt!
+    " jumlah total transaksi yang melibatkan token itu "
+    txCount: BigInt!
+    " total biaya yang dikumpulkan untuk token ini "
+    tokenFees: BigInt!
+    " metrik token pada hari itu "
+    dayToken: [Token Hari!]! @derivedFrom(kolom: "token")
+    " metrik token untuk jam itu "
+    hourToken: [HourToken!]! @derivedFrom(kolom: "token")
+}
+```
+
+Entitas Token melacak data yang terkait dengan aktivitas token ERC20 di buku pesanan Rubicon. Setiap Token juga memiliki entitas Token terkait yang melacak statistik token selama periode waktu tertentu: DayToken dan HourToken. ID untuk entitas Token ini adalah sebagai berikut:
+
+* Token Hari(ID: \<token address>#\<timestamp rounded to current day by dividing by 86400>)
+* Token Jam(ID: \<token address>#\<timestamp rounded to current day by dividing by 86400>
+
+Semua nilai didenominasi dalam nilai integer dari token ERC20 yang mendasarinya yang diwakilinya.
+
+## _**Kueri Contoh**_
+
+Kueri berikut adalah beberapa skenario kasus penggunaan umum untuk kebutuhan data potensial yang berkaitan dengan subgraf RubiconMarket.
+
+| Use Case                                                | Subgraph Studio Example                                                                                                          |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Access a User's trade history                           | [User Trade History](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=User%20Trade%20Activity) |
+| Access a User's open offers                             | [User Open Offer](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=User%20Open%20Offer)        |
+| Check the status of the entire order book               | [All Order Books](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=ORDERBOOK)                  |
+| Historical trading stats for tokens by day              | [Day Trading Stats](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=Day%20Token%20Stats)      |
+| Last trade and entire trade history of a pair of assets | [Pair Trade History](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=FullPairs)               |

@@ -1,0 +1,30 @@
+---
+title: Rubicon | Pools de Liquidité
+pageTitle: Pools de Liquidités
+description: Tout ce que vous devez savoir sur les pools de liquidité Rubicon
+---
+
+## Développeurs
+
+Découvrez le contrat de pool de liquidité [BathToken.sol](https://github.com/RubiconDeFi/rubicon-protocol-v1/blob/master/contracts/rubiconPools/BathToken.sol) sur GitHub.
+
+Découvrez également la piscine [contracts docs](/docs/protocol/rubicon-pools/rubicon-pools) et le bainJeton [API docs](/docs/api/subgraphs/bathtoken-api)
+
+### Que sont les pools de liquidité ?
+
+Les pools de liquidité Rubicon ont [certain risks](/docs/protocol/rubicon-pools/risks). Soyez prudent et ne déposez que ce que vous pouvez vous permettre de perdre.
+
+Les pools de liquidité Rubicon sont un ensemble de contrats intelligents qui permettent aux fournisseurs de liquidité (LP) de déposer des jetons ERC-20 dans un pool. Les jetons du pool sont utilisés par des teneurs de marché actifs (stratèges) pour fournir des liquidités sur les carnets de commandes Rubicon. Le rendement de la tenue de marché va aux LP, tandis que les stratèges perçoivent des frais de gestion.
+
+Les fournisseurs de liquidité (LP) reçoivent des bathTokens lorsqu'ils déposent des actifs cryptographiques dans un pool. Ils représentent leur part proportionnelle des actifs sous-jacents du pool.\
+(Ex. LP dépose ETH, reçoit bathETH)
+
+Dès le début, nous avons conçu ces pools avec des paramètres de sécurité qui permettront à quiconque de gérer la liquidité du pool. Alors que le système est encore en développement, notre équipe agit en tant que gestionnaire de la liquidité du pool. Vous pouvez en savoir plus sur le [Current Pools Strategy](/docs/guides/liquidity-pools/current-pools-strategy) page. La prochaine version des pools de liquidité Rubicon est en phase de recherche et développement. Nous partagerons les mises à jour sur [our blog](https://mirror.xyz/rubicon.eth) !
+
+![Figure](/assets/image(3).png)
+
+### Avantages
+
+De nombreux protocoles/DEX choisissent entre une liquidité passive ou active. Rubicon décrit les rôles et les incitations pour les fournisseurs de liquidité passifs et les gestionnaires de liquidité actifs.
+
+Sur Rubicon, il n'y a qu'un seul pool pour chaque jeton. Par exemple, le pool USDC peut être utilisé sur ETH-USDC, OP-USDC et tout autre carnet de commandes USDC. Ceci est plus efficace en termes de capital que les systèmes où la liquidité est bloquée dans une seule paire de négociation.

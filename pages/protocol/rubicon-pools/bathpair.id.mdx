@@ -1,0 +1,37 @@
+---
+title: Pasangan Rubicon | Bath
+pageTitle: Pasangan Mandi
+description: Pembuatan pasar khusus pasangan dan eksekusi strategi
+---
+
+## Pasangan Mandi
+
+[BathPair contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathPair.sol) mewakili jantung dari Rubicon Pools dengan memungkinkan ahli strategi, likuiditas pengguna, dan pertimbangan keamanan utama kemampuan untuk bersatu untuk pasangan perdagangan tertentu. Kontrak ini memungkinkan ahli strategi untuk menyebarkan likuiditas pengguna untuk membuat pasar di Pasar Rubicon. Selain itu, kontrak ini memastikan bahwa dana pengguna aman dari aktor yang berpotensi jahat dan tetap berada dalam sistem loop tertutup yaitu Rubicon Pools.
+
+### Fungsi utama
+
+* `initializePair` - fungsi ini dipanggil saat Bath House menginisialisasi kontrak ini. Fungsi ini membuat Token Bath baru jika tidak ada untuk instance Bath Pair yang diberikan dan mengarahkan Pair ke kutipan Bath Token yang ada jika sudah ada.
+* `executeStrategy` - ini adalah fungsi inti dari BathPair.sol. Dalam versi nol dari Rubicon Pools, ini memungkinkan ahli strategi untuk menempatkan perdagangan pasangan (permintaan dan penawaran) dengan likuiditas bathToken yang mendasari yang dikelola oleh Pasangan ini. _Fungsi ini adalah titik masuk bagi ahli strategi untuk membuat pasar dan memanfaatkan likuiditas pengguna._
+  * Parameter yang disediakan oleh ahli strategi saat memanggil fungsi ini adalah:
+
+      ```
+          address targetStrategy,
+          uint256 askNumerator, // *Asset Amt* / Quote Amt
+          uint256 askDenominator, // Asset Amt / *Quote Amt*
+          uint256 bidNumerator, // *Quote Amt* / Asset Amt
+          uint256 bidDenominator // Quote Amt / *Asset Amt*
+      ```
+* `getMaxOrderSize` - fungsi ini mengembalikan ukuran pesanan terbesar untuk tawaran atau permintaan yang dapat dilakukan ahli strategi dengan dana pengguna. Selain itu, fungsi ini memastikan ukuran pesanan relatif dan dinamis [inventory management](/docs/protocol/rubicon-pools/rubicon-pools#constraints-and-risk-parameters) diberlakukan.
+* `strategistBootyClaim` - fungsi ini dipanggil oleh ahli strategi untuk secara otomatis mengembalikan hasil yang diperoleh kepada mereka yang mungkin diperoleh dengan pembuatan pasar yang sukses. Perhitungan utama untuk mengklaim hasil adalah (Kuantitas pesanan terisi sebagai hasil dari ahli strategi ini) / (Jumlah total pesanan terisi untuk aset tertentu) \* (Jumlah hasil yang mendasari).
+
+### Parameter Keamanan Utama dan Alur Eksekusi
+
+Ada sejumlah parameter keamanan yang tersedia untuk memastikan bahwa pelaku jahat atau pembuat pasar yang buruk tidak dapat menyebarkan modal pengguna secara tidak efektif di Pasar Rubicon. Semua fungsi dan parameter ini berperan dalam pemanggilan fungsi tunggal yang dibuat oleh ahli strategi: `executeStrategy`. Silakan lihat mereka di bawah dalam urutan kemunculannya selama pelaksanaan pemanggilan fungsi.
+
+* `onlyApprovedStrategy` - strategi target pemanggilan fungsi ini harus disetujui oleh Bath House.
+* `enforceReserveRatio` - pengubah ini memastikan bahwa `reserveRatio` untuk setiap kumpulan likuiditas dasar (token aset dan kuotasi) diamati _sebelum dan sesudah eksekusi fungsi_.
+* `getMaxOrderSize` - fungsi ini digunakan di sini untuk memastikan bahwa pembilang (apa yang digunakan dari kumpulan likuiditas) dari bid dan ask mematuhi batasan manajemen inventaris dinamis pasangan.
+* `enforceSpread` - fungsi ini memastikan bahwa (a) ada sebaran pada pesanan yang dikirimkan untuk perdagangan berpasangan dan (b) bahwa perdagangan pasangan memiliki harga permintaan/penawaran yang berada di bagian yang benar dari buku pesanan (permintaan /bid adalah ask/bid `/` midpoint price of the order book). A price oracle will be implemented in future versions to further ensure that midpoint of the order book is respected as a valid point of reference.
+* `IPairsTrade(targetStrategy).execute` - the strategy is then called and a pairs trade is placed. See PairsTrade.sol.
+* `cancelPartialFills` - this crucial function parses through the outstanding orders for this pair in the order book and (a) cancels any orders whose counterparts (the bid to an ask) of the pairs trade have been filled. This represents a yield event in which a pair's trade was partially filled. (b) Any orders that have exceeded the `timeDelay` for this pair are canceled to ensure no liquidity is locked in old orders.
+* `rebalancePair` - this simple function sends any filled orders that send ERC-20 assets to a Bath Token's sister pool (Asset `< - >` Quote) yang valid kembali ke kumpulan likuiditas yang benar sehingga hasil dapat direalisasikan.

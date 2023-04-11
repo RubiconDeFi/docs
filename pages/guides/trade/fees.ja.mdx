@@ -1,0 +1,28 @@
+---
+title: ルビコン/料金
+pageTitle: 料金
+description: ルビコンの料金
+---
+
+## ネットワーク料金
+
+ルビコンのオーダーブックはオンチェーンであり、すべての取引には ETH で支払われるネットワーク料金 (ガス) が必要です。 [Optimism](https://www.optimism.io/) のガス料金イーサリアムのメインネットよりも 50 ～ 100 倍安く、この [public dashboard](https://public-grafana.optimism.io/d/9hkhMxn7z/public-dashboard?orgId=1&refresh=5m) で監視できます。
+
+### 取引手数料
+
+import { Callout } from "/components/Callout";
+
+<Callout type="note" title="Taker Fee: 0.01%">
+スワップ、成行注文、およびオーダーブックから流動性を「取る」注文によって支払われる
+</Callout>
+
+<Callout type="note" title="Maker Fee: 0%">
+オーダーブックで流動性を「作る」指値注文は、ガス以外の手数料を支払わない
+</Callout>
+
+### 流動性プール手数料
+
+<Callout type="warning" title="Withdrawal Fee: 0.03%">
+引き出し手数料はプールに払い戻され、残りの流動性プロバイダーに効果的に報酬を与えます。プール スパムを停止します。 (これらは可変プロトコル パラメータであり、
+変わるかもしれません）
+</Callout>

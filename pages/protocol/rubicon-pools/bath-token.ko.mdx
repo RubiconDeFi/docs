@@ -1,0 +1,24 @@
+---
+title: 루비콘/바스 토큰
+pageTitle: 목욕 토큰
+description: 루비콘 풀의 사용자 유동성을 나타내는 토큰
+---
+
+## 목욕토큰
+
+[Bath Token contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathToken.sol) Rubicon 풀 내 단일 자산 풀의 유동성을 나타냅니다. 이러한 풀은 기본 토큰(예: bathUSDC)의 이름에 접두사 "bath"를 추가하여 이름을 지정합니다.
+
+유동성 공급자(LP)가 루비콘 풀에 토큰을 예치하면 해당 금액의 bathToken을 받습니다. 예: USDC를 입금하는 LP는 bathUSDC를 받습니다.
+
+BathToken은 본질적으로 기본 풀의 공유입니다.
+
+LP는 시장 조성 수익률을 얻는 반면 전략가는 풀 자산을 사용하여 Rubicon 주문서에 유동성을 제공합니다.
+
+![](</assets/Rubicon v1\_ BathTokens.png>)
+
+### 주요 기능
+
+* `deposit` - 이 기능을 통해 사용자는 ERC-20 자산을 예치하고 예치금과 함께 `totalSupply` / `underlyingBalance()` 비율로 bathToken을 받을 수 있습니다. 이는 사용자가 이미 풀의 공유 성능에 비례하는 풀의 공유를 받게 됨을 의미합니다. 이렇게 하면 시스템을 조작할 방법이 없으며 모든 참가자 간에 장점이 올바르게 공유됩니다. 'bathToken'은 기본 유동성의 일부를 나타내며 미래 수익률에 대한 청구권이 있습니다.
+  * 입력 매개변수: uint `amount` - 예치할 ERC-20 자산의 수량.
+* `withdraw` - 이 기능은 제공된 유동성과 사용자가 (BathToken 소각을 통해) 얻은 누적 수익을 지갑으로 다시 인출합니다.
+  * 입력 매개변수: uint `shares` - 기본 ERC-20 자산과 교환하여 인출할 `bathTokens`(기본 풀의 공유) 수량입니다.

@@ -1,0 +1,37 @@
+---
+title: Rubicon | Paire de bain
+pageTitle: Paire de bain
+description: Tenue de marché et exécution de la stratégie spécifiques à une paire
+---
+
+## Paire de bain
+
+Le [BathPair contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathPair.sol) représente le cœur de Rubicon Pools en permettant aux stratèges, à la liquidité des utilisateurs et aux considérations de sécurité clés de se réunir pour une paire de négociation donnée. Ce contrat permet aux stratèges de déployer la liquidité des utilisateurs afin de faire du marché sur le marché Rubicon. De plus, ce contrat garantit que les fonds des utilisateurs sont à l'abri des acteurs potentiellement malveillants et restent dans le système en boucle fermée qu'est Rubicon Pools.
+
+### Fonctions des touches
+
+* `initializePair` - cette fonction est appelée lorsque le Bath House initialise ce contrat. Cette fonction crée de nouveaux jetons de bain s'ils n'existent pas pour l'instance de paire de bain donnée et pointe la paire vers un jeton de bain de devis existant s'il existe déjà.
+* `executeStrategy` - c'est la fonction principale de BathPair.sol. Dans la version zéro de Rubicon Pools, il permet à un stratège de placer un échange de paires (demande et offre) avec la liquidité bathToken sous-jacente qui est gérée par cette paire. _Cette fonction est le point d'entrée des stratèges pour faire du marché et tirer parti de la liquidité des utilisateurs._
+  * Les paramètres fournis par le stratège lors de l'appel de cette fonction sont :
+
+      ```
+          address targetStrategy,
+          uint256 askNumerator, // *Asset Amt* / Quote Amt
+          uint256 askDenominator, // Asset Amt / *Quote Amt*
+          uint256 bidNumerator, // *Quote Amt* / Asset Amt
+          uint256 bidDenominator // Quote Amt / *Asset Amt*
+      ```
+* `getMaxOrderSize` - cette fonction renvoie la plus grande taille de commande pour une offre ou une demande qu'un stratège peut placer avec les fonds des utilisateurs. De plus, cette fonction garantit que le dimensionnement relatif de l'ordre et la dynamique [inventory management](/docs/protocol/rubicon-pools/rubicon-pools#constraints-and-risk-parameters) sont appliquées.
+* `strategistBootyClaim` - cette fonction est appelée par les stratèges pour leur retourner automatiquement le rendement gagné qui aurait pu être gagné avec une tenue de marché réussie. Le calcul clé pour réclamer le rendement est (Quantité d'exécutions de commandes grâce à ce stratège) / (Quantité totale d'exécutions de commandes pour l'actif donné) \* (Montant sous-jacent du rendement).
+
+### Paramètres de sécurité clés et flux d'exécution
+
+Un certain nombre de paramètres de sécurité sont en place pour garantir que les acteurs malveillants ou les pauvres teneurs de marché ne peuvent pas déployer de manière inefficace le capital des utilisateurs sur le marché Rubicon. Toutes ces fonctions et paramètres jouent un rôle dans l'appel de fonction unique effectué par le stratège : "executeStrategy". Veuillez les voir ci-dessous dans l'ordre dans lequel ils se produisent tout au long de l'exécution de l'appel de fonction.
+
+* `onlyApprovedStrategy` - la stratégie cible de cet appel de fonction doit être approuvée par la Bath House.
+* `enforceReserveRatio` - ce modificateur garantit que le `reserveRatio` pour chacun des pools de liquidités sous-jacents (actifs et devis bathTokens) est observé _avant et après l'exécution de la fonction_.
+* `getMaxOrderSize` - cette fonction est utilisée ici pour s'assurer que le numérateur (ce qui est utilisé à partir des pools de liquidité) de l'offre et de la demande respecte les contraintes de gestion dynamique des stocks des paires.
+* `enforceSpread` - cette fonction garantit que (a) il y a un écart sur les ordres soumis pour un échange de paires et (b) que le commerce de paires a un prix vendeur/acheteur qui se trouve sur la bonne moitié du carnet d'ordres (demandez /bid est une demande/offre valide `/` midpoint price of the order book). A price oracle will be implemented in future versions to further ensure that midpoint of the order book is respected as a valid point of reference.
+* `IPairsTrade(targetStrategy).execute` - the strategy is then called and a pairs trade is placed. See PairsTrade.sol.
+* `cancelPartialFills` - this crucial function parses through the outstanding orders for this pair in the order book and (a) cancels any orders whose counterparts (the bid to an ask) of the pairs trade have been filled. This represents a yield event in which a pair's trade was partially filled. (b) Any orders that have exceeded the `timeDelay` for this pair are canceled to ensure no liquidity is locked in old orders.
+* `rebalancePair` - this simple function sends any filled orders that send ERC-20 assets to a Bath Token's sister pool (Asset `< - >` Quote) vers le pool de liquidités correct afin que le rendement puisse être réalisé.

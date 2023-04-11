@@ -1,0 +1,38 @@
+---
+title: 루비콘/풀 성장률
+pageTitle: 풀 성장률
+description: 루비콘 풀의 성장률 이해
+---
+
+# 성장률
+
+import { Callout } from "/components/Callout";
+
+<Callout type="warning" title="Disclaimer">
+Rubicon 풀 사용에는 [**certain risks**](/protocol/rubicon-pools/risks)이 있습니다. 주의를 기울이고 잃을 수 있는 금액만 입금하십시오.
+</Callout>
+
+
+[Rubicon Pools](/docs/protocol/rubicon-pools/rubicon-pools) Rubicon 오더북의 기본 유동성 풀입니다. 유동성 공급자는 풀에 토큰을 예치하며 풀 유동성은 적극적인 시장 조성자(전략가)가 오더북에 유동성을 제공하는 데 사용됩니다. 시장 조성 활동의 수익은 유동성 공급자에게 돌아가고 성과 수수료는 전략가에게 돌아갑니다.
+
+풀(예: 풀에서 LP의 점유율을 나타내는 bathTokens)의 성과는 전략가 시장 조성의 수익성에 의해 결정됩니다. 중요한 것은 풀 수익은 거래가 성사될 때 생성되기 때문에 _불연속적이고 연속적이지 않다는 것입니다.
+
+풀은 yEarn 볼트에서 처음 구현한 오픈 소스 풀 공유 모델을 활용합니다. 가정된 APY 및 풀 지분 구조를 추정하기 위해 불연속 수익률을 사용하는 방법에 대한 자세한 내용은 [explanation](https://docs.yearn.finance/getting-started/guides/how-to-understand-yvault-roi) yEarn 기준(APR/APY 추정은 동일한 접근 방식을 사용함).
+
+주어진 풀의 성능을 이해하는 데 도움이 되는 개념은 풀의 가상 "가격"입니다. 이 값은 풀의 `underlyingBalance` / `totalSupply`를 기준으로 계산됩니다. 이것은 기본 자산 대 주식 수를 나타냅니다. 이 증가하는 값은 bathToken 보유자의 실현된 수익을 나타냅니다.
+
+[Pools page](https://app.rubicon.finance/pools) 웹 앱에서 각 유동성 풀에는 해당 예상 APR이 있습니다.
+
+![](/assets/image(8).png)
+
+이 요율 위로 마우스를 가져가면 각 풀에 대한 추가 요율이 포함된 툴팁이 표시됩니다. 주요 요율은 예상 연이율이며 풀에 대한 _후행 주간 또는 월간 실적 중 더 나은 것_에서 계산됩니다. 다음은 이러한 요율이 계산되는 방법에 대한 개요입니다.
+
+7일 % 변동 - `지난 7일간 풀 실적 또는 주가 변동.`
+
+30일 % 변동 - `지난 30일간 풀 실적 또는 주가 변동.`
+
+Gross APR - `후행 7일 대 30일 변화 중 더 좋음 * (1년/샘플 크기)`
+
+예상 연이율 - `비율로 7일 대 30일 변화 중 더 좋음^(1년 / 샘플 크기) -1`
+
+Rewards APR - `보상이 발생하는 비율과 현재 보상 토큰 가격을 연간으로 표시`

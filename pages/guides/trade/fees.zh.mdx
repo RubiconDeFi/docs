@@ -1,0 +1,28 @@
+---
+title: Rubicon/费用
+pageTitle: 费用
+description: Rubicon的费用
+---
+
+## 网络费用
+
+Rubicon 订单簿在链上，所有交易都需要以 ETH 支付的网络费用（gas）。煤气费 [Optimism](https://www.optimism.io/)比以太坊主网便宜 50-100 倍，您可以在此 [public dashboard](https://public-grafana.optimism.io/d/9hkhMxn7z/public-dashboard?orgId=1&refresh=5m) 上监控它们。
+
+### 交易费用
+
+import { Callout } from "/components/Callout";
+
+<Callout type="note" title="Taker Fee: 0.01%">
+通过掉期、市价单和从订单簿中“获取”流动性的订单支付
+</Callout>
+
+<Callout type="note" title="Maker Fee: 0%">
+在订单簿上“制造”流动性的限价订单不支付 gas 以外的费用
+</Callout>
+
+### 流动资金池费用
+
+<Callout type="warning" title="Withdrawal Fee: 0.03%">
+提款费被返还到池中，有效地奖励剩余的流动性提供者。停止池垃圾邮件。 （这些是可变的协议参数和
+可以改变）
+</Callout>

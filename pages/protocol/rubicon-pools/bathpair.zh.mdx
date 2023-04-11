@@ -1,0 +1,37 @@
+---
+title: Rubicon/浴对
+pageTitle: 浴对
+description: 特定货币对的市场决策和策略执行
+---
+
+## 沐浴对
+
+[BathPair contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathPair.sol)代表了 Rubicon Pools 的核心，允许策略师、用户流动性和关键安全考虑因素能够为给定的交易对聚集在一起。该合约允许策略师部署用户流动性，以便在 Rubicon 市场上做市。此外，该合约确保用户资金免受潜在恶意行为者的侵害，并保持在 Rubicon Pools 的闭环系统中。
+
+### 主要功能
+
+* `initializePair` - 当浴室初始化这个合约时调用这个函数。如果给定的 Bath Pair 实例不存在新的 Bath Token，此函数将创建新的 Bath Token，如果它已经存在，则将 Pair 指向现有的报价 Bath Token。
+* `executeStrategy` - 这是 BathPair.sol 的核心功能。在 Rubicon Pools 的零版本中，它允许策略师使用由该 Pair 管理的基础 bathToken 流动性进行配对交易（询问和出价）。 _此功能是策略师做市和利用用户流动性的切入点。_
+  * 策略师在调用该函数时提供的参数为：
+
+      ```
+          address targetStrategy,
+          uint256 askNumerator, // *Asset Amt* / Quote Amt
+          uint256 askDenominator, // Asset Amt / *Quote Amt*
+          uint256 bidNumerator, // *Quote Amt* / Asset Amt
+          uint256 bidDenominator // Quote Amt / *Asset Amt*
+      ```
+* `getMaxOrderSize` - 此函数返回策略师可以使用用户资金下达的出价或要价的最大订单大小。此外，此功能确保相对订单大小和动态 [inventory management](/docs/protocol/rubicon-pools/rubicon-pools#constraints-and-risk-parameters)被强制执行。
+* `strategistBootyClaim` - 策略师调用此函数以自动将可能通过成功的做市赚取的收益返还给他们。要求收益率的关键计算是（作为该策略师结果的订单执行数量）/（给定资产的订单执行总量）\*（基础收益率）。
+
+### 关键安全参数和执行流程
+
+有许多安全参数可以确保恶意行为者或不良做市商无法在 Rubicon 市场上无效地部署用户资金。所有这些函数和参数都在策略师进行的单个函数调用中发挥作用：`executeStrategy`。请按照它们在整个函数调用执行过程中出现的顺序在下面查看它们。
+
+* `onlyApprovedStrategy` - 此函数调用的目标策略必须得到 Bath House 的批准。
+* `enforceReserveRatio` - 此修饰符确保每个基础流动资金池（资产和报价 bathTokens）的 `reserveRatio` 在函数执行之前和之后被观察到。
+* `getMaxOrderSize` - 此处使用此函数来确保出价和要价的分子（从流动性池中使用的是什么）遵守对动态库存管理约束。
+* `enforceSpread` - 此函数确保 (a) 为配对交易提交的订单存在价差，以及 (b) 配对交易的要价/出价位于订单簿的正确一半（询问/bid 是一个有效的要价/出价 `/` midpoint price of the order book). A price oracle will be implemented in future versions to further ensure that midpoint of the order book is respected as a valid point of reference.
+* `IPairsTrade(targetStrategy).execute` - the strategy is then called and a pairs trade is placed. See PairsTrade.sol.
+* `cancelPartialFills` - this crucial function parses through the outstanding orders for this pair in the order book and (a) cancels any orders whose counterparts (the bid to an ask) of the pairs trade have been filled. This represents a yield event in which a pair's trade was partially filled. (b) Any orders that have exceeded the `timeDelay` for this pair are canceled to ensure no liquidity is locked in old orders.
+* `rebalancePair` - this simple function sends any filled orders that send ERC-20 assets to a Bath Token's sister pool (Asset `< - >` 报价）回到正确的流动资金池，以便实现收益。

@@ -1,0 +1,37 @@
+---
+title: Rubicon | Bath Pair
+pageTitle: Bath Pair
+description: Формирование рынка и реализация стратегии для конкретной пары
+---
+
+## Bath Pair
+
+[BathPair contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathPair.sol) представляет собой сердце Rubicon Pools, позволяя стратегам, пользовательской ликвидности и ключевым соображениям безопасности объединиться для данной торговой пары. Этот контракт позволяет стратегам задействовать пользовательскую ликвидность для продажи на рынке Рубикон. Более того, этот контракт гарантирует, что средства пользователей защищены от потенциально злонамеренных действий и остаются в замкнутой системе Rubicon Pools.
+
+### Основные функции
+
+* `initializePair` - эта функция вызывается, когда Баня инициализирует этот контракт. Эта функция создает новые жетоны ванны, если они не существуют для данного экземпляра пары ванн, и указывает пару на существующий токен ванны котировки, если он уже существует.
+* `executeStrategy` - это основная функция BathPair.sol. В нулевой версии Rubicon Pools он позволяет стратегу размещать парные сделки (аск и бид) с базовой ликвидностью BathToken, которая управляется этой парой. _Эта функция является отправной точкой для стратегов, чтобы сделать рынок и использовать ликвидность пользователей._
+  * Параметры, предоставляемые стратегом при вызове этой функции:
+
+      ```
+          address targetStrategy,
+          uint256 askNumerator, // *Asset Amt* / Quote Amt
+          uint256 askDenominator, // Asset Amt / *Quote Amt*
+          uint256 bidNumerator, // *Quote Amt* / Asset Amt
+          uint256 bidDenominator // Quote Amt / *Asset Amt*
+      ```
+* `getMaxOrderSize` - эта функция возвращает наибольший размер ордера для бида или аска, который стратег может разместить за счет средств пользователя. Более того, эта функция гарантирует, что относительный размер ордера и динамический [inventory management](/docs/protocol/rubicon-pools/rubicon-pools#constraints-and-risk-parameters) применяются.
+* `strategistBootyClaim` - эта функция вызывается стратегами для автоматического возврата им заработанной доходности, которая могла быть получена при успешном маркетмейкинге. Ключевой расчет для заявленной доходности: (Количество исполнений ордеров в результате этого стратега) / (Общее количество исполнений ордеров для данного актива) \* (Базовая сумма доходности).
+
+### Ключевые параметры безопасности и поток выполнения
+
+Существует ряд параметров безопасности, которые гарантируют, что злоумышленники или плохие маркет-мейкеры не смогут неэффективно использовать пользовательский капитал на рынке Рубикон. Все эти функции и параметры играют роль в единственном вызове функции, сделанном стратегом: `executeStrategy`. Пожалуйста, смотрите их ниже в том порядке, в котором они появляются во время выполнения вызова функции.
+
+* `onlyApprovedStrategy` - целевая стратегия вызова данной функции должна быть одобрена Баней.
+* `enforceReserveRatio` - этот модификатор гарантирует, что `reserveRatio` для каждого из базовых пулов ликвидности (активов и котировок BathTokens) соблюдается _до и после выполнения функции_.
+* `getMaxOrderSize` - эта функция используется здесь, чтобы гарантировать, что числитель (то, что используется из пулов ликвидности) предложения и предложения соответствует ограничениям динамического управления запасами пар.
+* `enforceSpread` - эта функция гарантирует, что (а) существует спред по ордерам, поданным для парной сделки, и (б) что парная сделка имеет цену спроса/предложения, которая находится в правильной половине книги ордеров (аск /bid является действительным аск/бид `/` midpoint price of the order book). A price oracle will be implemented in future versions to further ensure that midpoint of the order book is respected as a valid point of reference.
+* `IPairsTrade(targetStrategy).execute` - the strategy is then called and a pairs trade is placed. See PairsTrade.sol.
+* `cancelPartialFills` - this crucial function parses through the outstanding orders for this pair in the order book and (a) cancels any orders whose counterparts (the bid to an ask) of the pairs trade have been filled. This represents a yield event in which a pair's trade was partially filled. (b) Any orders that have exceeded the `timeDelay` for this pair are canceled to ensure no liquidity is locked in old orders.
+* `rebalancePair` - this simple function sends any filled orders that send ERC-20 assets to a Bath Token's sister pool (Asset `< - >` Quote) обратно к правильному пулу ликвидности, чтобы можно было реализовать доходность.

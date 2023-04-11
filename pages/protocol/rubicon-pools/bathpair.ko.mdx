@@ -1,0 +1,37 @@
+---
+title: 루비콘/목욕 쌍
+pageTitle: 목욕 쌍
+description: 쌍별 시장 결정 및 전략 실행
+---
+
+## 목욕 페어
+
+[BathPair contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathPair.sol) 전략가, 사용자 유동성 및 주요 보안 고려 사항이 주어진 거래 쌍에 대해 함께 모일 수 있도록 함으로써 Rubicon 풀의 핵심을 나타냅니다. 이 계약을 통해 전략가는 Rubicon Market에서 시장 조성을 위해 사용자 유동성을 배치할 수 있습니다. 또한 이 계약은 사용자 자금이 잠재적인 악의적 행위자로부터 안전하고 Rubicon Pools인 폐쇄 루프 시스템 내에 유지되도록 합니다.
+
+### 주요 기능
+
+* `initializePair` - 이 함수는 Bath House가 이 컨트랙트를 초기화할 때 호출됩니다. 이 함수는 주어진 목욕 쌍 인스턴스에 대해 존재하지 않는 경우 새 목욕 토큰을 생성하고 이미 존재하는 경우 쌍을 기존 견적 목욕 토큰을 가리킵니다.
+* `executeStrategy` - BathPair.sol의 핵심 기능입니다. Rubicon Pools의 버전 0에서는 전략가가 이 쌍에 의해 관리되는 기본 bathToken 유동성과 쌍 거래(요청 및 입찰)를 할 수 있습니다. _이 기능은 전략가가 시장을 만들고 사용자 유동성을 활용하기 위한 진입점입니다._
+  * 이 함수를 호출할 때 전략가가 제공하는 매개변수는 다음과 같습니다.
+
+      ```
+          address targetStrategy,
+          uint256 askNumerator, // *Asset Amt* / Quote Amt
+          uint256 askDenominator, // Asset Amt / *Quote Amt*
+          uint256 bidNumerator, // *Quote Amt* / Asset Amt
+          uint256 bidDenominator // Quote Amt / *Asset Amt*
+      ```
+* `getMaxOrderSize` - 이 함수는 전략가가 사용자 자금으로 배치할 수 있는 입찰 또는 요청에 대한 최대 주문 크기를 반환합니다. 또한 이 기능은 상대적 주문 크기 조정 및 동적 [inventory management](/docs/protocol/rubicon-pools/rubicon-pools#constraints-and-risk-parameters) 시행됩니다.
+* `strategistBootyClaim` - 이 함수는 전략가가 성공적으로 시장 조성을 통해 얻은 수익을 자동으로 반환하기 위해 호출합니다. 수율 청구에 대한 주요 계산은 (이 전략가의 결과로 채워진 주문 수량) / (주어진 자산에 대한 총 주문 채우기 수량) \*(기본 수율)입니다.
+
+### 주요 보안 매개변수 및 실행 흐름
+
+악의적인 행위자나 열악한 시장 조성자가 Rubicon 시장에서 사용자 자본을 비효율적으로 배포할 수 없도록 하는 여러 가지 보안 매개변수가 있습니다. 이러한 모든 함수와 매개변수는 전략가가 실행하는 단일 함수 호출인 `executeStrategy`에서 역할을 합니다. 함수 호출이 실행되는 동안 발생하는 순서대로 아래를 참조하십시오.
+
+* `onlyApprovedStrategy` - 이 함수 호출의 대상 전략은 Bath House의 승인을 받아야 합니다.
+* `enforceReserveRatio` - 이 수정자는 각 기본 유동성 풀(자산 및 호가 bathTokens)에 대한 `reserveRatio`가 _함수 실행 전과 후에_ 관찰되도록 합니다.
+* `getMaxOrderSize` - 이 기능은 여기에서 입찰 및 요청의 분자(유동성 풀에서 사용되는 것)가 쌍의 동적 재고 관리 제약 조건을 준수하는지 확인하는 데 사용됩니다.
+* 'enforceSpread' - 이 기능은 (a) 쌍 거래를 위해 제출된 주문에 스프레드가 있고 (b) 쌍 거래가 주문서의 올바른 절반에 있는 매도/입찰 가격을 갖도록 보장합니다(매도 /bid는 유효한 매도/매도 `/` midpoint price of the order book). A price oracle will be implemented in future versions to further ensure that midpoint of the order book is respected as a valid point of reference.
+* `IPairsTrade(targetStrategy).execute` - the strategy is then called and a pairs trade is placed. See PairsTrade.sol.
+* `cancelPartialFills` - this crucial function parses through the outstanding orders for this pair in the order book and (a) cancels any orders whose counterparts (the bid to an ask) of the pairs trade have been filled. This represents a yield event in which a pair's trade was partially filled. (b) Any orders that have exceeded the `timeDelay` for this pair are canceled to ensure no liquidity is locked in old orders.
+* `rebalancePair` - this simple function sends any filled orders that send ERC-20 assets to a Bath Token's sister pool (Asset `< - >` 견적) 올바른 유동성 풀로 돌아가서 수익을 실현할 수 있습니다.

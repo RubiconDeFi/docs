@@ -1,0 +1,151 @@
+---
+title: بازار روبیکن | روبیکن
+pageTitle: بازار روبیکن
+description: بررسی اجمالی و مستندات قرارداد کتاب سفارش روبیکن
+---
+
+منطق تبادل هسته ای روبیکون در [RubiconMarket](https://github.com/RubiconDeFi/rubicon_protocol/blob/master/contracts/RubiconMarket.sol) زندگی می کند قرارداد هوشمند - دفتر سفارش مرکزی روبیکون. مفید است که این قرارداد هوشمند را به عنوان یک لایه میانی در نظر بگیریم که تبادل همتا به همتای دارایی های دیجیتال را از طریق دفترچه سفارش تسهیل می کند.
+
+# 📊 بازار روبیکون
+
+## بررسی اجمالی
+
+قرارداد هوشمند روبیکون مارکت کتاب های سفارش زنجیره ای و موتور تطبیقی ​​را برای تجارت همتا به همتا از [ERC-20 tokens](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) پیاده سازی می کند.
+
+دفترچه سفارش فهرستی از سفارشات خرید و فروش یک دارایی است که بر اساس قیمت مرتب شده است. این قرارداد هر دفترچه سفارش ERC20/ERC20 را به صورت دو لیست مرتب شده با پیوند دوگانه، یکی برای سمت خرید و دیگری برای سمت فروش در بازار معین اجرا می کند.
+
+این قرارداد از مدل سپرده گذاری برای نقدینگی استفاده می کند. هنگامی که یک سفارش محدود در کتاب قرار می گیرد، آن نشانه ها به قرارداد ارسال می شود. اگر/زمانی که سفارش پر شود، قرارداد به طور مستقیم با معامله گران مطابقت دارد و توکن ها برای هر یک از طرفین ارسال می شود. یک سفارش می تواند لغو شود و قرارداد توکن ها را به فرستنده برمی گرداند.
+
+Rubicon Market یک کار مشتق شده از منبع باز MakerDAO [OasisDEX](https://oasisdex.com/) است و مجوز AGPL3 را به ارث می برد.
+
+## توابع معاملاتی
+
+### پیشنهاد()
+
+```
+    function offer(
+        uint256 pay_amt,
+        ERC20 pay_gem,
+        uint256 buy_amt,
+        ERC20 buy_gem,
+        uint256 pos,
+    ) public returns (uint256)
+```
+
+| Parameter Name         | Type        | Description                                                                                                                       |
+| ---------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| pay\_amt               | uint256     | Quantity of ERC-20 tokens the maker is selling                                                                                    |
+| pay\_gem               | address     | ERC-20 token the maker is selling                                                                                                 |
+| uint buy\_amt          | uint256     | Quantity of ERC-20 tokens the maker is buying                                                                                     |
+| ERC20 buy\_gem         | address     | ERC-20 token the maker is buying                                                                                                  |
+| uint pos               | uint256     | Position in the sorted list to place the order. Set this to 0 unless you know the exact position (closest ID) to insert the order |
+| \[Optional] matching   | bool        | Optional boolean to determine whether the offer should be automatically matched (placed in the sorted list)                       |
+
+The primary function for placing limit orders on Rubicon. The **pay_amt** quantity of the **pay_gem** token will be sent to the order book contract, sitting in escrow until it is filled or canceled. Always set pos to **0** unless you know the exact position in the sorted lost to insert the order.
+
+### cancel()
+
+```
+    function cancel(uint id)
+        public
+        can_cancel(id)
+        returns (bool success)
+```
+
+| Parameter Name         | Type        | Description                                    |
+| ---------------------- | ----------- | ---------------------------------------------- |
+| id                     | uint256     | The id of the order the user wants to cancel   |
+
+از این تابع برای پر کردن یا "چین کردن گیلاس" یک سفارش خاص در کتاب استفاده می شود. تماس گیرنده هزینه گیرنده را پرداخت می کند. از طرف دیگر، می‌توانید از تابع مسیریابی **take()** برای رسیدن به همان نتیجه و پر کردن یک پیشنهاد خاص استفاده کنید.
+
+### buyAllAmount()
+
+```
+     function buyAllAmount(
+        ERC20 buy_gem,
+        uint256 buy_amt,
+        ERC20 pay_gem,
+        uint256 max_fill_amount
+    ) external returns (uint256 fill_amt)
+```
+
+| Parameter Name         | Type        | Description                                    |
+| ---------------------- | ----------- | ---------------------------------------------- |
+| buy\_gem               | address     | ERC-20 token the taker is buying               |
+| buy\_amt               | uint256     | Quantity of tokens the taker is buying         |
+| pay\_gem               | address     | ERC-20 token the taker is selling              |
+| max\_fill\_amount      | uint256     | Maximum amount of pay tokens sold              |
+
+تلاش برای مبادله **sell_amt** مقدار توکن **sell_gem** حداقل با مقدار **min_fill_amount** *pay_gem**. در صورتی که معامله گر کمتر از حداقل مبلغ مشخص شده دریافت کند، تراکنش برگردانده می شود. این یک سفارش فروش "پر کردن یا بکش" است.
+
+## مشاهده توابع
+
+### getBestOffer()
+
+```
+function getBestOffer(ERC20 pay_gem, ERC20 buy_gem)
+    public
+    view
+    returns (uint256)
+```
+
+شناسه پیشنهاد را در بالای دفترچه سفارش برمی گرداند.
+
+سابق. فراخوانی این تابع با WETH به عنوان **pay_gem** و USDC به عنوان **buy_gem** بهترین درخواست را در WETH/USDC برمی گرداند. تعویض توکن ها بهترین پیشنهاد را برمی گرداند.
+
+### getWorseOffer()
+
+```
+function getWorseOffer(uint256 id)
+    public
+    view
+    returns (uint256)
+```
+
+پیشنهاد بدتر بعدی را در لیست مرتب شده برمی گرداند. اگر سفارش هدف درخواستی باشد، پیشنهاد بدتر، پیشنهاد بالاتر است و اگر یک پیشنهاد قیمت باشد، پیشنهاد کمتر است. در هر دو مورد، اگر مساوی باشند، جدیدتر را برمی گرداند.
+
+### getBuyAmount()
+
+```
+    function getBuyAmount(
+        ERC20 buy_gem,
+        ERC20 pay_gem,
+        uint256 pay_amt
+    ) external view returns (uint256 fill_amt)
+```
+
+اگر مقدار مشخصی از توکن های **pay_gem** خرج شود، مقدار **buy_gem** توکن های دریافت شده را برمی گرداند. برای بررسی وضعیت فعلی دفترچه سفارش استفاده می شود.
+
+### getPayAmount()
+
+```
+function getPayAmount(
+        ERC20 pay_gem,
+        ERC20 buy_gem,
+        uint256 buy_amt
+    ) external view returns (uint256 fill_amt)
+```
+
+مقدار **pay_gem** توکن های مورد نیاز برای خرید مقدار مشخصی از توکن های **buy_gem** را برمی گرداند. برای بررسی وضعیت فعلی دفترچه سفارش استفاده می شود.
+
+### getOfferCount()
+
+```
+function getOfferCount(ERC20 sell_gem, ERC20 buy_gem)
+        public
+        view
+        returns (uint256)
+```
+
+تعداد پیشنهادات موجود در دفترچه سفارش را برای یک جفت مشخص برمی‌گرداند.
+
+### getFeeBPS()
+
+```
+function getFeeBPS()
+    public
+    view
+    returns (uint256)
+```
+
+کارمزد گیرنده پروتکل را به واحدهای پایه برمی‌گرداند.

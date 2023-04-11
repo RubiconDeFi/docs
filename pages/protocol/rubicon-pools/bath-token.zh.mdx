@@ -1,0 +1,24 @@
+---
+title: Rubicon/Bath令牌
+pageTitle: 巴斯令牌
+description: 代表Rubicon池中用户流动性的ERC-20令牌
+---
+
+## 巴斯通证
+
+[Bath Token contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathToken.sol)代表 Rubicon Pools 中的单一资产流动性池。这些池的命名方式是将前缀“bath”添加到基础代币的名称中（例如 bathUSDC）。
+
+当流动性提供者 (LP) 将代币存入 Rubicon 池时，他们会收到相应数量的 bathTokens。例如：存入 USDC 的 LP 将收到 bathUSDC。
+
+BathToken 本质上是底层池的一部分。
+
+有限合伙人赚取做市收益，而策略师则使用池资产为 Rubicon 订单簿提供流动性。
+
+![](</assets/Rubicon v1\_ BathTokens.png>)
+
+### 主要功能
+
+* `deposit` - 此功能允许用户存入 ERC-20 资产，并以 `totalSupply` / `underlyingBalance()` 的比例接收 bathTokens。这意味着用户将获得与池中股票表现成比例的股票；这确保了没有办法对系统进行游戏，并且所有参与者都正确地分享了好处。 `bathToken` 代表基础流动性的一部分，并对未来收益提出要求。
+  * 输入参数：uint `amount` - 要存入的 ERC-20 资产的数量。
+* `withdraw` - 此功能提取提供的流动性和用户（通过燃烧 BathTokens）获得的任何应计收益返回到他们的钱包。
+  * 输入参数：uint `shares` - 要提取以换取基础 ERC-20 资产的 `bathTokens`（基础池中的股份）的数量。
