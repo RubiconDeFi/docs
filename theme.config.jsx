@@ -97,7 +97,7 @@ const i18n = [
 export default {
 	logo: Logo,
 	toc: {
-		float: false,
+		float: true,
 	},
 	//Passed an empty component to hide the default theme switch
 	themeSwitch: {
