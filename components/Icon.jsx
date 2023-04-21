@@ -8,6 +8,10 @@ import { PresetsIcon } from '/components/icons/PresetsIcon'
 import { ThemingIcon } from '/components/icons/ThemingIcon'
 import { WarningIcon } from '/components/icons/WarningIcon'
 import { OpenBookIcon } from '/components/icons/OpenBookIcon'
+import { GithubIcon } from '/components/icons/GitHubIcon'
+import { HardDriveIcon } from '/components/icons/HardDriveIcon'
+import { LayersIcon } from '/components/icons/LayersIcon'
+import { PackageIcon } from '/components/icons/PackageIcon'
 
 const icons = {
   installation: InstallationIcon,
@@ -17,6 +21,10 @@ const icons = {
   lightbulb: LightbulbIcon,
   warning: WarningIcon,
   openBook: OpenBookIcon,
+  github: GithubIcon,
+  hardDrive: HardDriveIcon,
+  layers: LayersIcon,
+  pack: PackageIcon,
 }
 
 const iconStyles = {
