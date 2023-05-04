@@ -1,5 +1,5 @@
 ---
-description: Una visión general de las entidades clave del subgrafo del mercado de Rubicon, evento de contrato controladores y consultas de ejemplo para una variedad de casos de uso.
+description: An overview the RubiconMarket subgraph's key entities, contract event handlers, and example queries for a variety of use cases.
 ---
 
 #API RubiconMarket
@@ -110,7 +110,7 @@ tipo OpenOffer @entity {
 }
 ```
 
-La entidad OpenOffer es una copia de la entidad Oferta con dos advertencias: 1) cuando una oferta se completa o se elimina del libro, la entidad OpenOffer asociada se elimina del subgráfico (todavía se puede acceder a estas entidades eliminadas a través de un |*** *90****|), y 2) la entidad OpenOffer no contiene los campos variables "matado" (falso si la oferta está llena o en el libro y verdadero si una oferta es cancelada) o "timeKilled" (cero si la oferta todavía está en el libro, actualizado al momento en que la oferta se retira del libro).
+La entidad OpenOffer es una copia de la entidad Oferta con dos advertencias: 1) cuando una oferta se completa o se elimina del libro, la entidad OpenOffer asociada se elimina del subgráfico (todavía se puede acceder a estas entidades eliminadas a través de un |*** * 90 ****|), y 2) la entidad OpenOffer no contiene los campos variables "matado" (falso si la oferta está llena o en el libro y verdadero si una oferta es cancelada) o "timeKilled" (cero si la oferta todavía está en el libro, actualizado al momento en que la oferta se retira del libro).
 
 ### _Entidad tomadora (ID: hash de transacción)_
 
@@ -125,7 +125,7 @@ tipo Tomador @entidad {
     "seguimiento a la entidad de transacción"
     transacción: ¡Transacción!
     "seguimiento a la entidad Emparejar"
-    par: par!
+    pareja: pareja!
     " rastrear a la entidad DayPair "
     Par de día: ¡Par de día!
     " rastrear a la entidad HourPair "
@@ -264,7 +264,7 @@ escriba PrecioActivoHistorialUSD @entidad {
 
 Todos los valores están denominados en el valor entero del token ERC-20 subyacente que representan.
 
-### _FullPair (ID: \<token0 address>#\<token1 address>) y entidades de pares (ID: \<pay\_token address>#\<buy\_token address>)_
+### _FullPair (ID: \<token0 address>#\<token1 address>) y entidades de pares (ID: \|**** 53 **** |#\<buy\_token address>)_
 
 ```graphql
 escriba FullPair @entidad {
@@ -326,7 +326,7 @@ escriba Par @entidad {
 
 La entidad Par representa cualquier comercio direccional a través de un par ERC20-ERC20. La dirección corresponde a cuál ERC20 del par es el pay\_token (tomar activo) y cuál es el buy\_token (hacer activo). Cada par también tiene una entidad de par asociada que realiza un seguimiento de las estadísticas del par durante un período de tiempo determinado: 1) MonthPair, 2) WeekPair, 3) DayPair y 4) HourPair. Los ID para estos pares son los siguientes:
 
-* ParMes(ID: \<pay\_token address>#\<buy\_token address>#\<timestamp rounded to current day by dividing by 2629743>)
+* Par de meses (ID: \<pay\_token address>#\<buy\_token address>#\<timestamp rounded to current day by dividing by 2629743>)
 * WeekPair(ID: \<pay\__token address>#\<buy_\__token address>#\<timestamp rounded to current day by dividing by 604800>_)
 * DayPair(ID: \<pay\_token address>#\<buy\_token address>#\<timestamp rounded to current day by dividing by 86400>)
 * Par de horas (ID: \<pay\_token address>#\<buy\_token address>#\<timestamp rounded to current day by dividing by 3600>)
@@ -375,10 +375,10 @@ Todos los valores están denominados en el valor entero del token ERC20 subyacen
 
 Las siguientes consultas son algunos escenarios de casos de uso comunes para posibles necesidades de datos relacionadas con el subgráfico RubiconMarket.
 
-| Use Case                                                | Subgraph Studio Example                                                                                                          |
-| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| Access a User's trade history                           | [User Trade History](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=User%20Trade%20Activity) |
-| Access a User's open offers                             | [User Open Offer](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=User%20Open%20Offer)        |
-| Check the status of the entire order book               | [All Order Books](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=ORDERBOOK)                  |
-| Historical trading stats for tokens by day              | [Day Trading Stats](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=Day%20Token%20Stats)      |
-| Last trade and entire trade history of a pair of assets | [Pair Trade History](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=FullPairs)               |
+| Caso de uso | Ejemplo de Subgraph Studio |
+| ------------------------------------------------------- | ------------------------------------------------------| **** 19 ****|------------------|**** 23 * ***|------------------------|* *** 28 ****|-------------- |
+| Acceder al historial comercial de un Usuario | [User Trade History](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=User%20Trade%20Activity) |
+| Accede a las ofertas abiertas de un Usuario | [User Open Offer](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=User%20Open%20Offer) |
+| Consultar el estado de toda la cartera de pedidos | [All Order Books](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=ORDERBOOK) |
+| Estadísticas históricas de negociación de tokens por día | [Day Trading Stats](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=Day%20Token%20Stats) |
+| Última operación e historial comercial completo de un par de activos | [Pair Trade History](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/rubiconmarket?query=FullPairs) |

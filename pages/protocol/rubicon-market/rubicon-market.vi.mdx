@@ -1,7 +1,7 @@
 ---
-title: Rubicon | Thị Trường Rubicon
-pageTitle: Thị Trường Rubicon
-description: Tổng quan và tài liệu Cho hợp đồng sổ đặt Hàng Của Rubicon
+title: Rubicon | Rubicon Market
+pageTitle: Rubicon Market
+description: Overview and documentation for Rubicon's order book contract
 ---
 
 Logic trao đổi cốt lõi của Rubicon tồn tại trong [RubiconMarket](https://github.com/RubiconDeFi/rubicon_protocol/blob/master/contracts/RubiconMarket.sol) hợp đồng thông minh - sổ lệnh trung tâm của Rubicon. Sẽ rất hữu ích khi coi hợp đồng thông minh này như một lớp trung gian tạo điều kiện thuận lợi cho việc trao đổi ngang hàng các tài sản kỹ thuật số thông qua sổ đặt hàng.
@@ -16,24 +16,16 @@ Sổ lệnh là danh sách các lệnh mua và bán đối với một tài sả
 
 Hợp đồng sử dụng mô hình ký quỹ để thanh khoản; khi một lệnh giới hạn được đặt trên sổ, những mã thông báo đó sẽ được gửi đến hợp đồng. Nếu/khi một đơn đặt hàng được thực hiện, hợp đồng sẽ khớp trực tiếp với các nhà giao dịch và mã thông báo sẽ được gửi cho mỗi bên. Một đơn đặt hàng có thể bị hủy và hợp đồng sẽ trả lại mã thông báo cho người gửi.
 
-Rubicon Market là sản phẩm phái sinh từ mã nguồn mở [OasisDEX](https://oasisdex.com/) của MakerDAO. và kế thừa giấy phép AGPL3.
+Rubicon Market là sản phẩm phái sinh từ mã nguồn mở |****77****| của MakerDAO. và kế thừa giấy phép AGPL3.
 
 ## Chức năng giao dịch
 
 ### lời đề nghị()
 
-```
-    function offer(
-        uint256 pay_amt,
-        ERC20 pay_gem,
-        uint256 buy_amt,
-        ERC20 buy_gem,
-        uint256 pos,
-    ) public returns (uint256)
-```
+|****64****|
 
-| Parameter Name       | Type    | Description                                                                                                                       |
-| -------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Tên thông số | Loại | Mô tả |
+| -------------------- | |****4****|- | ------------------------------------------------------| **** 14 ****|------------------|**** 18 * ***|------------------------|* *** 23 ****|--------------- |
 | pay_amt              | uint256 | Quantity of ERC-20 tokens the maker is selling                                                                                    |
 | pay_gem              | address | ERC-20 token the maker is selling                                                                                                 |
 | uint buy_amt         | uint256 | Quantity of ERC-20 tokens the maker is buying                                                                                     |
@@ -53,75 +45,30 @@ The primary function for placing limit orders on Rubicon. The **pay_amt** quanti
 ```
 
 | Parameter Name | Type    | Description                                  |
-| -------------- | ------- | -------------------------------------------- |
-| id             | uint256 | The id of the order the user wants to cancel |
+| ---|**** 27 ** ***|----- | ------- | ---------------|** ** 32 ****|------------------|**** 36 *** *|----------- | ------- | ---------|*** * 41 ****|-------------------- |
+| id | uint256 | Id của đơn đặt hàng mục tiêu |
+| lượng | uint256 | Số lượng lệnh mua mục tiêu |
 
-Chức năng này hủy bỏ một ưu đãi trên sổ đặt hàng và trả lại mã thông báo cho địa chỉ của người gửi. Công cụ sửa đổi **can_cancel** kiểm tra xem đơn hàng mục tiêu có đang hoạt động và thuộc sở hữu của người gọi hay không. Ngoài ra, bạn có thể sử dụng chức năng định tuyến **kill()** để đạt được kết quả tương tự và hủy ưu đãi.
-
-### mua()
-
-```
-    function buy(uint id, uint amount) public can_buy(id)
-        returns (bool)
-```
-
-| Parameter Name | Type    | Description                         |
-| -------------- | ------- | ----------------------------------- |
-| id             | uint256 | The id of the target order          |
-| amount         | uint256 | Quantity of the target order to buy |
-
-This function is used to fill or "cherry pick" a specific order in the book. The caller will pay the taker fee. Alternatively, you can use the **take()** routing function to achieve the same result and fill a specific offer.
+Chức năng này được sử dụng để điền hoặc "chọn anh đào" một thứ tự cụ thể trong sách. Người gọi sẽ trả phí người nhận. Ngoài ra, bạn có thể sử dụng chức năng định tuyến **take()** để đạt được kết quả tương tự và điền vào một phiếu mua hàng cụ thể.
 
 ### buyAllAmount()
 
-```
-     function buyAllAmount(
-        ERC20 buy_gem,
-        uint256 buy_amt,
-        ERC20 pay_gem,
-        uint256 max_fill_amount
-    ) external returns (uint256 fill_amt)
-```
+|****67****|
 
-| Parameter Name  | Type    | Description                            |
-| --------------- | ------- | -------------------------------------- |
-| buy_gem         | address | ERC-20 token the taker is buying       |
-| buy_amt         | uint256 | Quantity of tokens the taker is buying |
-| pay_gem         | address | ERC-20 token the taker is selling      |
-| max_fill_amount | uint256 | Maximum amount of pay tokens sold      |
+| Tên thông số | Loại | Mô tả |
+| --------------- | ------- | ---------------------------------| **** 54 ****|------------ | |****57****|- | --------------------------------------- |
+| trả_gem | địa chỉ | Token ERC-20 mà người nhận đang bán |
+| trả_amt | uint256 | Số lượng mã thông báo mà người nhận đang bán |
+| mua_gem | địa chỉ | Mã thông báo ERC-20 mà người nhận đang mua |
+| min_fill_amount | uint256 | Số lượng mã thông báo mua tối thiểu nhận được |
 
-Cố gắng giao dịch số lượng **buy_amt** của mã thông báo **buy_gem** tối đa cho số lượng **max_fill_amount** của mã thông báo **pay_gem**. Giao dịch sẽ hoàn nguyên nếu nhà giao dịch chi tiêu nhiều hơn số tiền tối đa được chỉ định. Đây là lệnh mua "Fill-or-Kill".
-
-### sellAllAmount()
-
-```
-     function sellAllAmount(
-        ERC20 pay_gem,
-        uint256 pay_amt,
-        ERC20 buy_gem,
-        uint256 min_fill_amount
-    ) external returns (uint256 fill_amt)
-```
-
-| Parameter Name  | Type    | Description                             |
-| --------------- | ------- | --------------------------------------- |
-| pay_gem         | address | ERC-20 token the taker is selling       |
-| pay_amt         | uint256 | Quantity of tokens the taker is selling |
-| buy_gem         | address | ERC-20 token the taker is buying        |
-| min_fill_amount | uint256 | Minimum amount of buy tokens received   |
-
-Nỗ lực giao dịch số lượng **sell_amt** của **sell_gem** token để lấy ít nhất số lượng **min_fill_amount** của **pay_gem** tokens. Giao dịch sẽ hoàn nguyên nếu nhà giao dịch nhận được ít hơn số tiền tối thiểu được chỉ định. Đây là lệnh bán "Fill-or-Kill".
+Nỗ lực giao dịch số lượng **sell_amt** của mã thông báo **sell_gem** để lấy ít nhất số lượng **min_fill_amount** của mã thông báo **pay_gem**. Giao dịch sẽ hoàn nguyên nếu nhà giao dịch nhận được ít hơn số tiền tối thiểu được chỉ định. Đây là lệnh bán "Fill-or-Kill".
 
 ## Xem chức năng
 
 ### getBestOffer()
 
-```
-function getBestOffer(ERC20 pay_gem, ERC20 buy_gem)
-    public
-    view
-    returns (uint256)
-```
+|****69****|
 
 Trả về ID của phiếu mua hàng ở đầu sổ đặt hàng.
 
@@ -129,57 +76,30 @@ Bán tại. Gọi hàm này với WETH là **pay_gem** và USDC là **buy_gem** 
 
 ### getWorseOffer()
 
-```
-function getWorseOffer(uint256 id)
-    public
-    view
-    returns (uint256)
-```
+|****70****|
 
 Trả về ưu đãi tệ hơn tiếp theo trong danh sách đã sắp xếp. Ưu đãi tệ hơn là ưu đãi cao hơn nếu đơn đặt hàng mục tiêu là yêu cầu và thấp hơn nếu đó là giá thầu. Trong cả hai trường hợp, nó sẽ trả về một cái mới hơn nếu chúng bằng nhau.
 
 ### getBuyAmount()
 
-```
-    function getBuyAmount(
-        ERC20 buy_gem,
-        ERC20 pay_gem,
-        uint256 pay_amt
-    ) external view returns (uint256 fill_amt)
-```
+|****71****|
 
 Trả về số lượng mã thông báo **buy_gem** nhận được nếu một lượng mã thông báo **pay_gem** cụ thể được chi tiêu. Được sử dụng để kiểm tra trạng thái hiện tại của sổ lệnh.
 
 ### getPayAmount()
 
-```
-function getPayAmount(
-        ERC20 pay_gem,
-        ERC20 buy_gem,
-        uint256 buy_amt
-    ) external view returns (uint256 fill_amt)
-```
+|****72****|
 
 Trả về số lượng mã thông báo **pay_gem** cần thiết để mua một lượng mã thông báo **buy_gem** cụ thể. Được sử dụng để kiểm tra trạng thái hiện tại của sổ đặt hàng.
 
 ### getOfferCount()
 
-```
-function getOfferCount(ERC20 sell_gem, ERC20 buy_gem)
-        public
-        view
-        returns (uint256)
-```
+|****73****|
 
 Trả về số lượng phiếu mua hàng trong sổ đặt hàng cho một cặp được chỉ định.
 
 ### getFeeBPS()
 
-```
-function getFeeBPS()
-    public
-    view
-    returns (uint256)
-```
+|****74****|
 
 Trả về phí người thực hiện giao thức, theo điểm cơ bản.

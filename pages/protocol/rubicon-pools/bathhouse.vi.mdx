@@ -1,10 +1,10 @@
 ---
-title: Rubicon | Nhà Tắm
-pageTitle: Nhà Tắm
-description: Hợp đồng quản trị Cho Rubicon Pools
+title: Rubicon | Bath House
+pageTitle: Bath House
+description: The admin contract for Rubicon Pools
 ---
 
-## Nhà tắm
+## Nhà Tắm
 
 [BathHouse contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathHouse.sol) đóng vai trò là quản trị viên cho hệ thống Rubicon Pools đồng thời cung cấp các chức năng chính, cấp cao cho hệ thống. Các chức năng quan trọng nhất của BathHouse là khởi tạo BathPair mới, phê duyệt chiến lược và quản lý tổ chức và định tuyến nhóm thanh khoản.
 
@@ -16,7 +16,7 @@ description: Hợp đồng quản trị Cho Rubicon Pools
   * Hợp đồng này quản lý "chiến lược" nào được Rubicon Pools hỗ trợ. Hiện tại, chiến lược duy nhất được phép trong v0 là PairsTrade - trong đó chiến lược gia thực hiện giao dịch một cặp duy nhất cho mỗi lệnh gọi chức năng.
   * `isApprovedStrat` - chức năng xác minh xem người gọi hoặc địa chỉ nhất định có phải là chiến lược được phê duyệt hay không.
   * `approveStrategy` - chức năng quản trị để thêm một chiến lược mới vào Rubicon Pools.
-* **Quản lý thông số**
+* **Quản lý tham số**
   * Hợp đồng này kiểm soát một số tham số cấp hệ thống có liên quan đến các nhà chiến lược cũng như LP.
   * `setCancelTimeDelay`- chức năng này đặt `timeDelay` trên BathPair.sol, sau đó các đơn đặt hàng chưa được thực hiện sẽ bị hủy trong sổ đặt hàng.
   * `setMaxOutstandingPairCount` - hàm này đặt giá trị `maxOutstandingPairCount` cho một BathPair nhất định. Giá trị này xác định số lượng đơn đặt hàng có thể chưa thanh toán trong sổ đặt hàng cho một cặp giao dịch nhất định.

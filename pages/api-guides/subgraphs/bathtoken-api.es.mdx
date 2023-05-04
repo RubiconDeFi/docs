@@ -1,6 +1,6 @@
 ---
-title: API de token Rubicon | Bath
-description: Una descripción general de las entidades clave del subgrafo de tokens de Bath, controladores de eventos de contrato, y consultas de ejemplo para una variedad de casos de uso.
+title: Rubicon | Bath Token API
+description:  An overview of the BathToken subgraph's key entities, contract event handlers, and example queries for a variety of use cases.
 ---
 
 #API de BathToken
@@ -96,8 +96,8 @@ $$
 
 Cada entidad de Pool también tiene dos entidades asociadas que rastrean las estadísticas del pool durante un período de tiempo determinado: PoolDayData y PoolHourData. Los ID para estos pares son los siguientes:
 
-- PoolDayData(ID: \<pool underlying asset address>#\<timestamp rounded to current day by dividing by 86400>)
-- PoolHourData(ID: \<pool underlying asset address>#_\<timestamp rounded to current hour by dividing by 3600>_)
+* PoolDayData(ID: \<pool underlying asset address>#\<timestamp rounded to current day by dividing by 86400>)
+* PoolHourData(ID: \<pool underlying asset address>#_\<timestamp rounded to current hour by dividing by 3600>_)
 
 Todos los valores están denominados en el valor entero del token ERC-20 subyacente que representan.
 
@@ -124,8 +124,8 @@ TODO: \*insertar visualización desde arriba\*
 
 Cada entidad de PoolBuffer también tiene dos entidades asociadas que rastrean las estadísticas de PoolBuffer durante un período de tiempo determinado: PoolDayData y PoolHourData. Los ID para estos pares son los siguientes:
 
-- PoolBufferDay(ID: \<pool underlying asset address>#\<buffer asset address>#\<timestamp rounded to current day by dividing by 86400>)
-- PoolBufferHour(ID: \<pool underlying asset address>#\<buffer asset address>#_\<timestamp rounded to current hour by dividing by 3600>_)
+* PoolBufferDay(ID: \<pool underlying asset address>#\<buffer asset address>#\<timestamp rounded to current day by dividing by 86400>)
+* PoolBufferHour(ID: \<pool underlying asset address>#\<buffer asset address>#_\<timestamp rounded to current hour by dividing by 3600>_)
 
 Todos los valores están denominados en el valor entero del token ERC-20 subyacente que representan.
 
@@ -191,8 +191,8 @@ La entidad de retiro corresponde a cualquier depósito colocado por un proveedor
 
 Las siguientes consultas son algunos escenarios de casos de uso comunes para posibles necesidades de datos relacionadas con el subgráfico BathToken.
 
-| Use Case                                               | Subgraph Studio Example                                                                                                                  |
-| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| Access a User's liquidity pool positions               | [Pool Positions](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/bathtoken?query=liquidityProviders)                      |
-| Check on the current statistics of the liquidity pools | [Current Pool Statistics](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/bathtoken?query=Pools)                          |
-| Load in the historical pools data                      | [Historical Pools Data](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/bathtoken?query=Pools%20Historical%20Performance) |
+| Caso de uso | Ejemplo de Subgraph Studio |
+| ------------------------------------------------------ | ------------------------------------------------------| **** 19 ****|------------------|**** 23 * ***|------------------------|* *** 28 ****|---------------------- |
+| Acceder a las posiciones del fondo de liquidez de un Usuario | [Pool Positions](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/bathtoken?query=liquidityProviders) |
+| Consulte las estadísticas actuales de los fondos de liquidez | [Current Pool Statistics](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/bathtoken?query=Pools) |
+| Cargar en los datos históricos de las piscinas | [Historical Pools Data](https://thegraph.com/hosted-service/subgraph/denverbaumgartner/bathtoken?query=Pools%20Historical%20Performance) |

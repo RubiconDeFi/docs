@@ -1,7 +1,7 @@
 ---
-title: Rubicon | Chiến Lược Gia Hướng Dẫn
-pageTitle: Hướng Dẫn Chiến Lược Gia
-description: Tổng quan về cách trở thành chiến lược gia Cho Rubicon Pools
+title: Rubicon | Strategist Tutorial
+pageTitle: Strategist Tutorial
+description: An overview of how to be a strategist for Rubicon Pools
 ---
 
 ## Nhà chiến lược
@@ -18,23 +18,15 @@ Chiến lược gia trong hệ thống Pools có ba chức năng chính mà họ
 
 ### Ý tưởng chính
 
-Các nhà chiến lược có một điểm vào cốt lõi để sử dụng tiền của người dùng và tạo thị trường trên Thị trường Rubicon: chức năng `executeStrategy` trên BathPair.sol. Vai trò của một chiến lược gia là tìm ra các ưu đãi chính xác để thực hiện bằng tiền của người dùng được đặt tự động và độc quyền trong sổ đặt hàng Rubicon; Nhóm cho phép đặt giá thầu hoặc yêu cầu được đặt trong sổ đặt hàng Rubicon.
+Các nhà chiến lược có một điểm vào cốt lõi để sử dụng tiền của người dùng và tạo thị trường trên Thị trường Rubicon: chức năng `executeStrategy` trên BathPair.sol. Vai trò của một chiến lược gia là tìm ra các đề nghị chính xác để thực hiện bằng tiền của người dùng được đặt tự động và độc quyền trong sổ đặt hàng Rubicon; Nhóm cho phép đặt giá thầu hoặc yêu cầu được đặt trong sổ đặt hàng Rubicon.
 
 Hàm này có một số đầu vào __ ánh xạ trực tiếp vào hàm `offer` trên RubiconMarket.sol:
 
-```
-function executeStrategy(
-        address targetStrategy, //address of the strategy to use - PairsTrade in v0
-        uint256 askNumerator, // *Asset Amt* / Quote Amt
-        uint256 askDenominator, // Asset Amt / *Quote Amt*
-        uint256 bidNumerator, // *Quote Amt* / Asset Amt
-        uint256 bidDenominator // Quote Amt / *Asset Amt*
-    )
-```
+|****1****|
 
 * `targetStrategy` - địa chỉ của hợp đồng thực hiện chiến lược tạo thị trường với các đầu vào đã cho. Trong phiên bản Pools hiện tại, [_only approved strategy is the Pairs Trade_](/docs/protocol/rubicon-pools/bathpair).
-* `askNumerator` - tử số chính xác ([pay\_am](/docs/protocol/rubicon-market/key-functions#offer)[t](https://www.youtube.com/watch?v=dQw4w9WgXcQ)) sẽ được sử dụng để thực hiện giao dịch với quỹ LP với số lượng tài sản (ví dụ: WBTC ).
-* `askDenominator` - mẫu số chính xác ([buy\_amt](/docs/protocol/rubicon-market/key-functions#offer)) sẽ được sử dụng để thực hiện giao dịch bằng quỹ LP với số lượng tài sản định giá (ví dụ: USDC).
+* `askNumerator` - tử số chính xác ([pay\_am](/docs/protocol/rubicon-market/key-functions#offer)[t](https://www.youtube.com/watch?v=dQw4w9WgXcQ)) sẽ được sử dụng để thực hiện giao dịch bằng quỹ LP với số lượng tài sản (ví dụ: WBTC ).
+* `askDenominator` - mẫu số chính xác ([buy\_amt](/docs/protocol/rubicon-market/key-functions#offer)) sẽ được sử dụng để thực hiện giao dịch bằng quỹ LP với số tiền tài sản định giá (ví dụ: USDC).
 * `bidNumerator` - tử số chính xác ([pay\_am](/docs/protocol/rubicon-market/key-functions#offer)[t](https://www.youtube.com/watch?v=dQw4w9WgXcQ)) sẽ được sử dụng để thực hiện giao dịch bằng quỹ LP với số lượng tài sản định giá (ví dụ: USDC).
 * `bidDenominator` - mẫu số chính xác ([buy\_amt](/docs/protocol/rubicon-market/key-functions#offer)) sẽ được sử dụng để đặt giá thầu này với số lượng nội dung (ví dụ: WETH).
 

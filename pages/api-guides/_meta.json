@@ -1,5 +1,5 @@
 {
 	"subgraphs": "Subgraphs", 
-	"rubi-py": "Rubicon | Python SDK",
-	"rubi-rs": "Rubicon | Rust SDK"
+	"rubi-py": "Python SDK",
+	"rubi-rs": "Rust SDK"
 }
