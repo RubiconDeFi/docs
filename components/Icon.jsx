@@ -1,17 +1,17 @@
 import { useId } from 'react'
 import clsx from 'clsx'
 
-import { InstallationIcon } from '/components/icons/InstallationIcon'
-import { LightbulbIcon } from '/components/icons/LightbulbIcon'
-import { PluginsIcon } from '/components/icons/PluginsIcon'
-import { PresetsIcon } from '/components/icons/PresetsIcon'
-import { ThemingIcon } from '/components/icons/ThemingIcon'
-import { WarningIcon } from '/components/icons/WarningIcon'
-import { OpenBookIcon } from '/components/icons/OpenBookIcon'
-import { GithubIcon } from '/components/icons/GitHubIcon'
-import { HardDriveIcon } from '/components/icons/HardDriveIcon'
-import { LayersIcon } from '/components/icons/LayersIcon'
-import { PackageIcon } from '/components/icons/PackageIcon'
+import { InstallationIcon } from '../components/icons/InstallationIcon'
+import { LightbulbIcon } from '../components/icons/LightbulbIcon'
+import { PluginsIcon } from '../components/icons/PluginsIcon'
+import { PresetsIcon } from '../components/icons/PresetsIcon'
+import { ThemingIcon } from '../components/icons/ThemingIcon'
+import { WarningIcon } from '../components/icons/WarningIcon'
+import { OpenBookIcon } from '../components/icons/OpenBookIcon'
+import { GithubIcon } from '../components/icons/GitHubIcon'
+import { HardDriveIcon } from '../components/icons/HardDriveIcon'
+import { LayersIcon } from '../components/icons/LayersIcon'
+import { PackageIcon } from '../components/icons/PackageIcon'
 
 const icons = {
   installation: InstallationIcon,
