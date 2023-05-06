@@ -24,7 +24,6 @@ const navigation = [
         title: 'Trade',
         href: '/docs/guides/trade/trade',
         sublinks: [
-          { title: 'Fees', href: '/docs/guides/trade/fees' },
           { title: 'Order Types', href: '/docs/guides/trade/order-types' },
           {
             title: 'Adding a Trading Pair',
@@ -73,6 +72,18 @@ const navigation = [
         title: 'Rubicon Market',
         href: '/docs/protocol/rubicon-market/rubicon-market',
         sublinks: [
+          {
+            title: 'Contract Overview',
+            href: '/docs/protocol/rubicon-market/contract-overview'
+           },
+           {
+            title: 'Fees',
+            href: '/docs/protocol/rubicon-market/fees'
+           },
+           {
+            title: 'Batch Orders',
+            href: '/docs/protocol/rubicon-market/batch-orders'
+           },
            {
             title: 'Market Aid',
             href: '/docs/protocol/rubicon-market/market-aid'
@@ -80,46 +91,24 @@ const navigation = [
         ],
       },
       {
+        title: 'Rubicon Router',
+        href: '/docs/protocol/rubicon-router',
+      },
+      {
         title: 'Rubicon Pools',
         href: '/docs/protocol/rubicon-pools/rubicon-pools',
-        sublinks: [
-          {
-            title: 'Bath House',
-            href: '/docs/protocol/rubicon-pools/bathhouse',
-          },
-          {
-            title: 'Bath Pair',
-            href: '/docs/protocol/rubicon-pools/bathpair',
-          },
-          {
-            title: 'Bath Token',
-            href: '/docs/protocol/rubicon-pools/bath-token',
-          },
-          {
-            title: 'Strategist',
-            href: '/docs/protocol/rubicon-pools/strategist-tutorial',
-          },
-          {
-            title: 'Risk Disclaimer',
-            href: '/docs/protocol/rubicon-pools/risks',
-          },
-        ],
       },
       {
-        title: 'Mainnet Deployments',
-        href: '/docs/protocol/mainnet_deployments',
-      },
-      {
-        title: 'Testnet Deployments',
-        href: '/docs/protocol/testnet_deployments',
-      },
-      {
-        title: 'v1 Deployments',
+        title: 'Deployments',
         href: '/docs/protocol/deployments',
       },
       {
         title: 'Audits',
         href: '/docs/protocol/audits',
+      },
+      {
+        title: 'Risks',
+        href: '/docs/protocol/risks',
       },
     ],
   },
