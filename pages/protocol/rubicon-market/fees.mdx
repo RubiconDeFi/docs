@@ -1,28 +1,29 @@
 ---
-title: Rubicon | Fees
+title: Fees
 pageTitle: Fees
-description: Fees on Rubicon
+description: Fees on the Rubicon protocol
 ---
 
-## Network Fees
+# Fees
 
-Rubicon order books are on-chain, all transactions require network fees (gas) that are paid in ETH. Gas fees on [Optimism](https://www.optimism.io/) are 50-100x cheaper than Ethereum Mainnet, you can monitor them on this [public dashboard](https://public-grafana.optimism.io/d/9hkhMxn7z/public-dashboard?orgId=1&refresh=5m).
+The Rubicon protocol uses a maker-taker fee model, charging trades that "take" liquidity from the order book and paying a rebate to orders that "make" liquidity on the order book. The taker fee is paid in the ERC-20 token that is sent to the contract, and the maker portion is paid directly to the owner address of the filled order(s).
 
-### Trading Fees
+|  Name          | Amount | Description                                                   |
+| -------------- | ------ | ------------------------------------------------------------- |
+| Taker          | 0.01%  | Paid by trades that "take" liquidity from the order book      |
+| Maker          | 0.008% | Paid by the taker to the owner address of the filled offer(s) |
 
-import { Callout } from "/components/Callout";
+## Querying the Fee
 
-<Callout type="note" title="Taker Fee: 0.01%">
-	Paid by Swaps, Market Orders, and orders that `take` liquidity from the order book
-</Callout>
+```
+function getFeeBPS()
+    public
+    view
+    returns (uint256)
+```
 
-<Callout type="note" title="Maker Fee: 0%">
-	Limit Orders that `make` liquidity on the order book do not pay fees other than gas
-</Callout>
+This function in **RubiconMarket.sol** returns the current fee in basis points (BPS).
 
-### Liquidity Pool Fees
+# Network Fees
 
-<Callout type="warning" title="Withdrawal Fee: 0.03%">
-	A withdrawal fee is paid back into the pool, effectively rewarding remaining liquidity providers. Stops pool spam. (These are variable protocol parameters and
-	could change)
-</Callout>
+Rubicon is an on-chain order book protocol, all transactions need to pay network fees (gas) in ETH. Transactions on L2 networks like [Arbitrum](https://arbitrum.io/) and [Optimism](https://www.optimism.io/) are 50-100x cheaper than equivalent ones on Ethereum Mainnet.
