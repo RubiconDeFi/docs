@@ -1,0 +1,43 @@
+---
+title: Contract Overview
+pageTitle: Contract Overview
+description: Overview and docs for the Rubicon Router contract
+---
+
+# Overview
+
+The Rubicon Router contract routes ERC-20 token swaps on the RubiconMarket contract.
+
+[Router Contract Source Code](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/utilities/RubiconRouter.sol)
+
+## Functions
+
+```
+function swap(
+        uint256 pay_amt,
+        uint256 buy_amt_min,
+        address[] memory route,
+        address to
+    ) public returns (uint256)
+```
+
+| Parameter Name  | Type    | Description                             |
+| --------------- | ------- | --------------------------------------- |
+| pay_amt         | uint256 | Quantity of tokens the taker is selling |
+| buy_amt_min     | uint256 | Minimum quantity received of last token address in `route` |
+| route           | addresses | First token address is the pay_amt token, last address is the buy_amt token |
+| to              | address | Address is the pay_amt token, last address is the buy_amt token |
+
+This function swaps tokens across a specified `route` of token addresses with a minimum received quantity. It enables token swaps across multiple order books on RubiconMarket, in case the tokens do not have an existing order book.
+
+## Key Events
+
+    event emitSwap(
+        address indexed recipient,
+        address indexed inputERC20,
+        address indexed targetERC20,
+        bytes32 pair,
+        uint256 inputAmount,
+        uint256 realizedFill,
+        uint256 hurdleBuyAmtMin
+    );
