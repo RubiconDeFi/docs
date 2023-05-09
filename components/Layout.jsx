@@ -36,20 +36,6 @@ const navigation = [
         href: '/docs/guides/swap',
       },
       {
-        title: 'Liquidity Pools',
-        href: '/docs/guides/liquidity-pools/liquidity-pools',
-        sublinks: [
-          {
-            title: 'Growth Rates',
-            href: '/docs/guides/liquidity-pools/pools-growth-rates',
-          },
-          {
-            title: 'Current Pools Strategy',
-            href: '/docs/guides/liquidity-pools/current-pools-strategy',
-          },
-        ],
-      },
-      {
         title: 'Bridge',
         href: '/docs/guides/bridge/bridge',
         sublinks: [
