@@ -95,39 +95,36 @@ function processFiles(dirPath, processedFiles) {
 						if (isTargetExtension && isTargetLanguage && !isProcessed) {
 							const newFileName = `${name}.${targetLanguageCode}${ext}`;
 							const newFilePath = path.join(dirPath, newFileName);
-							if (!fs.existsSync(newFilePath)) {
-								if (path.extname(filePath) === ".md" || path.extname(filePath) === ".mdx") {
-									if (!onlyCopy) {
-										tileSleep += 60000;
-									}
-									setTimeout(() => {
-										translateMarkdownFile(filePath, newFilePath, targetLanguageCode)
-											.then(() => {
-												if (!onlyCopy) {
-													console.log(`The file has been successfully translated and saved to ${newFilePath}`);
-												} else {
-													console.log(`The file was copied successfully to ${newFilePath}`);
-												}
-											})
-											.catch((err) => {
-												if (!onlyCopy) {
-													console.error(`An error occurred while translating the File: ${filePath} | Error: ${err.message}`);
-												} else {
-													console.error(`Error when copying the File: ${filePath} | Error: ${err.message}`);
-												}
-											});
-									}, tileSleep);
-								} else {
-									fs.copyFile(filePath, newFilePath, (err) => {
-										if (err) throw err;
-										console.log(`Copy file: ${filePath} => ${newFilePath}`);
-									});
+							if (path.extname(filePath) === ".md" || path.extname(filePath) === ".mdx") {
+								if (!onlyCopy) {
+									tileSleep += 60000;
 								}
+								setTimeout(() => {
+									translateMarkdownFile(filePath, newFilePath, targetLanguageCode)
+										.then(() => {
+											if (!onlyCopy) {
+												console.log(`The file has been successfully translated and saved to ${newFilePath}`);
+											} else {
+												console.log(`The file was copied successfully to ${newFilePath}`);
+											}
+										})
+										.catch((err) => {
+											if (!onlyCopy) {
+												console.error(`An error occurred while translating the File: ${filePath} | Error: ${err.message}`);
+											} else {
+												console.error(`Error when copying the File: ${filePath} | Error: ${err.message}`);
+											}
+										});
+								}, tileSleep);
 							} else {
-								console.log(`Exists file: ${newFilePath}`);
+								fs.copyFile(filePath, newFilePath, (err) => {
+									if (err) throw err;
+									console.log(`Copy file: ${filePath} => ${newFilePath}`);
+								});
 							}
-
 							processedFiles.add(filePath);
+						
+							// processedFiles.add(filePath);
 						}
 					} else {
 						console.log(`Exists file Language Code: ${filePath}`);
