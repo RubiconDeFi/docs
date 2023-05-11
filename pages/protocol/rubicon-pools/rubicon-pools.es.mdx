@@ -1,51 +1,9 @@
 ---
-title: Rubicon | Piscinas
-pageTitle: Alberca
-description: Rentabilidad automatizada para los usuarios y liquidez para el mercado Rubicon
+title: Pools
+pageTitle: Pools
+description: Native lending and borrowing for the Rubicon protocol
 ---
 
-## 🌊 Piscinas Rubicón
+# Piscinas Rubicón
 
-Rubicon Pools es un sistema de contratos inteligentes que permite a los usuarios capturar el rendimiento pasivo de la creación de mercado activa. Los usuarios depositan activos en un grupo de liquidez, a cambio, reciben un token LP líquido indicado por el prefijo "bath" (por ejemplo, bathETH, bathUSDC). Estos tokens de baño significan la propiedad proporcional del usuario del grupo de liquidez subyacente, así como su reclamo proporcional sobre el rendimiento futuro del grupo. Los estrategas utilizan los activos en los fondos de liquidez para proporcionar liquidez en los libros de órdenes abiertas de Rubicon; los estrategas pueden usar estrategias personalizadas de creación de mercado que superen todos los requisitos de seguridad del protocolo. Al final, el rendimiento de la creación de mercado se divide entre el estratega y los usuarios que proporcionan liquidez (LP).
-
-El protocolo del libro de órdenes Rubicon tiene fondos de liquidez. Los proveedores de liquidez (LP) depositan tokens en un solo grupo de activos y reciben bathTokens, que representan acciones del grupo subyacente. (Ej. LP deposita ETH, recibe bathETH)\
-\
-Los BathTokens se adhieren a la [ERC-4626 standard](https://ethereum.org/en/developers/docs/standards/tokens/erc-4626/) para bóvedas tokenizadas con rendimiento.
-
-### Arquitectura
-
-La estructura central de este producto gira en torno a fondos de liquidez de un solo activo. Los usuarios que desean un rendimiento pasivo de creación de mercado sobre sus activos pueden depositar en estos fondos de liquidez. A partir de ahí, los estrategas utilizan estos grupos, en pares, para realizar una creación de mercado de alta frecuencia para el par dado (activo/cotización). Consulte a continuación un diagrama de cómo las piezas centrales de Rubicon Pools interactúan con Rubicon Market.
-
-![Infraestructura de contrato inteligente Rubicon](</assets/image(83).png>)
-
-Rubicon Pools se compone de cuatro contratos inteligentes que se detallan en estos documentos:
-
-- **Bath House**: un contrato para administrar el sistema Rubicon Pools y autorizar nuevas parejas.
-- **Bath Pair**: un contrato para gestionar parámetros de riesgo, liquidez, gestión de inventario, seguridad y estrategas específicos de la pareja.
-- **Token de baño**: un token de "baño" ERC-20 (por ejemplo, "bathUSDC" es el token LP para USDC aportado) que representa liquidez específica de activos que obtiene un rendimiento pasivo de la creación de mercado.
-- **Comercio de pares**: un contrato de estrategia que toma el comercio de un par (demanda y oferta) de un estratega para un par determinado y despliega la liquidez de bathToken de acuerdo con su estrategia interna. La primera versión de PairsTrade.sol coloca una operación de pares (demanda y oferta) con la liquidez del usuario según los parámetros del estratega a través de `executeStrategy` en BathPair.sol.
-
-### Restricciones y parámetros de riesgo
-
-Una característica de seguridad clave de Rubicon Pools es que la liquidez suministrada debe colocarse en el libro de pedidos como pedidos, los estrategas no pueden usar estos activos para otra cosa que no sea colocar pedidos en Rubicon. A diferencia de un AMM o creador de mercado de función constante, esta estrategia debe permitir que transcurra el tiempo entre la colocación de órdenes, su ejecución y (a su vez) su rendimiento con fines de lucro que se transmite a los LP y estrategas. Consulte lo siguiente para obtener una descripción general de las restricciones clave y los parámetros de riesgo controlados por Rubicon:
-
-- **reserveRatio**: para garantizar que el rendimiento de creación de mercado se transfiera correctamente a los usuarios y, al mismo tiempo, permita que transcurra el tiempo entre la colocación (y la cancelación) de las órdenes, se debe mantener un índice de reserva mínimo para que no se pierda toda la liquidez del usuario. en riesgo en el libro de órdenes en un momento dado.
-- **maxOutstandingPairCount**: la cantidad máxima de pedidos (que no puede exceder los límites de tamaño de pedido dinámico) que un par puede tener en el libro de pedidos en un momento dado.
-- **getMaxOrderSize()**: esta función devuelve el tamaño de pedido más grande posible permitido por Rubicon Pools para un activo determinado y su grupo de liquidez.
-
-  - **maxOrderSizeProportion** - el tamaño en puntos porcentuales (0 < 100) that the maximum order for a given liquidity pool can be. This is enforced on every Pools trade.
-  - **Dynamic Sizing:** should the pair relationship of a quote and asset liquidity pool be over-weighted one of the assets, this function will reduce the size of orders on the lacking side of the liquidity pool.
-
-    - For example, assume the price of ETH is $100 and bathETH contains 5 ETH while bathUSDC contains 400 USDC. _The target asset-to-quote ratio for all pairs is the current price of the asset._ In this case, the pool is overweight ETH because (400 USDC / 5 ETH) = 80 != 100 (target ratio and price) so getMaxOrderSize() will return a value that reduces the maximum order size of ETH according to the following:
-
-    - Shape parameter = -0.005 and qt represents the delta between the target ratio and the actual asset/quote ratio that exists across the liquidity pools.
-
-![Optimal High-Frequency Market Making; Fushimi et. al 2018](</assets/image(32).png>)
-
-### Consideraciones clave de seguridad
-
-- **onlyApprovedStrategy**: un modificador que garantiza que la liquidez del usuario solo pueda ser utilizada por una estrategia que haya sido aprobada por BathHouse.
-- **onlyPair**: un modificador que garantiza la liquidez del usuario o una función solo puede ser utilizada por un BathPair registrado que ha sido inicializado por BathHouse.
-- **enforceReserveRatio**: garantiza que se respete y se cumpla la relación de reserva del saldo de activos subyacentes del grupo de liquidez con respecto a la cantidad de depósitos.
-- **enforceSpread**: garantiza que una negociación de pares estratega tenga un diferencial (precio de demanda > diferencial distinto de cero > precio de oferta) y que la demanda/oferta sea una demanda/oferta real (mayor que/menor que la mitad de el precio del libro de pedidos).
-- **enforceNoAutoFills**: garantiza que las operaciones de pares realizadas por los estrategas sean realmente órdenes de creación de mercado y no coincidan con una orden que dé como resultado que la oferta se complete automáticamente como una operación de tomador.
+La próxima versión de Rubicon Pools se está finalizando, ¡la documentación se publicará pronto!

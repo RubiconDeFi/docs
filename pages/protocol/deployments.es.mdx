@@ -1,67 +1,59 @@
 ---
-title: Rubicon | Implementaciones
-pageTitle: Despliegue
-description: Implementaciones Activas de Contratos Inteligentes de Rubicon
+title: Deployments
+pageTitle: Deployments
+description: List of Rubicon contract addresses across various networks
 ---
 
-## Red principal de optimismo (Rubicon v1.3)
+Las siguientes tablas contienen direcciones de implementación para contratos inteligentes de Rubicon en diferentes redes.
 
-A continuación se muestra una lista de implementaciones de Rubicon en [Optimism](https://www.optimism.io/). Tenga en cuenta que utilizamos el [transparent upgradeable proxy standard](https://docs.openzeppelin.com/upgrades-plugins/1.x/proxies); las direcciones de contrato de todas las implementaciones se encuentran a continuación y la implementación subyacente de cada proxy se puede ver a través de [Etherscan](https://optimistic.etherscan.io/).
+Tenga en cuenta que Rubicon utiliza el [transparent upgradeable proxy standard](https://docs.openzeppelin.com/upgrades-plugins/1.x/proxies). Puede ver la implementación subyacente de cada contrato de proxy en el explorador de bloques.
 
-[**Rubicon Market:**](https://optimistic.etherscan.io/address/0x7a512d3609211e719737E82c7bb7271eC05Da70d) 0x7a512d3609211e719737E82c7bb7271eC05Da70d\
-[**Rubicon Router:**](https://optimistic.etherscan.io/address/0x7Af14ADc8Aea70f063c7eA3B2C1AD0D7A59C4bFf) 0x7Af14ADc8Aea70f063c7eA3B2C1AD0D7A59C4bFf\
-[**BathHouse:**](https://optimistic.etherscan.io/address/0x203328C161D23dCEee3E439DeEB25cA19e2c4984) 0x203328C161D23dCEee3E439DeEB25cA19e2c4984\
-[**BathPair:**](https://optimistic.etherscan.io/address/0xF8780E00Ce8ed2e79aeC10908a169900eD1D4AFe) 0xF8780E00Ce8ed2e79aeC10908a169900eD1D4AFe\
-[**MarketAidFactory:**](https://optimistic.etherscan.io/address/0x267D94C6e67e4436EFfE092b08d040cFF36B2DA7) 0x267D94C6e67e4436EFfE092b08d040cFF36B2DA7
+# Implementaciones en vivo
 
-[**bathETH:**](https://optimistic.etherscan.io/address/0xB0bE5d911E3BD4Ee2A8706cF1fAc8d767A550497) 0xB0bE5d911E3BD4Ee2A8706cF1fAc8d767A550497\
-[**bathWBTC:**](https://optimistic.etherscan.io/address/0x7571CC9895D8E997853B1e0A1521eBd8481aa186) 0x7571CC9895D8E997853B1e0A1521eBd8481aa186\
-[**bathUSDC:**](https://optimistic.etherscan.io/address/0xe0e112e8f33d3f437D1F895cbb1A456836125952) 0xe0e112e8f33d3f437D1F895cbb1A456836125952\
-[**bathDAI:**](https://optimistic.etherscan.io/address/0x60daEC2Fc9d2e0de0577A5C708BcaDBA1458A833) 0x60daEC2Fc9d2e0de0577A5C708BcaDBA1458A833\
-[**bathUSDT:**](https://optimistic.etherscan.io/address/0xfFBD695bf246c514110f5DAe3Fa88B8c2f42c411) 0xfFBD695bf246c514110f5DAe3Fa88B8c2f42c411\
-[**bathSNX:**](https://optimistic.etherscan.io/address/0xeb5F29AfaaA3f44eca8559c3e8173003060e919f#) 0xeb5F29AfaaA3f44eca8559c3e8173003060e919f\
-[**bathOP:**](https://optimistic.etherscan.io/address/0x574a21fE5ea9666DbCA804C9d69d8Caf21d5322b) 0x574a21fE5ea9666DbCA804C9d69d8Caf21d5322b
+## Optimismo
 
-_Puede encontrar la ubicación de todos los contratos y fondos de liquidez de BathToken consultando `getBathTokenFromAsset` en_ [_BathHouse_](https://optimistic.etherscan.io/address/0x203328C161D23dCEee3E439DeEB25cA19e2c4984#readProxyContract) _con la dirección del token ERC-20 subyacente. Los tokens de baño son únicos para cada ERC-20._
-
-[View Rubicon contracts](https://optimistic.etherscan.io/accounts/label/rubicon) etiquetado y etiquetado en Etherscan
+| Nombre del contrato | Dirección |
+| --------------- | ---------------------------------------| **** 10 ****|------------ | ------------------------------------------------------| **** 22 ****|------------------ |
+| Mercado Rubicón | [0x506407f25B746C39807c03A96DD595a6BE223211](https://goerli.arbiscan.io/address/0x506407f25B746C39807c03A96DD595a6BE223211) |
+| Enrutador Rubicon | [0x3AbA34a8C9616eA927225C045EEa5d5b51a7a6FC](https://goerli.arbiscan.io/address/0x3AbA34a8C9616eA927225C045EEa5d5b51a7a6FC) |
+| fábrica de ayuda al mercado| Próximamente |
 
 ## Optimismo Goerli
 
-Consulte a continuación las implementaciones en vivo v1. Los contratos aún no se verifican en Etherscan debido a la falta de soporte para `chainId` `420`, pero esto debería resolverse pronto. Tenga en cuenta que estas direcciones podrían cambiar si algo está mal, pero se mantendrán aquí.\
-\
-**Tenga en cuenta que los siguientes son contratos de proxy cuya implementación en vivo se puede encontrar a través de Etherscan** (a través de Contrato> Leer como Proxy \* tan pronto como la verificación esté activa, que aún no lo está)
+| Nombre del contrato | Dirección |
+| --------------- | ---------------------------------------| **** 35 ****|------------------|**** 39 * ***|--------- |
+| RubiconMarket   | [0x9d0D6c259566d8161a1b2c513af0463992db38bc](https://goerli-optimism.etherscan.io/address/0x9d0D6c259566d8161a1b2c513af0463992db38bc) |
+| RubiconRouter   | [0x7a1B7720E691E74ee523E4ecBD6C77A094222757](https://goerli-optimism.etherscan.io/address/0x7a1B7720E691E74ee523E4ecBD6C77A094222757) |
+| MarketAidFactory| [0x267D94C6e67e4436EFfE092b08d040cFF36B2DA7](https://goerli-optimism.etherscan.io/address/0x2D77E00EfE8375903eaD1135BD1eb31cBcf1bA69) |
 
-[**Rubicon Market:**](https://goerli-optimism.etherscan.io/address/0x6cD8666aBB003073e45D69E5b3aa0b0Fe9CDBF91) 0x6cD8666aBB003073e45D69E5b3aa0b0Fe9CDBF91\
-[**Rubicon Router:**](https://goerli-optimistic.etherscan.io/address/0x6aaEd1985a0e011ca82BB5Df8ebd92063134fd7c) 0x6aaEd1985a0e011ca82BB5Df8ebd92063134fd7c\
-[**BathHouse:**](https://goerli-optimistic.etherscan.io/address/0x1229036F63679B61910CB1463e5BB57f68D19bb2) 0x1229036F63679B61910CB1463e5BB57f68D19bb2\
-[**BathPair:**](https://goerli-optimistic.etherscan.io/address/0x9dBf17d518f722B5Aae5573D808B94024b635529) 0x9dBf17d518f722B5Aae5573D808B94024b635529\
-[**MarketAidFactory:**](https://goerli-optimism.etherscan.io/address/0x1215007738491710913359b5A733c8A87624f8d3) 0x1215007738491710913359b5A733c8A87624f8d3
+## Polygon Mumbai
 
-Nota: cualquier bathToken existente se consulta a través de tokenToBathToken() en BathHouse. Aquí está la lectura con las implementaciones:
+| Contract Name   | Address                                                                        |
+| --------------- | ------------------------------------------------------| **** 53 ****|------------------ |
+| Mercado Rubicón | [0x10418D9e730fa659b0Baf0b640ee41FcF4EA2aaE](https://mumbai.polygonscan.com/address/0x10418D9e730fa659b0Baf0b640ee41FcF4EA2aaE) |
+| Enrutador Rubicon | [0xbA81dF0251A017C2fB687e5469a897529442f008](https://mumbai.polygonscan.com/address/0xbA81dF0251A017C2fB687e5469a897529442f008) |
+| fábrica de ayuda al mercado| [0x4841DcC66F6CfC600382ec98f34d43332c535B9B](https://mumbai.polygonscan.com/address/0x4841DcC66F6CfC600382ec98f34d43332c535B9B) |
 
-```
-🎉 Got these final public contract addresses (state):  
-Market 0x6cD8666aBB003073e45D69E5b3aa0b0Fe9CDBF91 
-BathHouse 0x1229036F63679B61910CB1463e5BB57f68D19bb2 
-BathPair 0x9dBf17d518f722B5Aae5573D808B94024b635529 
-Router 0x6aaEd1985a0e011ca82BB5Df8ebd92063134fd7c 
-StratUtility 0xd282dB449cC64D136b9D9a4399E7e3F133472EaE 
-MarketAid 0x6d362d3F8A11D933b05A71085e4Aef1EE8A45371 
+## Base Goerli
 
-👯‍♂️ based on these implementations: 
-Market Implementation: 0xABaA853F972e6dcd1208B791c1629A7b04D79558 
-BathHouse Implementation: 0x6D2995587F32Dc2feb68743c7Cb2C6faF063F86E 
-BathPair Implementation: 0xd294EC89A6c00CD3c4dD0dFb60F3D505C7Ef91d1 
-*BathToken Implementation:* 0x788b7ad4d4279c276807435EA5931A80C5ab2Ffe 
-Router Implementation: 0x746750031Cc56Ccb386D9a6a0fcAb34C0A138BbD 
-StratUtility Implementation: 0xC8ab2B3A419D844FB8CE817A577a40b59c4dEEb8 
-MarketAid Implementation: 0xba8bFB9B22804Aa29ACdd157af932F396A158da4
-```
+| Nombre del contrato | Dirección |
+| --------------- | ---------------------------------------| **** 66 ****|------------------|**** 70 * ***|--------- |
+| RubiconMarket   | Coming Soon |
+| RubiconRouter   | Coming Soon |
+| MarketAidFactory| Coming Soon |
 
-**Pruebe los ERC-20 con tokens de baño inicializados y grifos incorporados para probar** (excluyendo WETH)**:**
+# Deprecated Deployments
 
-[Test OP Coin](https://goerli-optimism.etherscan.io/address/0xCeE7148028Ff1B08163343794E85883174a61393)\
-[Test USDC Coin](https://goerli-optimism.etherscan.io/address/0x708394f89acd3e0644f774ea6c876bface70e600)
+List of contract addresses that are no longer in use. Interacting with these contracts is not recommended. If you have tokens in the V1 pools, you can withdraw on the [app](https://app.rubicon.finance/pools) or by calling the withdraw() function on the relevant bathToken contract.
 
-**Tenga en cuenta que para recibir cualquiera de los tokens anteriores de forma gratuita para realizar pruebas, simplemente llame a faucet().** Esto se puede hacer visitando el token en Etherscan > Escribir contrato > Conectar billetera (verificar en OP Kovan) > llamar a faucet (). Esto le permitirá acuñar 1000 tokens una vez cada 5 días. Además, cada uno de los tokens anteriores tendrá al menos 1000 tokens de liquidez en su respectivo bathToken del administrador depositado con fines de prueba.
+| Contract Name   | Address                                      |
+| --------------- | -------------------------------------------- |
+| Casa de baños V1 | [0x203328C161D23dCEee3E439DeEB25cA19e2c4984](https://optimistic.etherscan.io/address/0x203328C161D23dCEee3E439DeEB25cA19e2c4984) |
+| Par de baños | [0xF8780E00Ce8ed2e79aeC10908a169900eD1D4AFe](https://optimistic.etherscan.io/address/0xF8780E00Ce8ed2e79aeC10908a169900eD1D4AFe) |
+| bañoETH | [0xB0bE5d911E3BD4Ee2A8706cF1fAc8d767A550497](https://optimistic.etherscan.io/address/0xB0bE5d911E3BD4Ee2A8706cF1fAc8d767A550497) |
+| bañoWBTC | [0x7571CC9895D8E997853B1e0A1521eBd8481aa186](https://optimistic.etherscan.io/address/0x7571CC9895D8E997853B1e0A1521eBd8481aa186) |
+| bañoUSDC | [0xe0e112e8f33d3f437D1F895cbb1A456836125952](https://optimistic.etherscan.io/address/0xe0e112e8f33d3f437D1F895cbb1A456836125952) |
+| bañoUSDT | [0xfFBD695bf246c514110f5DAe3Fa88B8c2f42c411](https://optimistic.etherscan.io/address/0xfFBD695bf246c514110f5DAe3Fa88B8c2f42c411) |
+| bañoDAI | [0x60daEC2Fc9d2e0de0577A5C708BcaDBA1458A833](https://optimistic.etherscan.io/address/0x60daEC2Fc9d2e0de0577A5C708BcaDBA1458A833) |
+| bañoSNX | [0xeb5F29AfaaA3f44eca8559c3e8173003060e919f](https://optimistic.etherscan.io/address/0xeb5F29AfaaA3f44eca8559c3e8173003060e919f) |
+| bañoOP | [0x574a21fE5ea9666DbCA804C9d69d8Caf21d5322b](https://optimistic.etherscan.io/address/0x574a21fE5ea9666DbCA804C9d69d8Caf21d5322b) |
