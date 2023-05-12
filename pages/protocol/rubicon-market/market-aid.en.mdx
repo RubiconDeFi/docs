@@ -1,12 +1,12 @@
 ---
-title: Rubicon | Market Aid
+title: Market Aid
 pageTitle: Market Aid
-description: on-chain high-frequency market making contracts and functionality for Rubicon
+description: Helper contract for advanced trading on Rubicon
 ---
 
 ## Market Aid
 
-`MarketAid.sol` is a helper contract that allows the owner to send batches of limit orders and cancel orders on `RubiconMarket.sol`. It makes it easy for active traders and market-makers to place and cancel many outstanding orders in a single transaction! You can think of MarketAid as a middle-layer contract that allows traders to make larger, more efficient, and more complex transactions on the Rubicon order books.
+`MarketAid.sol` is a helper contract that allows the owner to send batches of limit orders and cancel orders on `RubiconMarket.sol` . It makes it easy for active traders and market-makers to place and cancel many outstanding orders in a single transaction! You can think of MarketAid as a middle-layer contract that allows traders to make larger, more efficient, and more complex transactions on the Rubicon order books.
 
 After creating an instance of MarketAid, a trader can use powerful batch functions that extend the low-level 'RubiconMarket.sol' functions `offer` and `cancel` as well as combinations of the two. Send a large batch of limit orders with `batchMarketMakingTrades()` , cancel a batch of open orders and replace them with `batchRequoteOffers()` , or cancel lots of open orders with `scrubStrategistTrades()`. Keep reading for a quick start tutorial and overview of the MarketAid functions. If you have any questions or trouble with MarketAid, join our [Discord server](https://discord.com/invite/E7pS24J), our team is happy to help you get started with automated trading on Rubicon!
 

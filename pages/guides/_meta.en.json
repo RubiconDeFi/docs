@@ -1,5 +1,7 @@
 {
+	"trade": "Trade",
+	"swap": "Executing a Swap",
 	"bridge": "Bridge",
 	"liquidity-pools": "Liquidity Pools",
-	"trade": "Trade"
+	"connecting-your-wallet-to-rubicon": "Connecting Your Wallet"
 }

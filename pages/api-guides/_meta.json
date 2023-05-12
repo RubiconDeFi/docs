@@ -1,0 +1,5 @@
+{
+	"subgraphs": "Subgraphs",
+	"rubi-py": "Python SDK",
+	"rubi-rs": "Rust SDK"
+}
