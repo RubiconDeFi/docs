@@ -3,16 +3,21 @@ title: Contract Overview
 pageTitle: Contract Overview
 description: Overview and docs for the Rubicon Router contract
 ---
+# Rubicon Router
 
-# Overview
+[Contract Source Code](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/utilities/RubiconRouter.sol)
 
-RubiconRouter.sol routes ERC-20 token swaps on the RubiconMarket contract.
+## Overview
 
-[Router Contract Source Code](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/utilities/RubiconRouter.sol)
+**RubiconRouter.sol** routes ERC-20 token swaps on the order book contract and enables multi-hop swaps if two tokens do not have an existing order book on **RubiconMarket.sol**. 
+
+It also contains functions to buy or swap ETH with/for ERC-20 tokens, abstracting WETH wrapping and unwrapping, and has helpful view functions for
 
 ## Functions
 
-```
+### swap()
+
+```solidity
 function swap(
         uint256 pay_amt,
         uint256 buy_amt_min,
@@ -28,10 +33,68 @@ function swap(
 | route           | addresses | First token address is the pay_amt token, last address is the buy_amt token |
 | to              | address | Address is the pay_amt token, last address is the buy_amt token |
 
-This function swaps tokens across a specified `route` of token addresses with a minimum received quantity. It enables token swaps across multiple order books on RubiconMarket, in case the tokens do not have an existing order book.
+Swaps tokens across a specified `route` of token addresses with a minimum received quantity. It enables token swaps across multiple order books on RubiconMarket, in case the tokens do not have an existing order book.
+
+### buyAllAmountWithETH()
+
+```solidity
+ function buyAllAmountWithETH(
+        IERC20 buy_gem,
+        uint256 buy_amt,
+        uint256 max_fill_amount
+    ) external payable beGoneReentrantScum returns (uint256 fill)
+```
+
+| Parameter Name  | Type    | Description                             |
+| --------------- | ------- | --------------------------------------- |
+| buy_gem         | address | ERC-20 token the caller is buying       |
+| buy_amt         | uint256 | Quantity of tokens the caller is buying |
+| max_fill_amount | uint256 | Maximum amount of ETH sold |
+
+Attempts to buy `buy_amt` tokens of the `buy_gem` token for at most the `max_fill_amount` quantity of ETH. Transaction will revert if the caller would spend more than the specified maximum amount.
+
+### buyAllAmountForETH()
+
+```solidity
+function buyAllAmountForETH(
+        uint256 buy_amt,
+        IERC20 pay_gem,
+        uint256 max_fill_amount
+    ) external beGoneReentrantScum returns (uint256 fill)
+```
+
+| Parameter Name  | Type    | Description                             |
+| --------------- | ------- | --------------------------------------- |
+| buy_amt         | uint256 | Quantity of ETH the caller is buying    |
+| pay_gem         | address | ERC-20 token the caller is selling      |
+| max_fill_amount | unit256 | Maximum amount of `pay_gem` tokens sold |
+
+Attempts to buy `buy_amt` ETH for at most the `max_fill_amount quantity` of `pay_gem` tokens. Transaction will revert if the caller would spend more than the specified maximum amount.
+
+## View Functions
+
+### getBookFromPair()
+
+```solidity
+    function getBookFromPair(
+        IERC20 asset,
+        IERC20 quote
+    ) public view returns (uint256[3][] memory asks, uint256[3][] memory bids) {
+        asks = getOffersFromPair(asset, quote);
+        bids = getOffersFromPair(quote, asset);
+    }
+```
+
+| Parameter Name  | Type    | Description                             |
+| --------------- | ------- | --------------------------------------- |
+| asset           | address | ERC-20 token on the ask/sell side of the target order book |
+| quote           | address | ERC-20 token on the bid/buy side of the target order book  |
+
+Returns all outstanding orders on the book for a given pair of tokens. The asset/quote pair ordering will affect return values - asset should be the top of the pair: for example, (ETH, USDC, 10) will return (10 best ETH asks, 10 best USDC bids, 10)
 
 ## Key Events
 
+```solidity
     event emitSwap(
         address indexed recipient,
         address indexed inputERC20,
@@ -41,3 +104,4 @@ This function swaps tokens across a specified `route` of token addresses with a 
         uint256 realizedFill,
         uint256 hurdleBuyAmtMin
     );
+```

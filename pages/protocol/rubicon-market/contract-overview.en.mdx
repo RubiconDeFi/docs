@@ -10,7 +10,7 @@ description: Overview and docs for the Rubicon order book contract
 
 ## Overview
 
-RubiconMarket.sol implements order books and a matching engine for peer-to-peer trading of [ERC-20 tokens](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/).
+**RubiconMarket.sol** implements order books and a matching engine for peer-to-peer trading of [ERC-20 tokens](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/).
 
 An order book is a list of buy and sell orders for an asset, sorted by price level. This contract stores every ERC20/ERC20 order book as two double-linked sorted lists, one for each side of the given market.
 
@@ -22,12 +22,12 @@ Rubicon Market is a derivative work of MakerDAO's open-source [OasisDEX](https:/
 
 ### offer()
 
-```
+```solidity
     function offer(
         uint256 pay_amt,
-        ERC20 pay_gem,
+        IERC20 pay_gem,
         uint256 buy_amt,
-        ERC20 buy_gem,
+        IERC20 buy_gem,
     ) public returns (uint256)
 ```
 
@@ -45,7 +45,7 @@ Calling the `offer()` function places a limit order on Rubicon. The `pay_amt` qu
 
 ### cancel()
 
-```
+```solidity
     function cancel(uint id)
         public
         can_cancel(id)
@@ -60,7 +60,7 @@ Cancels an `offer()` on the order book and returns the tokens to the owner. The 
 
 ### batchOffer()
 
-```
+```solidity
     function batchOffer(
         uint[] calldata payAmts,
         address[] calldata payGems,
@@ -88,7 +88,7 @@ Use `batchOffer()` to place multiple offers in a single transaction. The functio
 
 ### batchCancel()
 
-```
+```solidity
     function batchCancel(uint[] calldata ids) external {
         for (uint i = 0; i < ids.length; i++) {
             this.cancel(ids[i]);
@@ -100,7 +100,7 @@ Use `batchCancel()` to cancel multiple offers in a single transaction. The funct
 
 ### batchRequote()
 
-```
+```solidity
     function batchRequote(
         uint[] calldata ids,
         uint[] calldata payAmts,
@@ -124,7 +124,7 @@ Use `batchRequote()` to cancel and replace multiple offers in a single transacti
 
 ### buyAllAmount()
 
-```
+```solidity
      function buyAllAmount(
         ERC20 buy_gem,
         uint256 buy_amt,
@@ -144,7 +144,7 @@ Attempts to trade `buy_amt` quantity of `buy_gem` tokens for at most the `max_fi
 
 ### sellAllAmount()
 
-```
+```solidity
      function sellAllAmount(
         ERC20 pay_gem,
         uint256 pay_amt,
@@ -166,7 +166,7 @@ Attempts to trade `sell_amt` quantity of `sell_gem` tokens for at least the `min
 
 ### getBuyAmountWithFee()
 
-```
+```solidity
     function getBuyAmountWithFee(
         IERC20 buy_gem,
         IERC20 pay_gem,
@@ -184,7 +184,7 @@ Returns `buy_amt`, the amount of `buy_gem` tokens to send to the contract to rec
 
 ### getPayAmountWithFee
 
-```
+```solidity
     function getPayAmountWithFee(
         IERC20 pay_gem,
         IERC20 buy_gem,
@@ -202,7 +202,7 @@ Returns `pay_amt`, the amount of `pay_gem` tokens to send to the contract to rec
 
 ### getBestOffer()
 
-```
+```solidity
 function getBestOffer(ERC20 pay_gem, ERC20 buy_gem)
     public
     view
@@ -215,7 +215,7 @@ Ex. Calling this function with WETH as `pay_gem` and USDC as `buy_gem` will retu
 
 ### getWorseOffer()
 
-```
+```solidity
 function getWorseOffer(uint256 id)
     public
     view
@@ -226,7 +226,7 @@ Returns the next worse offer in the sorted list. The worse offer is the higher o
 
 ### getBuyAmount()
 
-```
+```solidity
     function getBuyAmount(
         ERC20 buy_gem,
         ERC20 pay_gem,
@@ -234,11 +234,11 @@ Returns the next worse offer in the sorted list. The worse offer is the higher o
     ) external view returns (uint256 fill_amt)
 ```
 
-Returns the amount of `buy_gem` tokens received if a specified amount of `pay_gem` tokens are spent. Used to check the current state of the order book.
+Returns the amount of `buy_gem` tokens received if a specified amount of `pay_gem` tokens are spent.
 
 ### getPayAmount()
 
-```
+```solidity
 function getPayAmount(
         ERC20 pay_gem,
         ERC20 buy_gem,
@@ -246,11 +246,11 @@ function getPayAmount(
     ) external view returns (uint256 fill_amt)
 ```
 
-Returns the amount of `pay_gem` tokens needed to buy a specified amount of `buy_gem` tokens. Used to check the current status of the order book.
+Returns the amount of `pay_gem` tokens needed to buy a specified amount of `buy_gem` tokens.
 
 ### getOfferCount()
 
-```
+```solidity
 function getOfferCount(ERC20 sell_gem, ERC20 buy_gem)
         public
         view
@@ -261,18 +261,18 @@ Returns the number of offers in the order book for a specified pair.
 
 ### getFeeBPS()
 
-```
+```solidity
 function getFeeBPS()
     public
     view
     returns (uint256)
 ```
 
-Returns the protocol fee, in basis points.
+Returns the taker fee, in basis points (BPS).
 
 ## Key Events
 
-```
+```solidity
 event emitOffer(
         bytes32 indexed id,
         bytes32 indexed pair,
@@ -285,7 +285,7 @@ event emitOffer(
     );
 ```
 
-```
+```solidity
     event emitCancel(
         bytes32 indexed id,
         bytes32 indexed pair,
@@ -297,7 +297,7 @@ event emitOffer(
     );
 ```
 
-```
+```solidity
     event emitTake(
         bytes32 indexed id,
         bytes32 indexed pair,
@@ -310,7 +310,7 @@ event emitOffer(
     );
 ```
 
-```
+```solidity
     event emitFee(
         bytes32 indexed id,
         address indexed taker,
@@ -321,7 +321,7 @@ event emitOffer(
     );
 ```
 
-```
+```solidity
     event emitDelete(
         bytes32 indexed id,
         bytes32 indexed pair,

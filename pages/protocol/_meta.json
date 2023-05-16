@@ -4,8 +4,5 @@
 	"rubicon-pools": "Rubicon Pools",
 	"deployments": "Deployments",
 	"audits": "Audits",
-	"risks": "Risks",
-	"source-code-repo": "Source Code Repo",
-		"href": "https://github.com/RubiconDeFi/rubi-protocol-v2",
-		"newWindow": true
+	"risks": "Risks"
 }
