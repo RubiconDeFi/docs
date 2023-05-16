@@ -184,6 +184,7 @@ Returns `buy_amt`, the amount of `buy_gem` tokens to send to the contract to rec
 
 ### getPayAmountWithFee
 
+```
     function getPayAmountWithFee(
         IERC20 pay_gem,
         IERC20 buy_gem,
@@ -195,6 +196,7 @@ Returns `buy_amt`, the amount of `buy_gem` tokens to send to the contract to rec
         approvalAmount = modifiedAmount;
         return (pay_amt, approvalAmount);
     }
+```
 
 Returns `pay_amt`, the amount of `pay_gem` tokens to send to the contract to receive the `buy_amt` amount of the `buy_gem` token.
 
