@@ -6,14 +6,16 @@ description: Fees on the Rubicon protocol
 
 # Fees
 
-The Rubicon protocol uses a maker-taker fee model, charging trades that "take" liquidity from the order book and paying a rebate to orders that "make" liquidity on the order book. The taker fee is paid in the ERC-20 token that is sent to the contract, and the maker portion is paid directly to the owner address of the filled order(s).
+The Rubicon protocol has a maker-taker fee model, charging trades that "take" liquidity from the order book and paying a rebate to orders that "make" liquidity on the order book. The taker fee is paid in the ERC-20 token that is sent to the contract, and the maker fee is paid directly to the owner address of the filled order(s).
+
+## Fee Schedule
 
 |  Name          | Amount | Description                                                   |
 | -------------- | ------ | ------------------------------------------------------------- |
 | Taker          | 0.01%  | Paid by trades that "take" liquidity from the order book      |
-| Maker          | 0.008% | Paid by the taker to the owner address of the filled offer(s) |
+| Maker          | X.XXX%     | Paid by the taker to the owner address of the filled offer(s) |
 
-## Querying the Fee
+### Querying the Taker Fee
 
 ```
 function getFeeBPS()
@@ -22,8 +24,19 @@ function getFeeBPS()
     returns (uint256)
 ```
 
-This function in **RubiconMarket.sol** returns the current fee in basis points (BPS).
+Returns the current taker fee in basis points (BPS).
 
-# Network Fees
+### Querying the Maker Fee
+
+```
+function makerFee() 
+    public 
+    view 
+    returns (uint256)
+```
+
+Returns the current maker fee (rebate) in basis points (BPS).
+
+## Network Fees
 
 Rubicon is an on-chain order book protocol, all transactions need to pay network fees (gas) in ETH. Transactions on L2 networks like [Arbitrum](https://arbitrum.io/) and [Optimism](https://www.optimism.io/) are 50-100x cheaper than equivalent ones on Ethereum Mainnet.

@@ -38,11 +38,10 @@ Rubicon Market is a derivative work of MakerDAO's open-source [OasisDEX](https:/
 | buy\_amt               | uint256     | Quantity of ERC-20 tokens the caller is buying                                                                                    |
 | buy\_gem               | address     | ERC-20 token the caller is buying                                                                                                 |
 | \[Optional] pos        | uint256     | Optional: Position in the sorted list to place the offer. Use `0` unless you know the exact pos (closest ID) to insert the order  |
-| \[Optional] matching   | bool        | Optional: Boolean to determine whether the offer should be automatically matched (placed in the sorted list)                      |
 | \[Optional] recipient  | address     | Optional: Custom recipient address for the filled offer                                                                           |
 
 
-Calling the `offer()` function places a limit order on Rubicon. The `pay_amt` quantity of the `pay_gem` token will be sent to the contract, sitting in escrow until the offer is filled or canceled. There are more advanced `offer()` functions that have parameters for specifying the position in the order book, whether the offer should be automatically matched, and a custom recipient address for the filled offer.
+Calling the `offer()` function places a limit order on Rubicon. The `pay_amt` quantity of the `pay_gem` token will be sent to the contract, sitting in escrow until the offer is filled or canceled. There are more advanced `offer()` functions that have parameters for specifying the position in the order book or a custom recipient address for the filled offer.
 
 ### cancel()
 
@@ -57,21 +56,71 @@ Calling the `offer()` function places a limit order on Rubicon. The `pay_amt` qu
 | -------------- | ------- | -------------------------------------------- |
 | id             | uint256 | The id of the order the user wants to cancel |
 
-This function cancels an offer on the order book and returns the tokens to the owner. The `can_cancel` modifier checks that the target order is active and is owned by the caller. Alternatively, you can use the `kill()` routing function to achieve the same result and cancel an offer.
+Cancels an `offer()` on the order book and returns the tokens to the owner. The `can_cancel` modifier checks that the target order is active and is owned by the caller.
 
-### buy()
+### batchOffer()
 
 ```
-    function buy(uint id, uint amount) public can_buy(id)
-        returns (bool)
+    function batchOffer(
+        uint[] calldata payAmts,
+        address[] calldata payGems,
+        uint[] calldata buyAmts,
+        address[] calldata buyGems
+    ) external {
+        require(
+            payAmts.length == payGems.length &&
+                payAmts.length == buyAmts.length &&
+                payAmts.length == buyGems.length,
+            "Array lengths do not match"
+        );
+        for (uint i = 0; i < payAmts.length; i++) {
+            this.offer(
+                payAmts[i],
+                ERC20(payGems[i]),
+                buyAmts[i],
+                ERC20(buyGems[i])
+            );
+        }
+    }
 ```
 
-| Parameter Name | Type    | Description                         |
-| -------------- | ------- | ----------------------------------- |
-| id             | uint256 | The id of the target order          |
-| amount         | uint256 | Quantity of the target order to buy |
+Use `batchOffer()` to place multiple offers in a single transaction. The function takes four arrays as parameters: `payAmts`, `payGems`, `buyAmts`, and `buyGems`. The arrays must be the same length and the order of the elements must match. The function will loop through each element in the arrays and place an offer with the corresponding parameters.
 
-This function is used to fill or "cherry pick" a specific order id in the book. The caller will pay the taker fee. Alternatively, you can use the `take()` routing function to achieve the same result and fill a specific offer.
+### batchCancel()
+
+```
+    function batchCancel(uint[] calldata ids) external {
+        for (uint i = 0; i < ids.length; i++) {
+            this.cancel(ids[i]);
+        }
+    }
+```
+
+Use `batchCancel()` to cancel multiple offers in a single transaction. The function takes an array of `offer()` ids as a parameter. The function will loop through each element in the array and cancel the corresponding offer.
+
+### batchRequote()
+
+```
+    function batchRequote(
+        uint[] calldata ids,
+        uint[] calldata payAmts,
+        address[] calldata payGems,
+        uint[] calldata buyAmts,
+        address[] calldata buyGems
+    ) external {
+        for (uint i = 0; i < ids.length; i++) {
+            cancel(ids[i]);
+            this.offer(
+                payAmts[i],
+                ERC20(payGems[i]),
+                buyAmts[i],
+                ERC20(buyGems[i])
+            );
+        }
+    }
+```
+
+Use `batchRequote()` to cancel and replace multiple offers in a single transaction. The function takes five arrays as parameters: `ids`, `payAmts`, `payGems`, `buyAmts`, and `buyGems`. The arrays must be the same length and the order of the elements must match. The function will loop through each element in the arrays and cancel the corresponding offer. Then, it will place new offers with the corresponding parameters.
 
 ### buyAllAmount()
 
@@ -113,69 +162,41 @@ Attempts to trade `buy_amt` quantity of `buy_gem` tokens for at most the `max_fi
 
 Attempts to trade `sell_amt` quantity of `sell_gem` tokens for at least the `min_fill_amount` quantity of `pay_gem` tokens. Transaction will revert if the trader would receive less than the specified minimum amount. This is a "Fill-or-Kill" sell order.
 
-## Batch Functions [WIP]
+## View Functions
 
-These functions are used to batch multiple offers or cancels into a single transaction. This is useful for reducing gas costs when placing multiple orders.
+### getBuyAmountWithFee()
 
 ```
-    function batchOffer(
-        uint[] calldata payAmts,
-        address[] calldata payGems,
-        uint[] calldata buyAmts,
-        address[] calldata buyGems
-    ) external {
-        require(
-            payAmts.length == payGems.length &&
-                payAmts.length == buyAmts.length &&
-                payAmts.length == buyGems.length,
-            "Array lengths do not match"
-        );
-        for (uint i = 0; i < payAmts.length; i++) {
-            this.offer(
-                payAmts[i],
-                ERC20(payGems[i]),
-                buyAmts[i],
-                ERC20(buyGems[i])
-            );
-        }
+    function getBuyAmountWithFee(
+        IERC20 buy_gem,
+        IERC20 pay_gem,
+        uint256 pay_amt
+    ) external view returns (uint256 buy_amt, uint256 approvalAmount) {
+        uint modifiedAmount = calculateFees(pay_amt, false);
+        buy_amt = (getBuyAmount(buy_gem, pay_gem, modifiedAmount));
+
+        approvalAmount = pay_amt;
+        return (buy_amt, approvalAmount);
     }
 ```
 
-Use `batchOffer()` to place multiple offers in a single transaction. The function takes four arrays as parameters: `payAmts`, `payGems`, `buyAmts`, and `buyGems`. The arrays must be the same length and the order of the elements must match. The function will loop through each element in the arrays and place an offer with the corresponding parameters.
+Returns `buy_amt`, the amount of `buy_gem` tokens to send to the contract to receive a the `pay_amt` amount of the `pay_gem` token.
 
-```
-    function batchCancel(uint[] calldata ids) external {
-        for (uint i = 0; i < ids.length; i++) {
-            this.cancel(ids[i]);
-        }
+### getPayAmountWithFee
+
+    function getPayAmountWithFee(
+        IERC20 pay_gem,
+        IERC20 buy_gem,
+        uint256 buy_amt
+    ) public view returns (uint256 pay_amt, uint256 approvalAmount) {
+        pay_amt = (getPayAmount(pay_gem, buy_gem, buy_amt));
+        uint modifiedAmount = calculateFees(pay_amt, true);
+
+        approvalAmount = modifiedAmount;
+        return (pay_amt, approvalAmount);
     }
-```
 
-Use `batchCancel()` to cancel multiple offers in a single transaction. The function takes an array of offer ids as a parameter. The function will loop through each element in the array and cancel the corresponding offer.
-
-```
-    function batchRequote(
-        uint[] calldata ids,
-        uint[] calldata payAmts,
-        address[] calldata payGems,
-        uint[] calldata buyAmts,
-        address[] calldata buyGems
-    ) external {
-        for (uint i = 0; i < ids.length; i++) {
-            cancel(ids[i]);
-            this.offer(
-                payAmts[i],
-                ERC20(payGems[i]),
-                buyAmts[i],
-                ERC20(buyGems[i])
-            );
-        }
-    }
-```
-
-Use `batchRequote()` to cancel and replace multiple offers in a single transaction. The function takes five arrays as parameters: `ids`, `payAmts`, `payGems`, `buyAmts`, and `buyGems`. The arrays must be the same length and the order of the elements must match. The function will loop through each element in the arrays and cancel the corresponding offer. Then, it will place a new offer with the corresponding parameters.
-
-## View Functions [WIP]
+Returns `pay_amt`, the amount of `pay_gem` tokens to send to the contract to receive the `buy_amt` amount of the `buy_gem` token.
 
 ### getBestOffer()
 
