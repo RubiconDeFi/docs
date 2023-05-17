@@ -13,11 +13,11 @@ The Rubicon protocol has a maker-taker fee model, charging trades that "take" li
 |  Name          | Amount | Description                                                   |
 | -------------- | ------ | ------------------------------------------------------------- |
 | Taker          | 0.01%  | Paid by trades that "take" liquidity from the order book      |
-| Maker          | X.XXX%     | Paid by the taker to the owner address of the filled offer(s) |
+| Maker          | X.XXX% | Paid by the taker to the owner address of the filled offer(s) |
 
 ### Querying the Taker Fee
 
-```
+```solidity
 function getFeeBPS()
     public
     view
@@ -28,7 +28,7 @@ Returns the current taker fee in basis points (BPS).
 
 ### Querying the Maker Fee
 
-```
+```solidity
 function makerFee() 
     public 
     view 
