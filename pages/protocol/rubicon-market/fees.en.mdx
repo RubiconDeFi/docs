@@ -1,21 +1,32 @@
 ---
 title: Fees
 pageTitle: Fees
-description: Fees on the Rubicon protocol
+description: Fees on the Protocol
 ---
 
 # Fees
 
-The Rubicon protocol has a maker-taker fee model, charging trades that "take" liquidity from the order book and paying a rebate to orders that "make" liquidity on the order book. The taker fee is paid in the ERC-20 token that is sent to the contract, and the maker fee is paid directly to the owner address of the filled order(s).
+## Network Fees
 
-## Fee Schedule
+Rubicon order books are on-chain, all transactions must pay network fees (gas) in ETH. Transactions on L2 networks like [Arbitrum](https://arbitrum.io/) and [Optimism](https://www.optimism.io/) are 50-100x cheaper than equivalent ones on Ethereum Mainnet.
 
-|  Name          | Amount | Description                                                   |
-| -------------- | ------ | ------------------------------------------------------------- |
-| Taker          | 0.01%  | Paid by trades that "take" liquidity from the order book      |
-| Maker          | X.XXX% | Paid by the taker to the owner address of the filled offer(s) |
+## Protocol Fees
 
-### Querying the Taker Fee
+Rubicon has a maker-taker fee model, charging a fee to trades that "take" liquidity from the order book and paying a fee (rebate) to orders that "make" liquidity. The taker fee is paid in the ERC-20 token that is sent to the contract, and the maker fee is paid to the owner address of the filled order(s).
+
+import { Callout } from "/components/Callout";
+
+<Callout type="fees" title="Taker Fee: 0.04%">
+	Paid by Market Orders, Swaps, and orders that `take` liquidity from the order book
+</Callout>
+
+<Callout type="fees" title="Maker Fee: 0.038%">
+	Paid by takers to the "maker", the owner address of the filled offer(s)
+</Callout>
+
+### Querying the Fees
+
+At a technical level, the **taker fee** is equal to the sum of the **protocol fee** and the **maker fee**.
 
 ```solidity
 function getFeeBPS()
@@ -24,9 +35,7 @@ function getFeeBPS()
     returns (uint256)
 ```
 
-Returns the current taker fee in basis points (BPS).
-
-### Querying the Maker Fee
+Returns the current protocol fee.
 
 ```solidity
 function makerFee() 
@@ -35,8 +44,4 @@ function makerFee()
     returns (uint256)
 ```
 
-Returns the current maker fee (rebate) in basis points (BPS).
-
-## Network Fees
-
-Rubicon is an on-chain order book protocol, all transactions need to pay network fees (gas) in ETH. Transactions on L2 networks like [Arbitrum](https://arbitrum.io/) and [Optimism](https://www.optimism.io/) are 50-100x cheaper than equivalent ones on Ethereum Mainnet.
+Returns the current maker fee (rebate).

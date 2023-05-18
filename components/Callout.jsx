@@ -17,11 +17,19 @@ const styles = {
     body:
       'text-amber-800 [--tw-prose-underline:theme(colors.amber.400)] [--tw-prose-background:theme(colors.amber.50)] prose-a:text-amber-900 prose-code:text-amber-900 dark:text-slate-300 dark:[--tw-prose-underline:theme(colors.sky.700)] dark:prose-code:text-slate-300',
   },
+  fees: {
+    container:
+      'bg-amber-50 dark:bg-slate-800/60 dark:ring-1 dark:ring-slate-300/10',
+    title: 'text-amber-900 dark:text-amber-500',
+    body:
+      'text-amber-800 [--tw-prose-underline:theme(colors.amber.400)] [--tw-prose-background:theme(colors.amber.50)] prose-a:text-amber-900 prose-code:text-amber-900 dark:text-slate-300 dark:[--tw-prose-underline:theme(colors.sky.700)] dark:prose-code:text-slate-300',
+  },
 }
 
 const icons = {
   note: (props) => <Icon icon="lightbulb" {...props} />,
   warning: (props) => <Icon icon="warning" color="amber" {...props} />,
+  fees: (props) => <Icon icon="plugins" {...props} />,
 }
 
 export function Callout({ type = 'note', title, children }) {
