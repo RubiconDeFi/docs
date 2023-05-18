@@ -6,7 +6,10 @@ description: Overview and docs for the Rubicon order book contract
 
 # Rubicon Market
 
-[Contract Source Code](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/RubiconMarket.sol)
+import { QuickLinks, QuickLink } from "/components/QuickLinks.jsx";
+
+<QuickLinks>
+  <QuickLink title="Contract Source Code" icon="github" href="https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/RubiconMarket.sol" ></QuickLink>
 
 ## Overview
 
@@ -22,7 +25,7 @@ Rubicon Market is a derivative work of MakerDAO's open-source [OasisDEX](https:/
 
 ### offer()
 
-```solidity
+```solidity copy
     function offer(
         uint256 pay_amt,
         IERC20 pay_gem,
@@ -45,7 +48,7 @@ Calling the `offer()` function places a limit order on Rubicon. The `pay_amt` qu
 
 ### cancel()
 
-```solidity
+```solidity copy
     function cancel(uint id)
         public
         can_cancel(id)
@@ -60,7 +63,7 @@ Cancels an `offer()` on the order book and returns the tokens to the owner. The 
 
 ### batchOffer()
 
-```solidity
+```solidity copy
     function batchOffer(
         uint[] calldata payAmts,
         address[] calldata payGems,
@@ -88,7 +91,7 @@ Use `batchOffer()` to place multiple offers in a single transaction. The functio
 
 ### batchCancel()
 
-```solidity
+```solidity copy
     function batchCancel(uint[] calldata ids) external {
         for (uint i = 0; i < ids.length; i++) {
             this.cancel(ids[i]);
@@ -100,7 +103,7 @@ Use `batchCancel()` to cancel multiple offers in a single transaction. The funct
 
 ### batchRequote()
 
-```solidity
+```solidity copy
     function batchRequote(
         uint[] calldata ids,
         uint[] calldata payAmts,
@@ -124,7 +127,7 @@ Use `batchRequote()` to cancel and replace multiple offers in a single transacti
 
 ### buyAllAmount()
 
-```solidity
+```solidity copy
      function buyAllAmount(
         ERC20 buy_gem,
         uint256 buy_amt,
@@ -144,7 +147,7 @@ Attempts to trade `buy_amt` quantity of `buy_gem` tokens for at most the `max_fi
 
 ### sellAllAmount()
 
-```solidity
+```solidity copy
      function sellAllAmount(
         ERC20 pay_gem,
         uint256 pay_amt,
@@ -166,7 +169,7 @@ Attempts to trade `sell_amt` quantity of `sell_gem` tokens for at least the `min
 
 ### getBuyAmountWithFee()
 
-```solidity
+```solidity copy
     function getBuyAmountWithFee(
         IERC20 buy_gem,
         IERC20 pay_gem,
@@ -184,7 +187,7 @@ Returns `buy_amt`, amount of `buy_gem` tokens to send to the contract to receive
 
 ### getPayAmountWithFee()
 
-```solidity
+```solidity copy
     function getPayAmountWithFee(
         IERC20 pay_gem,
         IERC20 buy_gem,
@@ -202,7 +205,7 @@ Returns `pay_amt`, the amount of `pay_gem` tokens to send to the contract to rec
 
 ### getBestOffer()
 
-```solidity
+```solidity copy
 function getBestOffer(ERC20 pay_gem, ERC20 buy_gem)
     public
     view
@@ -215,7 +218,7 @@ Ex. Calling this function with WETH as `pay_gem` and USDC as `buy_gem` will retu
 
 ### getWorseOffer()
 
-```solidity
+```solidity copy
 function getWorseOffer(uint256 id)
     public
     view
@@ -226,7 +229,7 @@ Returns the next worse offer in the sorted list. The worse offer is the higher o
 
 ### getBuyAmount()
 
-```solidity
+```solidity copy
     function getBuyAmount(
         ERC20 buy_gem,
         ERC20 pay_gem,
@@ -238,7 +241,7 @@ Returns the amount of `buy_gem` tokens received if a specified amount of `pay_ge
 
 ### getPayAmount()
 
-```solidity
+```solidity copy
 function getPayAmount(
         ERC20 pay_gem,
         ERC20 buy_gem,
@@ -250,7 +253,7 @@ Returns the amount of `pay_gem` tokens needed to buy a specified amount of `buy_
 
 ### getOfferCount()
 
-```solidity
+```solidity copy
 function getOfferCount(ERC20 sell_gem, ERC20 buy_gem)
         public
         view
@@ -261,18 +264,18 @@ Returns the number of offers in the order book for a specified pair.
 
 ### getFeeBPS()
 
-```solidity
+```solidity copy
 function getFeeBPS()
     public
     view
     returns (uint256)
 ```
 
-Returns the taker fee, in basis points (BPS).
+Returns the current protocol fee.
 
 ## Key Events
 
-```solidity
+```solidity copy
 event emitOffer(
         bytes32 indexed id,
         bytes32 indexed pair,
@@ -285,7 +288,7 @@ event emitOffer(
     );
 ```
 
-```solidity
+```solidity copy
     event emitCancel(
         bytes32 indexed id,
         bytes32 indexed pair,
@@ -297,7 +300,7 @@ event emitOffer(
     );
 ```
 
-```solidity
+```solidity copy
     event emitTake(
         bytes32 indexed id,
         bytes32 indexed pair,
@@ -310,7 +313,7 @@ event emitOffer(
     );
 ```
 
-```solidity
+```solidity copy
     event emitFee(
         bytes32 indexed id,
         address indexed taker,

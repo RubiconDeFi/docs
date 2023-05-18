@@ -28,7 +28,7 @@ import { Callout } from "/components/Callout";
 
 At a technical level, the **Taker Fee** is equal to the sum of the **Protocol Fee** and the **Maker Fee**.
 
-```solidity
+```solidity copy
 function getFeeBPS()
     public
     view
@@ -37,7 +37,7 @@ function getFeeBPS()
 
 Returns the current protocol fee.
 
-```solidity
+```solidity copy
 function makerFee() 
     public 
     view 
@@ -48,7 +48,7 @@ Returns the current maker fee (rebate).
 
 Use `getBuyAmountWithFee()` or `getPayAmountWithFee()` to calculate the total amount for a given trade, including fees.
 
-```solidity
+```solidity copy
     function getBuyAmountWithFee(
         IERC20 buy_gem,
         IERC20 pay_gem,
@@ -64,7 +64,7 @@ Use `getBuyAmountWithFee()` or `getPayAmountWithFee()` to calculate the total am
 
 Returns `buy_amt`, the amount of `buy_gem` tokens to send to the contract to receive the `pay_amt` amount of the `pay_gem` token. Also returns `approvalAmount`, the amount of `pay_gem` tokens to approve for the interaction, accounting for fees.
 
-```solidity
+```solidity copy
     function getPayAmountWithFee(
         IERC20 pay_gem,
         IERC20 buy_gem,

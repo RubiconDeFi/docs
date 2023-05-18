@@ -5,19 +5,22 @@ description: Overview and docs for the Rubicon Router contract
 ---
 # Rubicon Router
 
-[Contract Source Code](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/utilities/RubiconRouter.sol)
+import { QuickLinks, QuickLink } from "/components/QuickLinks.jsx";
+
+<QuickLinks>
+  <QuickLink title="Contract Source Code" icon="github" href="https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/utilities/RubiconRouter.sol" ></QuickLink>
 
 ## Overview
 
 **RubiconRouter.sol** routes ERC-20 token swaps on the order book contract and enables multi-hop swaps if two tokens do not have an existing order book on **RubiconMarket.sol**. 
 
-It also contains functions to buy or swap ETH with/for ERC-20 tokens, abstracting WETH wrapping and unwrapping, and has helpful view functions for
+It also contains functions to buy or swap ETH with/for ERC-20 tokens, abstracting WETH wrapping and unwrapping from the end user, and has helpful view functions for 
 
 ## Functions
 
 ### swap()
 
-```solidity
+```solidity copy
 function swap(
         uint256 pay_amt,
         uint256 buy_amt_min,
@@ -37,7 +40,7 @@ Swaps tokens across a specified `route` of token addresses with a minimum receiv
 
 ### buyAllAmountWithETH()
 
-```solidity
+```solidity copy
  function buyAllAmountWithETH(
         IERC20 buy_gem,
         uint256 buy_amt,
@@ -55,7 +58,7 @@ Attempts to buy `buy_amt` tokens of the `buy_gem` token for at most the `max_fil
 
 ### buyAllAmountForETH()
 
-```solidity
+```solidity copy
 function buyAllAmountForETH(
         uint256 buy_amt,
         IERC20 pay_gem,
@@ -75,7 +78,7 @@ Attempts to buy `buy_amt` ETH for at most the `max_fill_amount quantity` of `pay
 
 ### getBookFromPair()
 
-```solidity
+```solidity copy
     function getBookFromPair(
         IERC20 asset,
         IERC20 quote
@@ -94,7 +97,7 @@ Returns all outstanding orders on the book for a given pair of tokens. The asset
 
 ## Key Events
 
-```solidity
+```solidity copy
     event emitSwap(
         address indexed recipient,
         address indexed inputERC20,
