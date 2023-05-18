@@ -7,9 +7,13 @@ description: Overview and docs for the Rubicon Router contract
 
 ## Overview
 
-**RubiconRouter.sol** routes ERC-20 token swaps on the order book contract and enables multi-hop swaps if two tokens do not have an existing order book on **RubiconMarket.sol**. 
+**RubiconRouter.sol** is a high-level contract that provides additional convenience and functionality for interacting with Rubicon smart contracts.
 
-It also contains functions to buy or swap ETH with/for ERC-20 tokens, abstracting WETH wrapping and unwrapping from the end user, and has helpful view functions for 
+It primarily serves as a router for ERC-20/ERC-20 token swaps on **RubiconMarket.sol**, and enables multi-hop swaps if two tokens do not have an underlying order book. 
+
+The contract has wrapper functions for buying and swapping native ETH with/for ERC-20 tokens, and for depositing/withdrawing native ETH in Rubicon Pools.
+
+It also has helpful view functions for reading order book data from the low-level **RubiconMarket.sol** contract.
 
 ## Functions
 
@@ -26,12 +30,36 @@ function swap(
 
 | Parameter Name  | Type    | Description                             |
 | --------------- | ------- | --------------------------------------- |
-| pay_amt         | uint256 | Quantity of tokens the taker is selling |
+| pay_amt         | uint256 | Quantity of tokens the caller is selling |
 | buy_amt_min     | uint256 | Minimum quantity received of last token address in `route` |
-| route           | addresses | First token address is the pay_amt token, last address is the buy_amt token |
-| to              | address | Address is the pay_amt token, last address is the buy_amt token |
+| route           | addresses | First token address is the `pay_amt` token, last address is the `buy_amt` token |
+| to              | address | Address is the `pay_amt` token, last address is the `buy_amt` token |
 
-Swaps tokens across a specified `route` of token addresses with a minimum received quantity. It enables token swaps across multiple order books on RubiconMarket, in case the tokens do not have an existing order book.
+Swaps `pay_amt` quantity of tokens for at least `buy_amt_min` quantity of the last token in the specified `route`.
+
+### multiswap()
+
+```solidity copy
+    function multiswap(
+        address[][] memory routes,
+        uint256[] memory pay_amts,
+        uint256[] memory buy_amts_min,
+        address to
+    ) public {
+        for (uint256 i = 0; i < routes.length; ++i) {
+            swap(pay_amts[i], buy_amts_min[i], routes[i], to);
+        }
+    }
+```
+
+| Parameter Name  | Type    | Description                             |
+| --------------- | ------- | --------------------------------------- |
+| routes          | addresses | First token address is the `pay_amt` token, last address is the `buy_amt` token |
+| pay_amts        | uint256 | Quantities of tokens the caller is selling for `buy_gem` token |
+| buy_amts_min    | uint256 | Minimum quantity received of last token address in `route` |
+| to              | address | Address is the `pay_amt` token, last address is the `buy_amt` token |
+
+Swaps tokens across multiple `routes` of token addresses with a minimum received quantity. It enables token swaps across multiple order books on RubiconMarket, in case the tokens do not have an existing order book.
 
 ### buyAllAmountWithETH()
 
@@ -69,7 +97,81 @@ function buyAllAmountForETH(
 
 Attempts to buy `buy_amt` ETH for at most the `max_fill_amount quantity` of `pay_gem` tokens. Transaction will revert if the caller would spend more than the specified maximum amount.
 
+### swapWithETH()
+
+```solidity copy
+    function swapWithETH(
+        uint256 pay_amt,
+        uint256 buy_amt_min,
+        address[] calldata route,
+        address to
+    ) external payable returns (uint256)
+```
+
+| Parameter Name  | Type    | Description                             |
+| --------------- | ------- | --------------------------------------- |
+| pay_amt         | uint256 | Quantity of tokens the caller is selling |
+| buy_amt_min     | uint256 | Minimum quantity received of last token address in `route` |
+| route           | addresses | First token address should be WETH, last address is the `buy_amt` token |
+| to              | address | Address is the `pay_amt` token, last address is the `buy_amt` token |
+
+Swaps `pay_amt` quantity of ETH for at least `buy_amt_min` quantity of the last token in the specified `route`.
+
+### swapForETH()
+
+```solidity copy
+    function swapForETH(
+        uint256 pay_amt,
+        uint256 buy_amt_min,
+        address[] calldata route // First address is what is being payed, Last address is what is being bought
+    ) external beGoneReentrantScum returns (uint256 fill)
+```
+
+| Parameter Name  | Type    | Description                             |
+| --------------- | ------- | --------------------------------------- |
+| pay_amt         | uint256 | Quantity of tokens the caller is selling |
+| buy_amt_min     | uint256 | Minimum quantity received of last token address in `route` |
+| route           | addresses | First token address is the `pay_amt` token, last address should be WETH |
+
+Swaps the `pay_amt` quantity of the first token in the `oute` for at least `buy_amt_min` quantity of ETH.
+
 ## View Functions
+
+### getExpectedSwapFill()
+
+```solidity copy
+ function getExpectedSwapFill(
+        uint256 pay_amt,
+        uint256 buy_amt_min,
+        address[] calldata route
+    ) public view returns (uint256 currentAmount)
+```
+
+| Parameter Name  | Type    | Description                             |
+| --------------- | ------- | --------------------------------------- |
+| pay_amt         | uint256 | Quantity of tokens the caller is selling |
+| buy_amt_min     | uint256 | Minimum quantity received of last token address in `route` |
+| route           | addresses | First token address is the `pay_amt` token, last address is the `buy_amt` token |
+
+Uses the same parameters as `swap()` and returns the expected amount received.
+
+### getExpectedMultiswapFill()
+
+```solidity copy
+    function getExpectedMultiswapFill(
+        uint256[] memory pay_amts,
+        uint256[] memory buy_amt_mins,
+        address[][] memory routes
+    ) public view returns (uint256 outputAmount)
+``` 
+
+| Parameter Name  | Type    | Description                             |
+| --------------- | ------- | --------------------------------------- |
+| pay_amts        | uint256 | Quantities of tokens the caller is selling for `buy_gem` token |
+| buy_amt_mins    | uint256 | Minimum quantity received of last token address in `route` |
+| routes          | addresses | First token address is the `pay_amt` token, last address is the `buy_amt` token |
+
+Uses the same parameters as `multiswap()` and returns the expected amount received.
 
 ### getBookFromPair()
 
@@ -77,10 +179,7 @@ Attempts to buy `buy_amt` ETH for at most the `max_fill_amount quantity` of `pay
     function getBookFromPair(
         IERC20 asset,
         IERC20 quote
-    ) public view returns (uint256[3][] memory asks, uint256[3][] memory bids) {
-        asks = getOffersFromPair(asset, quote);
-        bids = getOffersFromPair(quote, asset);
-    }
+    ) public view returns (uint256[3][] memory asks, uint256[3][] memory bids)
 ```
 
 | Parameter Name  | Type    | Description                             |
@@ -88,7 +187,65 @@ Attempts to buy `buy_amt` ETH for at most the `max_fill_amount quantity` of `pay
 | asset           | address | ERC-20 token on the ask/sell side of the target order book |
 | quote           | address | ERC-20 token on the bid/buy side of the target order book  |
 
-Returns all outstanding orders on the book for a given pair of tokens. The asset/quote pair ordering will affect return values - asset should be the top of the pair: for example, (ETH, USDC, 10) will return (10 best ETH asks, 10 best USDC bids, 10)
+Returns all outstanding offers on the book for a given token pair. The asset/quote pair ordering will affect return values - asset should be the top of the pair: for example, (ETH, USDC, 10) will return (10 best ETH asks, 10 best USDC bids, 10)
+
+### getOffersFromPair()
+
+```solidity copy
+    function getOffersFromPair(
+        IERC20 tokenIn,
+        IERC20 tokenOut
+    ) public view returns (uint256[3][] memory offers)
+```
+
+| Parameter Name  | Type    | Description                             |
+| --------------- | ------- | --------------------------------------- |
+| tokenIn         | address | ERC-20 token on the ask/sell side of the target order book |
+| tokenOut        | address | ERC-20 token on the bid/buy side of the target order book  |
+
+Returns offers from one side of the specified order book.
+
+### getBookDepth()
+
+```solidity copy
+    function getBookDepth(
+        IERC20 tokenIn,
+        IERC20 tokenOut
+    ) public view returns (uint256 depth, uint256 bestOfferID)
+```
+
+Returns depth of one side of the order book and the ID of the best `offer()`.
+
+### getOfferIDsFromPair()
+
+```solidity copy
+    function getOfferIDsFromPair(
+        IERC20 tokenIn,
+        IERC20 tokenOut
+    ) public view returns (uint256[] memory IDs)
+```
+
+Returns all `offer()` IDs from the `tokenIn`/`tokenOut` pair.
+
+### getBestOfferAndInfo()
+
+```solidity copy
+    function getBestOfferAndInfo(
+        address asset,
+        address quote
+    )
+        public
+        view
+        returns (
+            uint256, //id
+            uint256,
+            IERC20,
+            uint256,
+            IERC20
+        )
+```
+
+Returns the ID and info for the best `offer()` on a given `asset`/`quote` token pair.
 
 ## Key Events
 
