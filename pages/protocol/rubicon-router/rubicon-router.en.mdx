@@ -5,13 +5,15 @@ description: Overview and docs for the Rubicon Router contract
 ---
 # Rubicon Router
 
+## [Contract Source Code](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/utilities/RubiconRouter.sol)
+
 ## Overview
 
-**RubiconRouter.sol** is a high-level contract that provides additional convenience and functionality for interacting with Rubicon smart contracts.
+**RubiconRouter.sol** is a high-level contract that adds convenient functionality for interacting with low-level Rubicon smart contracts.
 
 It primarily serves as a router for ERC-20/ERC-20 token swaps on **RubiconMarket.sol**, and enables multi-hop swaps if two tokens do not have an underlying order book. 
 
-The contract has wrapper functions for buying and swapping native ETH with/for ERC-20 tokens, and for depositing/withdrawing native ETH in Rubicon Pools.
+The contract has wrapper functions for handling native ETH throughout the protocol. This includes functions for buying and swapping ETH with/for ERC-20 tokens, and for depositing/withdrawing ETH in Rubicon Pools.
 
 It also has helpful view functions for reading order book data from the low-level **RubiconMarket.sol** contract.
 
@@ -133,7 +135,7 @@ Swaps `pay_amt` quantity of ETH for at least `buy_amt_min` quantity of the last 
 | buy_amt_min     | uint256 | Minimum quantity received of last token address in `route` |
 | route           | addresses | First token address is the `pay_amt` token, last address should be WETH |
 
-Swaps the `pay_amt` quantity of the first token in the `oute` for at least `buy_amt_min` quantity of ETH.
+Swaps the `pay_amt` quantity of the first token in the `route` for at least `buy_amt_min` quantity of ETH.
 
 ## View Functions
 
@@ -187,7 +189,7 @@ Uses the same parameters as `multiswap()` and returns the expected amount receiv
 | asset           | address | ERC-20 token on the ask/sell side of the target order book |
 | quote           | address | ERC-20 token on the bid/buy side of the target order book  |
 
-Returns all outstanding offers on the book for a given token pair. The asset/quote pair ordering will affect return values - asset should be the top of the pair: for example, (ETH, USDC, 10) will return (10 best ETH asks, 10 best USDC bids, 10)
+Returns all outstanding offers on the book for a given token pair. The `asset`/`quote` pair ordering will affect return values - asset should be the top of the pair: for example, (ETH, USDC, 10) will return (10 best ETH asks, 10 best USDC bids, 10)
 
 ### getOffersFromPair()
 
