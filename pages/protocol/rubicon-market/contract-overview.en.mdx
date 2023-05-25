@@ -14,9 +14,9 @@ description: Overview and docs for the Rubicon order book contract
 
 An order book is a list of buy and sell orders for an asset, sorted by price level. This contract stores every ERC20/ERC20 order book as two double-linked sorted lists, one for each side of the given market.
 
-The contract uses an escrow model for liquidity; when `offer()` is called, those tokens are sent to the contract. If/when an order is filled, the contract matches the traders directly and the tokens are sent to each party. An order can be canceled and the contract will return the tokens to the sender.
+The contract uses an escrow model for liquidity; when `offer()` is called, tokens are sent to the contract. If/when an order is filled, the contract matches the traders directly and the tokens are sent to each party. When `cancel()` is called, the contract removes the target `offer()` and returns the tokens to the owner.
 
-Rubicon Market is a derivative work of MakerDAO's open-source [OasisDEX](https://oasisdex.com/) and inherits the AGPL-3.0 license.
+This contract is a derivative work of MakerDAO's open-source [OasisDEX](https://oasisdex.com/) and inherits the AGPL-3.0 license.
 
 ## Functions
 
@@ -160,9 +160,11 @@ Attempts to trade `buy_amt` quantity of `buy_gem` tokens for at most the `max_fi
 | buy_gem         | address | ERC-20 token the taker is buying        |
 | min_fill_amount | uint256 | Minimum amount of buy tokens received   |
 
-Attempts to trade `sell_amt` quantity of `sell_gem` tokens for at least the `min_fill_amount` quantity of `pay_gem` tokens. Transaction will revert if the trader would receive less than the specified minimum amount. This is a "Fill-or-Kill" sell order.
+Attempts to trade `pay_amt` quantity of `pay_gem` tokens for at least the `min_fill_amount` quantity of `buy_gem` tokens. Transaction will revert if the trader would receive less than the specified minimum amount. This is a "Fill-or-Kill" sell order.
 
 ## View Functions
+
+Use these view functions to read the state of the order book contract. **RubiconRouter.sol** also has [many helpful view functions](/protocol/rubicon-router/rubicon-router#view-functions) for reading the state of **RubiconMarket.sol**.
 
 ### getBuyAmountWithFee()
 
@@ -200,30 +202,6 @@ Returns `buy_amt`, amount of `buy_gem` tokens to send to the contract to receive
 
 Returns `pay_amt`, the amount of `pay_gem` tokens to send to the contract to receive the `buy_amt` amount of the `buy_gem` token. Also returns `approvalAmount`, the amount of `buy_gem` tokens to approve for the interaction, accounting for fees.
 
-### getBestOffer()
-
-```solidity copy
-function getBestOffer(ERC20 pay_gem, ERC20 buy_gem)
-    public
-    view
-    returns (uint256)
-```
-
-Returns the ID of the offer at the top of the order book.
-
-Ex. Calling this function with WETH as `pay_gem` and USDC as `buy_gem` will return the best ask on WETH/USDC. Switching the tokens will return the best bid.
-
-### getWorseOffer()
-
-```solidity copy
-function getWorseOffer(uint256 id)
-    public
-    view
-    returns (uint256)
-```
-
-Returns the next worse offer in the sorted list. The worse offer is the higher one if the target order is an ask, and a lower one if it's a bid. In both cases, it will return a newer one if they are equal.
-
 ### getBuyAmount()
 
 ```solidity copy
@@ -248,6 +226,30 @@ function getPayAmount(
 
 Returns the amount of `pay_gem` tokens needed to buy a specified amount of `buy_gem` tokens.
 
+### getBestOffer()
+
+```solidity copy
+function getBestOffer(ERC20 pay_gem, ERC20 buy_gem)
+    public
+    view
+    returns (uint256)
+```
+
+Returns the ID of the offer at the top of the order book.
+
+Ex. Calling this function with WETH as `pay_gem` and USDC as `buy_gem` will return the best ask on WETH/USDC. Switching the tokens will return the best bid.
+
+### getWorseOffer()
+
+```solidity copy
+function getWorseOffer(uint256 id)
+    public
+    view
+    returns (uint256)
+```
+
+Returns the next worse offer in the sorted list. The worse offer is the higher one if the target order is an ask, and a lower one if it's a bid. In both cases, it will return a newer one if they are equal.
+
 ### getOfferCount()
 
 ```solidity copy
@@ -270,7 +272,18 @@ function getFeeBPS()
 
 Returns the current protocol fee.
 
-## Key Events
+### makerFee()
+
+```solidity copy
+function makerFee() 
+    public 
+    view 
+    returns (uint256)
+```
+
+Returns the current maker fee.
+
+## Events
 
 ```solidity copy
 event emitOffer(
@@ -321,7 +334,7 @@ event emitOffer(
     );
 ```
 
-```solidity
+```solidity copy
     event emitDelete(
         bytes32 indexed id,
         bytes32 indexed pair,

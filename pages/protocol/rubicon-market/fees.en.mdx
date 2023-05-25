@@ -4,24 +4,18 @@ pageTitle: Fees
 description: Fees on the Protocol
 ---
 
-# Fees
+# Rubicon Market
 
-## Network Fees
-
-Rubicon order books are on-chain, all transactions must pay network fees (gas) in ETH. Transactions on L2 networks like [Arbitrum](https://arbitrum.io/) and [Optimism](https://www.optimism.io/) are 50-100x cheaper than equivalent ones on Ethereum Mainnet.
-
-## Protocol Fees
-
-Rubicon has a maker-taker fee model, charging a fee to trades that "take" liquidity from the order book and paying a fee (rebate) to orders that "make" liquidity. The Taker Fee is paid by traders in the ERC-20 token that is sent to the contract, and the Maker Fee is paid to the owner address of the filled order(s).
+## Fees
 
 import { Callout } from "/components/Callout";
 
 <Callout type="fees" title="Taker Fee: 0.04%">
-	Paid by trades that "take" liquidity from the order book
+	Paid by trades that "take" liquidity from the order book in the token sent to the contract
 </Callout>
 
 <Callout type="fees" title="Maker Fee: 0.038%">
-	Paid by traders to the "maker", the owner address of the filled offer(s)
+	Paid by the taker to the "maker", the address that owns the filled offer
 </Callout>
 
 ### Querying the Fees
@@ -44,9 +38,11 @@ function makerFee()
     returns (uint256)
 ```
 
-Returns the current maker fee (rebate).
+Returns the current maker fee.
 
-Use `getBuyAmountWithFee()` or `getPayAmountWithFee()` to calculate the total amount for a given trade, including fees.
+### Calculating Fees for a Trade
+
+Use `getBuyAmountWithFee()` or `getPayAmountWithFee()` to calculate the total amount to send to the contract for a given trade, including fees.
 
 ```solidity copy
     function getBuyAmountWithFee(
@@ -79,3 +75,7 @@ Returns `buy_amt`, the amount of `buy_gem` tokens to send to the contract to rec
 ```
 
 Returns `pay_amt`, the amount of `pay_gem` tokens to send to the contract to receive the `buy_amt` amount of the `buy_gem` token. Also returns `approvalAmount`, the amount of `buy_gem` tokens to approve for the interaction, accounting for fees.
+
+## Network Fees
+
+Rubicon order books are on-chain, all transactions must pay network fees (gas) in ETH. Transactions on L2 networks like [Arbitrum](https://arbitrum.io/) and [Optimism](https://www.optimism.io/) are 50-100x cheaper than equivalent ones on Ethereum Mainnet.
