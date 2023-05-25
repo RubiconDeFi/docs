@@ -227,7 +227,7 @@ Uses the same parameters as `multiswap()` and returns the expected amount receiv
 | asset           | address | ERC-20 token on the ask/sell side of the target order book |
 | quote           | address | ERC-20 token on the bid/buy side of the target order book  |
 
-Returns all outstanding offers on the book for a given token pair. The `asset`/`quote` pair ordering will affect return values - asset should be the top of the pair: for example, (ETH, USDC, 10) will return (10 best ETH asks, 10 best USDC bids, 10)
+Returns all outstanding offers on the book for a given token pair. The `asset`/`quote` pair ordering will affect the sorted return values - asset should be the top of the pair: for example, (ETH, USDC) will return (ETH asks, USDC bids)
 
 ### getOffersFromPair()
 
