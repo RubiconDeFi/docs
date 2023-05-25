@@ -58,7 +58,7 @@ const Footer = () => (
 );
 
 //Link to the git project
-const project = "https://github.com/RubiconDeFi/docs";
+const project = "https://github.com/RubiconDeFi/docs/tree/master";
 
 const projectLinkAndSwitch = () => (
 	<>
