@@ -58,7 +58,7 @@ const Footer = () => (
 );
 
 //Link to the git project
-const project = "https://github.com/RubiconDeFi/docs";
+const project = "https://github.com/RubiconDeFi/docs/tree/master";
 
 const projectLinkAndSwitch = () => (
 	<>
@@ -79,18 +79,18 @@ const projectLinkAndSwitch = () => (
 
 //The set of displayed languages in the switch
 const i18n = [
-	{ locale: "ar", text: "العربية", direction: "rtl" },
+	// { locale: "ar", text: "العربية", direction: "rtl" },
 	{ locale: "en", text: "English" },
-	{ locale: "es", text: "Español" },
-	{ locale: "fa", text: "فارسی", direction: "rtl" },
-	{ locale: "fr", text: "Français" },
-	{ locale: "hi", text: "हिन्दी" },
-	{ locale: "id", text: "Indonesia" },
-	{ locale: "ja", text: "日本語" },
-	{ locale: "ko", text: "한국어" },
-	{ locale: "ru", text: "Русский" },
-	{ locale: "vi", text: "Tiếng việt" },
-	{ locale: "zh", text: "中文" },
+	// { locale: "es", text: "Español" },
+	// { locale: "fa", text: "فارسی", direction: "rtl" },
+	// { locale: "fr", text: "Français" },
+	// { locale: "hi", text: "हिन्दी" },
+	// { locale: "id", text: "Indonesia" },
+	// { locale: "ja", text: "日本語" },
+	// { locale: "ko", text: "한국어" },
+	// { locale: "ru", text: "Русский" },
+	// { locale: "vi", text: "Tiếng việt" },
+	// { locale: "zh", text: "中文" },
 ];
 
 //configuring the config
