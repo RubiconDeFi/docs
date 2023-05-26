@@ -43,22 +43,3 @@ Rubicon is an order book protocol for trading [ERC-20](https://ethereum.org/en/d
 [**RubiconMarket.sol**](/protocol/rubicon-market/contract-overview) is the core order book contract. It implements order books and a matching engine for peer-to-peer trading of ERC-20 tokens.
 
 [**RubiconRouter.sol**](/protocol/rubicon-router/rubicon-router) routes token swaps and enables multi-hop swaps if two tokens do not have an underlying order book. It also has helpful view functions for reading data from **RubiconMarket.sol** and contains wrapper functions for handling native ETH throughout the protocol.
-
-## Developer Quickstart: start the Rubicon Protocol Locally
-
-```bash copy
-$ git clone https://github.com/RubiconDeFi/rubi-protocol-v2.git
-$ cd rubicon_protocol && npm i
-$ npm i --save-dev openzeppelin-solidity@2.5.1
-$ truffle init
-$ 'n' for overwriting contracts
-$ 'n' for overwriting migrations
-$ (in separate terminal) ganache-cli
-```
-
-Also make sure that you comment out the lines in truffle-config.js that say `development:` and include localhost under networks so that you can connect to Ganache.&#x20;
-
-```bash copy
-$ truffle migrate -- deploys contracts to development network, i.e. localhost
-$ truffle test -- run the set of tests provided in the test folder of repo
-```
