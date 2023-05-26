@@ -1,0 +1,30 @@
+---
+name: Node ESLint mdx environment
+on:
+  - push
+  - pull_request
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version:
+          - 19.8.1
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: npm install
+        run: npm i
+      - name: eslint global install
+        run: npm install -g eslint
+      - name: eslint install
+        run: npm install eslint --save-dev
+      - name: eslint-config-prettier install
+        run: npm install --save-dev eslint-config-prettier
+      - name: check eslint
+        run: eslint 'pages/**/*.mdx'
