@@ -47,11 +47,7 @@ Swaps `pay_amt` quantity of tokens for at least `buy_amt_min` quantity of the la
         uint256[] memory pay_amts,
         uint256[] memory buy_amts_min,
         address to
-    ) public {
-        for (uint256 i = 0; i < routes.length; ++i) {
-            swap(pay_amts[i], buy_amts_min[i], routes[i], to);
-        }
-    }
+    ) public
 ```
 
 | Parameter Name  | Type    | Description                             |
@@ -89,7 +85,7 @@ Swaps `pay_amt` quantity of ETH for at least `buy_amt_min` quantity of the last 
     function swapForETH(
         uint256 pay_amt,
         uint256 buy_amt_min,
-        address[] calldata route // First address is what is being payed, Last address is what is being bought
+        address[] calldata route
     ) external beGoneReentrantScum returns (uint256 fill)
 ```
 
@@ -277,7 +273,7 @@ Returns all `offer()` IDs from the `tokenIn`/`tokenOut` pair.
         public
         view
         returns (
-            uint256, //id
+            uint256,
             uint256,
             IERC20,
             uint256,

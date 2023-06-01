@@ -66,22 +66,7 @@ Cancels an `offer()` on the order book and returns the tokens to the owner. The 
         address[] calldata payGems,
         uint[] calldata buyAmts,
         address[] calldata buyGems
-    ) external {
-        require(
-            payAmts.length == payGems.length &&
-                payAmts.length == buyAmts.length &&
-                payAmts.length == buyGems.length,
-            "Array lengths do not match"
-        );
-        for (uint i = 0; i < payAmts.length; i++) {
-            this.offer(
-                payAmts[i],
-                ERC20(payGems[i]),
-                buyAmts[i],
-                ERC20(buyGems[i])
-            );
-        }
-    }
+    ) external
 ```
 
 Use `batchOffer()` to place multiple offers in a single transaction. The function takes four arrays as parameters: `payAmts`, `payGems`, `buyAmts`, and `buyGems`. The arrays must be the same length and the order of the elements must match. The function will loop through each element in the arrays and place an offer with the corresponding parameters.
@@ -89,11 +74,7 @@ Use `batchOffer()` to place multiple offers in a single transaction. The functio
 ### batchCancel()
 
 ```solidity copy
-    function batchCancel(uint[] calldata ids) external {
-        for (uint i = 0; i < ids.length; i++) {
-            this.cancel(ids[i]);
-        }
-    }
+    function batchCancel(uint[] calldata ids) external
 ```
 
 Use `batchCancel()` to cancel multiple offers in a single transaction. The function takes an array of `offer()` ids as a parameter. The function will loop through each element in the array and cancel the corresponding offer.
@@ -107,17 +88,7 @@ Use `batchCancel()` to cancel multiple offers in a single transaction. The funct
         address[] calldata payGems,
         uint[] calldata buyAmts,
         address[] calldata buyGems
-    ) external {
-        for (uint i = 0; i < ids.length; i++) {
-            cancel(ids[i]);
-            this.offer(
-                payAmts[i],
-                ERC20(payGems[i]),
-                buyAmts[i],
-                ERC20(buyGems[i])
-            );
-        }
-    }
+    ) external
 ```
 
 Use `batchRequote()` to cancel and replace multiple offers in a single transaction. The function takes five arrays as parameters: `ids`, `payAmts`, `payGems`, `buyAmts`, and `buyGems`. The arrays must be the same length and the order of the elements must match. The function will loop through each element in the arrays and cancel the corresponding offer. Then, it will place new offers with the corresponding parameters.
@@ -173,13 +144,7 @@ Use these view functions to read the state of the order book contract. **Rubicon
         IERC20 buy_gem,
         IERC20 pay_gem,
         uint256 pay_amt
-    ) external view returns (uint256 buy_amt, uint256 approvalAmount) {
-        uint modifiedAmount = calculateFees(pay_amt, false);
-        buy_amt = (getBuyAmount(buy_gem, pay_gem, modifiedAmount));
-
-        approvalAmount = pay_amt;
-        return (buy_amt, approvalAmount);
-    }
+    ) external view returns (uint256 buy_amt, uint256 approvalAmount)
 ```
 
 Returns `buy_amt`, amount of `buy_gem` tokens to send to the contract to receive a the `pay_amt` amount of the `pay_gem` token. Also returns `approvalAmount`, the amount of `pay_gem` tokens to approve for the interaction, accounting for fees.
@@ -191,13 +156,7 @@ Returns `buy_amt`, amount of `buy_gem` tokens to send to the contract to receive
         IERC20 pay_gem,
         IERC20 buy_gem,
         uint256 buy_amt
-    ) public view returns (uint256 pay_amt, uint256 approvalAmount) {
-        pay_amt = (getPayAmount(pay_gem, buy_gem, buy_amt));
-        uint modifiedAmount = calculateFees(pay_amt, true);
-
-        approvalAmount = modifiedAmount;
-        return (pay_amt, approvalAmount);
-    }
+    ) public view returns (uint256 pay_amt, uint256 approvalAmount)
 ```
 
 Returns `pay_amt`, the amount of `pay_gem` tokens to send to the contract to receive the `buy_amt` amount of the `buy_gem` token. Also returns `approvalAmount`, the amount of `buy_gem` tokens to approve for the interaction, accounting for fees.

@@ -26,33 +26,14 @@ Traders can use Batch Orders through low-level functions on [**RubiconMarket.sol
         address[] calldata payGems,
         uint[] calldata buyAmts,
         address[] calldata buyGems
-    ) external {
-        require(
-            payAmts.length == payGems.length &&
-                payAmts.length == buyAmts.length &&
-                payAmts.length == buyGems.length,
-            "Array lengths do not match"
-        );
-        for (uint i = 0; i < payAmts.length; i++) {
-            this.offer(
-                payAmts[i],
-                ERC20(payGems[i]),
-                buyAmts[i],
-                ERC20(buyGems[i])
-            );
-        }
-    }
+    ) external
 ```
 
 `batchCancel()` extends the functionality of `cancel()`, taking an array of `offer()` ids as a parameter. The function will loop through each element in the array and cancel the corresponding offer:
 
 
 ```solidity copy
-    function batchCancel(uint[] calldata ids) external {
-        for (uint i = 0; i < ids.length; i++) {
-            this.cancel(ids[i]);
-        }
-    }
+    function batchCancel(uint[] calldata ids) external
 ```
 
 
@@ -66,15 +47,5 @@ Traders can use Batch Orders through low-level functions on [**RubiconMarket.sol
         address[] calldata payGems,
         uint[] calldata buyAmts,
         address[] calldata buyGems
-    ) external {
-        for (uint i = 0; i < ids.length; i++) {
-            cancel(ids[i]);
-            this.offer(
-                payAmts[i],
-                ERC20(payGems[i]),
-                buyAmts[i],
-                ERC20(buyGems[i])
-            );
-        }
-    }
+    ) external
 ```
