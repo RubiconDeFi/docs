@@ -10,9 +10,12 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
+		"@typescript-eslint/eslint-plugin": "^5.59.8",
 		"@vitalets/google-translate-api": "^9.1.0",
 		"autoprefixer": "^10.4.14",
 		"clsx": "^1.2.1",
+		"eslint-config-prettier": "^8.8.0",
+		"eslint-plugin-prettier": "^4.2.1",
 		"flexsearch": "^0.7.31",
 		"fs": "^0.0.1-security",
 		"next": "^13.2.4",
@@ -25,6 +28,11 @@
 		"tailwindcss": "^3.3.1"
 	},
 	"devDependencies": {
-		"@tailwindcss/typography": "^0.5.9"
- 	}
+		"@next/eslint-plugin-next": "^13.4.4",
+		"@tailwindcss/typography": "^0.5.9",
+		"eslint-plugin-import": "^2.27.5",
+		"eslint-plugin-mdx": "^2.1.0",
+		"eslint-plugin-react": "^7.32.2",
+		"eslint-plugin-react-hooks": "^4.6.0"
+	}
 }
