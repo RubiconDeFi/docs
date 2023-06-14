@@ -1,0 +1,48 @@
+name: html-proofer
+on:
+  - push
+  - pull_request
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [19.8.1]
+
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: npm install
+        run:
+          npm i
+      - name: npm run build
+        run:
+          npm run build
+          
+      - uses: anishathalye/proof-html@v2
+        with:
+          directory: "./.next"
+          enforce_https: false
+          max_concurrency: 50
+          # HTTP connection timeout
+          connect_timeout: 30
+          # HTTP request timeout
+          timeout: 120
+          tokens: |
+            {"https://github.com": "${{ secrets.SUNGITTOKEN }}"}
+          ignore_url: |
+            https://github.com
+            https://en.wikipedia.org/wiki/Main_Page
+          ignore_url_re: |
+            ^https://twitter.com/
+          swap_urls: |
+            {"^https://www.anishathalye.com/": "/"}
