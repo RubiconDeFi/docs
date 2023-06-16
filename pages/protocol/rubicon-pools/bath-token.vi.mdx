@@ -1,0 +1,24 @@
+---
+title: Rubicon | Bath Token
+pageTitle: Bath Token
+description: An ERC-20 token that represents user liquidity in Rubicon Pools
+---
+
+## BathToken
+
+Cái |****3 ****| đại diện cho một nhóm tài sản thanh khoản duy nhất trong Rubicon Pools. Các nhóm này được đặt tên bằng cách thêm tiền tố "bath" vào tên của mã thông báo cơ sở (ví dụ: bathUSDC).
+
+Khi nhà cung cấp thanh khoản (LP) gửi mã thông báo vào nhóm Rubicon, họ sẽ nhận được một lượng bathTokens tương ứng. Ví dụ: LP gửi USDC sẽ nhận được bathUSDC.
+
+BathTokens về cơ bản là một phần của nhóm cơ sở.
+
+LP kiếm được lợi suất tạo thị trường trong khi các chiến lược gia sử dụng tài sản nhóm để cung cấp tính thanh khoản trên sổ đặt hàng Rubicon.
+
+![](</assets/Rubicon v1\_ BathTokens.png>)
+
+### Chức năng chính
+
+* `deposit` - chức năng này cho phép người dùng gửi tài sản ERC-20 và nhận bathTokens theo tỷ lệ `totalSupply` / `underlyingBalance()` với khoản tiền gửi của họ. Điều này có nghĩa là người dùng sẽ nhận được các lượt chia sẻ trong nhóm tỷ lệ thuận với hiệu suất của các lượt chia sẻ trong nhóm đã có; điều này đảm bảo rằng không có cách nào để đánh lừa hệ thống và lợi nhuận được chia sẻ chính xác cho tất cả những người tham gia. `bathToken` đại diện cho một phần thanh khoản cơ bản và có yêu cầu về lợi nhuận trong tương lai.
+  * Tham số đầu vào: uint `amount` - số lượng tài sản ERC-20 để gửi.
+* `rút tiền` - chức năng này rút thanh khoản được cung cấp và bất kỳ lợi tức tích lũy nào mà người dùng có (thông qua việc đốt BathTokens) kiếm được về ví của họ.
+  * Tham số đầu vào: uint `shares` - số lượng `bathTokens` (cổ phiếu trong nhóm cơ bản) để rút để đổi lấy tài sản ERC-20 cơ bản.

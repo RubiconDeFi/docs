@@ -15,7 +15,6 @@ export function LightbulbIcon({ id, color }) {
         />
       </defs>
       <LightMode>
-        <circle cx={20} cy={20} r={12} fill={`url(#${id}-gradient)`} />
         <path
           fillRule="evenodd"
           clipRule="evenodd"
