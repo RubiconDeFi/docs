@@ -1,8 +1,8 @@
 {
-	"rubicon-market": "سوق روبيكون",
-	"rubicon-pools": "برك روبيكون",
-	"mainnet_deployments": "توزيعات الشبكة الرئيسية",
-	"testnet_deployments": "توزيعات شبكة الاختبار",
-	"deployments": "توزيعات الإصدار 1",
-	"audits": "التدقيق"
+	"rubicon-market": "Rubicon Market",
+	"rubicon-router": "Rubicon Router",
+	"rubicon-pools": "Rubicon Pools",
+	"deployments": "Deployments",
+	"audits": "Audits",
+	"risks": "Risks"
 }

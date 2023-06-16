@@ -1,0 +1,274 @@
+---
+title: Contract Overview
+pageTitle: Contract Overview
+description: Overview and docs for the Rubicon order book contract
+---
+
+# Mercado Rubicón
+
+[Contract Source Code](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/RubiconMarket.sol)
+
+## Descripción general
+
+RubiconMarket.sol implementa libros de pedidos y un motor de coincidencia para el comercio entre pares de [ERC-20 tokens](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/).
+
+Un libro de órdenes es una lista de órdenes de compra y venta de un activo, ordenadas por nivel de precio. Este contrato almacena cada libro de pedidos ERC20/ERC20 como dos listas ordenadas de doble enlace, una para cada lado del mercado dado.
+
+El contrato utiliza un modelo de depósito en garantía para la liquidez; cuando se llama a `offer()`, esos tokens se envían al contrato. Si/cuando se completa una orden, el contrato coincide directamente con los comerciantes y los tokens se envían a cada parte. Se puede cancelar un pedido y el contrato devolverá los tokens al remitente.
+
+Rubicon Market es un trabajo derivado del código abierto de MakerDAO [OasisDEX](https://oasisdex.com/) y hereda la licencia AGPL-3.0.
+
+## Funciones
+
+### oferta()
+
+```
+    function offer(
+        uint256 pay_amt,
+        ERC20 pay_gem,
+        uint256 buy_amt,
+        ERC20 buy_gem,
+    ) public returns (uint256)
+```
+
+| Parámetro | Tipo | Descripción |
+| ---------------------- | ----------- | ------------------------------------------------------| **** 15 ****|------------------|**** 19 * ***|------------------------|* *** 24 ****|--------------- |
+| pay\_amt               | uint256     | Quantity of ERC-20 tokens the caller is selling                                                                                   |
+| pay\_gem               | address     | ERC-20 token the caller is selling                                                                                                |
+| buy\_amt               | uint256     | Quantity of ERC-20 tokens the caller is buying                                                                                    |
+| buy\_gem               | address     | ERC-20 token the caller is buying                                                                                                 |
+| \[Optional] pos        | uint256     | Optional: Position in the sorted list to place the offer. Use `0` unless you know the exact pos (closest ID) to insert the order  |
+| \[Optional] matching   | bool        | Optional: Boolean to determine whether the offer should be automatically matched (placed in the sorted list)                      |
+| \[Optional] recipient  | address     | Optional: Custom recipient address for the filled offer                                                                           |
+
+
+Calling the `offer()` function places a limit order on Rubicon. The `pay_amt` quantity of the `pay_gem` token will be sent to the contract, sitting in escrow until the offer is filled or canceled. There are more advanced `offer()` functions that have parameters for specifying the position in the order book, whether the offer should be automatically matched, and a custom recipient address for the filled offer.
+
+### cancel()
+
+```
+    function cancel(uint id)
+        public
+        can_cancel(id)
+        returns (bool success)
+```
+
+| Parameter Name | Type    | Description                                  |
+| ---|**** 28 ** **|----- | ------- | ---------------|** ** 33 ****|------------------|**** 37 *** *|----------- | ------- | ---------|*** * 42 ****|-------------------- |
+| identificación | uint256 | La identificación de la orden de destino |
+| cantidad | uint256 | Cantidad de la orden de destino para comprar |
+
+Esta función se utiliza para completar o "seleccionar" una identificación de pedido específica en el libro. La persona que llama pagará la tarifa del tomador. Alternativamente, puede usar la función de enrutamiento `take()` para lograr el mismo resultado y completar una oferta específica.
+
+### comprarTodoImporte()
+
+```
+     function buyAllAmount(
+        ERC20 buy_gem,
+        uint256 buy_amt,
+        ERC20 pay_gem,
+        uint256 max_fill_amount
+    ) external returns (uint256 fill_amt)
+```
+
+| Nombre del parámetro | Tipo | Descripción |
+| --------------- | ------- | ---------------------------------| **** 55 ****|------------ | ------- | --------------------------------------- |
+| pay_gem | dirección | token ERC-20 que el tomador está vendiendo |
+| pay_amt | uint256 | Cantidad de tokens que vende el tomador |
+| comprar_gema | dirección | token ERC-20 que el tomador está comprando |
+| min_fill_amount | uint256 | Cantidad mínima de tokens de compra recibidos |
+
+Intentos de intercambiar la cantidad `sell_amt` de tokens `sell_gem` por al menos la cantidad `min_fill_amount` de tokens `pay_gem`. La transacción se revertirá si el comerciante recibe menos de la cantidad mínima especificada. Esta es una orden de venta "Fill-or-Kill".
+
+## Funciones por lotes [WIP]
+
+Estas funciones se utilizan para agrupar múltiples ofertas o cancelaciones en una sola transacción. Esto es útil para reducir los costos de gasolina al realizar múltiples pedidos.
+
+```
+    function batchOffer(
+        uint[] calldata payAmts,
+        address[] calldata payGems,
+        uint[] calldata buyAmts,
+        address[] calldata buyGems
+    ) external {
+        require(
+            payAmts.length == payGems.length &&
+                payAmts.length == buyAmts.length &&
+                payAmts.length == buyGems.length,
+            "Array lengths do not match"
+        );
+        for (uint i = 0; i < payAmts.length; i++) {
+            this.offer(
+                payAmts[i],
+                ERC20(payGems[i]),
+                buyAmts[i],
+                ERC20(buyGems[i])
+            );
+        }
+    }
+```
+
+Use `batchOffer()` para colocar múltiples ofertas en una sola transacción. La función toma cuatro matrices como parámetros: `payAmts`, `payGems`, `buyAmts` y `buyGems`. Las matrices deben tener la misma longitud y el orden de los elementos debe coincidir. La función recorrerá cada elemento de las matrices y colocará una oferta con los parámetros correspondientes.
+
+```
+    function batchCancel(uint[] calldata ids) external {
+        for (uint i = 0; i < ids.length; i++) {
+            this.cancel(ids[i]);
+        }
+    }
+```
+
+Use `batchCancel()` para cancelar múltiples ofertas en una sola transacción. La función toma una matriz de ID de oferta como parámetro. La función recorrerá cada elemento de la matriz y cancelará la oferta correspondiente.
+
+```
+    function batchRequote(
+        uint[] calldata ids,
+        uint[] calldata payAmts,
+        address[] calldata payGems,
+        uint[] calldata buyAmts,
+        address[] calldata buyGems
+    ) external {
+        for (uint i = 0; i < ids.length; i++) {
+            cancel(ids[i]);
+            this.offer(
+                payAmts[i],
+                ERC20(payGems[i]),
+                buyAmts[i],
+                ERC20(buyGems[i])
+            );
+        }
+    }
+```
+
+Use `batchRequote()` para cancelar y reemplazar múltiples ofertas en una sola transacción. La función toma cinco matrices como parámetros: `ids`, `payAmts`, `payGems`, `buyAmts` y `buyGems`. Las matrices deben tener la misma longitud y el orden de los elementos debe coincidir. La función recorrerá cada elemento de las matrices y cancelará la oferta correspondiente. Luego, colocará una nueva oferta con los parámetros correspondientes.
+
+## Ver funciones [WIP]
+
+### obtenerMejorOferta()
+
+```
+function getBestOffer(ERC20 pay_gem, ERC20 buy_gem)
+    public
+    view
+    returns (uint256)
+```
+
+Devuelve el ID de la oferta en la parte superior del libro de pedidos.
+
+Ex. Llamar a esta función con WETH como `pay_gem` y USDC como `buy_gem` devolverá la mejor pregunta sobre WETH/USDC. Cambiar los tokens devolverá la mejor oferta.
+
+### obtenerPeorOferta()
+
+```
+function getWorseOffer(uint256 id)
+    public
+    view
+    returns (uint256)
+```
+
+Devuelve la siguiente peor oferta en la lista ordenada. La peor oferta es la más alta si la orden objetivo es una pregunta y la más baja si es una oferta. En ambos casos, devolverá uno más nuevo si son iguales.
+
+### obtenerCantidadCompra()
+
+```
+    function getBuyAmount(
+        ERC20 buy_gem,
+        ERC20 pay_gem,
+        uint256 pay_amt
+    ) external view returns (uint256 fill_amt)
+```
+
+Devuelve la cantidad de tokens `buy_gem` recibidos si se gasta una cantidad específica de tokens `pay_gem`. Se utiliza para comprobar el estado actual de la cartera de pedidos.
+
+### obtenerCantidadPago()
+
+```
+function getPayAmount(
+        ERC20 pay_gem,
+        ERC20 buy_gem,
+        uint256 buy_amt
+    ) external view returns (uint256 fill_amt)
+```
+
+Devuelve la cantidad de tokens `pay_gem` necesarios para comprar una cantidad específica de tokens `buy_gem`. Se utiliza para comprobar el estado actual del libro de pedidos.
+
+### obtenerCuentaOfertas()
+
+```
+function getOfferCount(ERC20 sell_gem, ERC20 buy_gem)
+        public
+        view
+        returns (uint256)
+```
+
+Devuelve el número de ofertas en el libro de órdenes para un par específico.
+
+### getFeeBPS()
+
+```
+function getFeeBPS()
+    public
+    view
+    returns (uint256)
+```
+
+Devuelve la tasa de protocolo, en puntos básicos.
+
+## Eventos clave
+
+```
+event emitOffer(
+        bytes32 indexed id,
+        bytes32 indexed pair,
+        address indexed maker,
+        ERC20 pay_gem,
+        ERC20 buy_gem,
+        uint128 pay_amt,
+        uint128 buy_amt
+
+    );
+```
+
+```
+    event emitCancel(
+        bytes32 indexed id,
+        bytes32 indexed pair,
+        address indexed maker,
+        ERC20 pay_gem,
+        ERC20 buy_gem,
+        uint128 pay_amt,
+        uint128 buy_amt
+    );
+```
+
+```
+    event emitTake(
+        bytes32 indexed id,
+        bytes32 indexed pair,
+        address indexed taker,
+        address maker,
+        ERC20 pay_gem,
+        ERC20 buy_gem,
+        uint128 take_amt,
+        uint128 give_amt
+    );
+```
+
+```
+    event emitFee(
+        bytes32 indexed id,
+        address indexed taker,
+        address indexed feeTo,
+        bytes32 pair,
+        ERC20 asset,
+        uint256 feeAmt
+    );
+```
+
+```
+    event emitDelete(
+        bytes32 indexed id,
+        bytes32 indexed pair,
+        address indexed maker
+    );
+```

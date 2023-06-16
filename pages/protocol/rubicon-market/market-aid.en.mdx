@@ -1,34 +1,26 @@
 ---
-title: Rubicon | Market Aid
+title: Market Aid
 pageTitle: Market Aid
-description: on-chain high-frequency market making contracts and functionality for Rubicon
+description: Helper contract for advanced trading on Rubicon
 ---
 
-## Market Aid
+# Market Aid
 
-`MarketAid.sol` is a helper contract that allows the owner to send batches of limit orders and cancel orders on `RubiconMarket.sol`. It makes it easy for active traders and market-makers to place and cancel many outstanding orders in a single transaction! You can think of MarketAid as a middle-layer contract that allows traders to make larger, more efficient, and more complex transactions on the Rubicon order books.
+## [Contract Source Code](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/utilities/MarketAid.sol)
 
-After creating an instance of MarketAid, a trader can use powerful batch functions that extend the low-level 'RubiconMarket.sol' functions `offer` and `cancel` as well as combinations of the two. Send a large batch of limit orders with `batchMarketMakingTrades()` , cancel a batch of open orders and replace them with `batchRequoteOffers()` , or cancel lots of open orders with `scrubStrategistTrades()`. Keep reading for a quick start tutorial and overview of the MarketAid functions. If you have any questions or trouble with MarketAid, join our [Discord server](https://discord.com/invite/E7pS24J), our team is happy to help you get started with automated trading on Rubicon!
+## Overview
 
-### Risk Disclaimer
+**MarketAid.sol** is a helper contract for advanced trading and market making on **RubiconMarket.sol**. Think of it as a middle-layer contract that allows traders to make larger, more efficient, and more complex transactions on the Rubicon order books.
 
-MarketAid is in beta and for sophisticated traders and developers only. Our team uses this code, but it is unaudited so use at your own risk.
+Users need to create a **MarketAid.sol** by using the  instance of MarketAid, If you have any questions or trouble with MarketAid, join our [Discord server](https://discord.com/invite/E7pS24J), our team is happy to help you get started with automated trading on Rubicon!
 
-### Deployments
+## Disclaimer
 
-Optimism Mainnet:
+**MarketAid.sol** is in beta and for sophisticated developers and users only. Use it at your own risk.
 
-- [Factory](https://optimistic.etherscan.io/address/0x267D94C6e67e4436EFfE092b08d040cFF36B2DA7)
-- [MarketAid Instance Example](https://optimistic.etherscan.io/address/0x40e20121f46237Ae5d6822fd75847CedD17c449F)
+## Quick Start
 
-Optimism Goerli:
-
-- [Factory](https://goerli-optimism.etherscan.io/address/0x6838dd21aa01Bde8E600d499A95f9AE02f2bB376)
-- [MarketAid Instance](https://goerli-optimism.etherscan.io/address/0xd3757c79df77cfac54501b5dadf7ec47a38e1a65)
-
-### Quick Start
-
-Get started with `MarketAid.sol` by creating a personal instance, funding the contract with ERC-20 tokens, and sending your first batch of orders to `RubiconMarket.sol`! You can use `ethers.js` to integrate this into an existing bot, and we are working on tutorials to make it even easier! Let's get started:
+To get started, create your own **MarketAid.sol** instance, fund the contract with ERC-20 tokens, and send your first batch of orders to `RubiconMarket.sol`! You can use `ethers.js` to integrate this into an existing bot, and we are working on tutorials to make it even easier! Let's get started:
 
 1. Create a new instance of the `MarketAid` contract
    1. Deploy a `MarketAid` instance by calling `createMarketAidInstance()` on the `MarketAidFactory` contract. This will spawn a new instance of `MarketAid` that is permissioned to the caller of `createMarketAidInstance()` and automatically approve them as a strategist with access to the contract.
