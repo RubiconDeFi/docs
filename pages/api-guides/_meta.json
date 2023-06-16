@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-	"subgraphs": "Subgraphs", 
-=======
 	"subgraphs": "Subgraphs",
->>>>>>> master
 	"rubi-py": "Python SDK",
 	"rubi-rs": "Rust SDK"
 }

@@ -71,126 +71,68 @@ const translateMarkdownFile = async (inputFilePath, outputFilePath, languageCode
 };
 
 function processFiles(dirPath, processedFiles, targetLanguageCode) {
-	fs.readdir(dirPath, (err, files) => {
-<<<<<<< HEAD
-	  if (err) throw err;
-  
-	  files.forEach((file) => {
-		const filePath = path.join(dirPath, file);
-		fs.stat(filePath, (err, stat) => {
-		  if (err) throw err;
-  
-		  if (stat.isDirectory()) {
-			processFiles(filePath, processedFiles);
-		  } else if (extensions.includes(path.extname(filePath))) {
-			const { name, ext } = path.parse(filePath);
-			const nameComponents = name.split(".");
-  
-			const hasLanguageCode = nameComponents.some((component) => languageCodes.includes(component));
-  
-			if (!hasLanguageCode) {
-			  const isTargetExtension = extensions.includes(ext);
-			  const isTargetLanguage = targetLanguageCode ? languageCodes.includes(targetLanguageCode) : true;
-			  // const isProcessed = processedFiles.has(filePath);
-  
-			  if (isTargetExtension && isTargetLanguage) { //  && !isProcessed
-				const newFileName = `${name}.${targetLanguageCode}${ext}`;
-				const newFilePath = path.join(dirPath, newFileName);
-				// Remove the condition to check if the file already exists
-				if (path.extname(filePath) === ".md" || path.extname(filePath) === ".mdx") {
-				  if (!onlyCopy) {
-					tileSleep += 60000;
-				  }
-				  setTimeout(() => {
-					console.log(`Translating file: ${filePath} => ${newFilePath} with language code: ${targetLanguageCode}`)
-					translateMarkdownFile(filePath, newFilePath, targetLanguageCode)
-					  .then(() => {
-						if (!onlyCopy) {
-						  console.log(`The file has been successfully translated and saved to ${newFilePath}`);
-						} else {
-						  console.log(`The file was copied successfully to ${newFilePath}`);
-=======
-		if (err) throw err;
+    fs.readdir(dirPath, (err, files) => {
+        if (err) throw err;
 
-		files.forEach((file) => {
-			const filePath = path.join(dirPath, file);
-			fs.stat(filePath, (err, stat) => {
-				if (err) throw err;
+        files.forEach((file) => {
+            const filePath = path.join(dirPath, file);
+            fs.stat(filePath, (err, stat) => {
+                if (err) throw err;
 
-				if (stat.isDirectory()) {
-					processFiles(filePath, processedFiles);
-				} else if (extensions.includes(path.extname(filePath))) {
-					const { name, ext } = path.parse(filePath);
-					const nameComponents = name.split(".");
+                if (stat.isDirectory()) {
+                    processFiles(filePath, processedFiles, targetLanguageCode);
+                } else if (extensions.includes(path.extname(filePath))) {
+                    const { name, ext } = path.parse(filePath);
+                    const nameComponents = name.split(".");
+                    const hasLanguageCode = nameComponents.some((component) => languageCodes.includes(component));
 
-					const hasLanguageCode = nameComponents.some((component) => languageCodes.includes(component));
+                    if (!hasLanguageCode) {
+                        const isTargetExtension = extensions.includes(ext);
+                        const isTargetLanguage = targetLanguageCode ? languageCodes.includes(targetLanguageCode) : true;
+                        const isProcessed = processedFiles.has(filePath);
 
-					if (!hasLanguageCode) {
-						const isTargetExtension = extensions.includes(ext);
-						const isTargetLanguage = targetLanguageCode ? languageCodes.includes(targetLanguageCode) : true;
-						const isProcessed = processedFiles.has(filePath);
-
-						if (isTargetExtension && isTargetLanguage && !isProcessed) {
-							const newFileName = `${name}.${targetLanguageCode}${ext}`;
-							const newFilePath = path.join(dirPath, newFileName);
-							if (path.extname(filePath) === ".md" || path.extname(filePath) === ".mdx") {
-								if (!onlyCopy) {
-									tileSleep += 60000;
-								}
-								setTimeout(() => {
-									translateMarkdownFile(filePath, newFilePath, targetLanguageCode)
-										.then(() => {
-											if (!onlyCopy) {
-												console.log(`The file has been successfully translated and saved to ${newFilePath}`);
-											} else {
-												console.log(`The file was copied successfully to ${newFilePath}`);
-											}
-										})
-										.catch((err) => {
-											if (!onlyCopy) {
-												console.error(`An error occurred while translating the File: ${filePath} | Error: ${err.message}`);
-											} else {
-												console.error(`Error when copying the File: ${filePath} | Error: ${err.message}`);
-											}
-										});
-								}, tileSleep);
-							} else {
-								fs.copyFile(filePath, newFilePath, (err) => {
-									if (err) throw err;
-									console.log(`Copy file: ${filePath} => ${newFilePath}`);
-								});
-							}
-							processedFiles.add(filePath);
-						
-							// processedFiles.add(filePath);
->>>>>>> master
-						}
-					  })
-					  .catch((err) => {
-						if (!onlyCopy) {
-						  console.error(`An error occurred while translating the File: ${filePath} | Error: ${err.message}`);
-						} else {
-						  console.error(`Error when copying the File: ${filePath} | Error: ${err.message}`);
-						}
-					  });
-				  }, tileSleep);
-				} else {
-				  fs.copyFile(filePath, newFilePath, (err) => {
-					if (err) throw err;
-					console.log(`Copy file: ${filePath} => ${newFilePath}`);
-				  });
-				}
-  
-				processedFiles.add(filePath);
-			  }
-			} else {
-			  console.log(`Exists file Language Code: ${filePath}`);
-			}
-		  }
-		});
-	  });
-	});
+                        if (isTargetExtension && isTargetLanguage && !isProcessed) {
+                            const newFileName = `${name}.${targetLanguageCode}${ext}`;
+                            const newFilePath = path.join(dirPath, newFileName);
+                            if (path.extname(filePath) === ".md" || path.extname(filePath) === ".mdx") {
+                                if (!onlyCopy) {
+                                    tileSleep += 60000;
+                                }
+                                setTimeout(() => {
+                                    translateMarkdownFile(filePath, newFilePath, targetLanguageCode)
+                                        .then(() => {
+                                            if (!onlyCopy) {
+                                                console.log(`The file has been successfully translated and saved to ${newFilePath}`);
+                                            } else {
+                                                console.log(`The file was copied successfully to ${newFilePath}`);
+                                            }
+                                            processedFiles.add(filePath);
+                                        })
+                                        .catch((err) => {
+                                            if (!onlyCopy) {
+                                                console.error(`An error occurred while translating the File: ${filePath} | Error: ${err.message}`);
+                                            } else {
+                                                console.error(`Error when copying the File: ${filePath} | Error: ${err.message}`);
+                                            }
+                                        });
+                                }, tileSleep);
+                            } else {
+                                fs.copyFile(filePath, newFilePath, (err) => {
+                                    if (err) throw err;
+                                    console.log(`Copy file: ${filePath} => ${newFilePath}`);
+                                    processedFiles.add(filePath);
+                                });
+                            }
+                        }
+                    } else {
+                        console.log(`Exists file Language Code: ${filePath}`);
+                    }
+                }
+            });
+        });
+    });
 }
+
 
 function batchProcess(dirPath) {
 	let index = 0;
