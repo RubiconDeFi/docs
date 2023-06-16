@@ -111,10 +111,6 @@ const navigation = [
           }
         ],
       },
-     {
-        title: 'Rust SDK',
-        href: '/docs/api/rust-sdk',
-      },
       {
         title: 'Python SDK',
         href: '/docs/api/python-sdk',
