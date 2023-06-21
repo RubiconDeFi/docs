@@ -1,7 +1,7 @@
 ---
 title: Fees
 pageTitle: Fees
-description: Fees on the Protocol
+description: Fees on Rubicon
 ---
 
 # Rubicon Market
@@ -10,17 +10,23 @@ description: Fees on the Protocol
 
 import { Callout } from "/components/Callout";
 
-<Callout type="fees" title="Taker Fee: 0.04%">
-	Paid by trades that "take" liquidity from the order book in the token sent to the contract
+<Callout type="fees" title="Protocol Fee: 0.002%">
+	Paid by trades to the protocol. Paid in the token sent to the contract.
 </Callout>
 
 <Callout type="fees" title="Maker Fee: 0.038%">
 	Paid by the taker to the "maker", the address that owns the filled offer
 </Callout>
 
+The **Taker Fee** is equal to the sum of the **Protocol Fee** and the **Maker Fee**.
+
+<Callout type="fees" title="Taker Fee: 0.04%">
+	Total fee paid by trades that "take" liquidity from the order book. Paid in the token sent to the contract.
+</Callout>
+
 ### Querying the Fees
 
-At a technical level, the **Taker Fee** is equal to the sum of the **Protocol Fee** and the **Maker Fee**.
+Use these view functions to query the fee values.
 
 ```solidity copy
 function getFeeBPS()
@@ -39,6 +45,8 @@ function makerFee()
 ```
 
 Returns the current maker fee.
+
+The **Taker Fee** is equal to the sum of the **Protocol Fee** and the **Maker Fee**.
 
 ### Calculating Fees for a Trade
 
