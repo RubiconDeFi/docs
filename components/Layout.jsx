@@ -99,6 +99,15 @@ const navigation = [
     ],
   },
   {
+    title: 'Market Making',
+    links: [
+      {
+        title: 'Market Making Overview',
+        href: '/docs/market-making/market-making-overview',
+      }
+    ],
+  },
+  {
     title: 'API',
     links: [
       {
