@@ -106,22 +106,14 @@ const navigation = [
         href: '/docs/api/subgraphs/subgraphs',
         sublinks: [
           {
-            title: 'RubiconMarket API',
-            href: '/docs/api/subgraphs/rubiconmarket-api',
-          },
-          {
-            title: 'BathToken API',
-            href: '/docs/api/subgraphs/bathtoken-api',
-          },
+            title: 'Rubicon V2',
+            href: '/docs/api/subgraphs/rubicon-v2-subgraph',
+          }
         ],
-      },
-     {
-        title: 'Rust SDK',
-        href: '/docs/api/rubi-rs',
       },
       {
         title: 'Python SDK',
-        href: '/docs/api/rubi-py',
+        href: '/docs/api/python-sdk',
       }
     ],
   },

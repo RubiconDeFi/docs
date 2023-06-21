@@ -1,0 +1,28 @@
+---
+title: Rubicon v2 Subgraph Overview
+pageTitle: Rubicon v2 Subgraph Overview
+description: An overview of the RubiconV2 Subgraph
+---
+
+# RubiconV2 Market API
+
+The RubiconMarket subgraph contains a collection of entities that collect and store data related to trading activity on the protocol's order books. Below are key entities that we believe user's will find most relevant to their data needs.
+
+### _**User Entity (ID: Wallet Address)**_
+
+```graphql
+type User @entity {
+    " the user address "
+    id: Bytes!
+    " map to all offers the user has created "
+    offers: [Offer!]! @derivedFrom(field: "maker")
+    " map to all takes the user has created "
+    takes: [Take!]! @derivedFrom(field: "taker")
+    " map to all swaps the user has created "
+    swaps: [Swap!]! @derivedFrom(field: "swapper")
+    " map to all fees the user has paid "
+    fees_paid: [Fee!]! @derivedFrom(field: "user")
+    " map to all fees the user has received "
+    fees_received: [Fee!]! @derivedFrom(field: "recipient")
+}
+```

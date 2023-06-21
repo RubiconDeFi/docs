@@ -1,0 +1,23 @@
+---
+title: Rubicon | Bath House
+pageTitle: Bath House
+description: The admin contract for Rubicon Pools
+---
+
+## Nhà Tắm
+
+[BathHouse contract](https://github.com/RubiconDeFi/rubicon\_protocol/blob/master/contracts/rubiconPools/BathHouse.sol) đóng vai trò là quản trị viên cho hệ thống Rubicon Pools đồng thời cung cấp các chức năng chính, cấp cao cho hệ thống. Các chức năng quan trọng nhất của BathHouse là khởi tạo BathPair mới, phê duyệt chiến lược và quản lý tổ chức và định tuyến nhóm thanh khoản.
+
+### Chức năng chính
+
+* `initBathPair`- chức năng này khởi tạo một BathPair. Trên thực tế, điều này cho phép các nhóm thanh khoản mới được hình thành trên một cặp Rubicon mới trong khi tích hợp cặp nói trên với một nhóm thanh khoản báo giá hiện có (ví dụ: bathUSDC) nếu nó chưa tồn tại.
+* `getBathPair` - một hàm getter cho phép người gọi dễ dàng xác định địa chỉ BathPair cho một tổ hợp nhất định của `(nội dung địa chỉ, trích dẫn địa chỉ)`.
+* **Quản lý chiến lược**
+  * Hợp đồng này quản lý "chiến lược" nào được Rubicon Pools hỗ trợ. Hiện tại, chiến lược duy nhất được phép trong v0 là PairsTrade - trong đó chiến lược gia thực hiện giao dịch một cặp duy nhất cho mỗi lệnh gọi chức năng.
+  * `isApprovedStrat` - chức năng xác minh xem người gọi hoặc địa chỉ nhất định có phải là chiến lược được phê duyệt hay không.
+  * `approveStrategy` - chức năng quản trị để thêm một chiến lược mới vào Rubicon Pools.
+* **Quản lý tham số**
+  * Hợp đồng này kiểm soát một số tham số cấp hệ thống có liên quan đến các nhà chiến lược cũng như LP.
+  * `setCancelTimeDelay`- chức năng này đặt `timeDelay` trên BathPair.sol, sau đó các đơn đặt hàng chưa được thực hiện sẽ bị hủy trong sổ đặt hàng.
+  * `setMaxOutstandingPairCount` - hàm này đặt giá trị `maxOutstandingPairCount` cho một BathPair nhất định. Giá trị này xác định số lượng đơn đặt hàng có thể chưa thanh toán trong sổ đặt hàng cho một cặp giao dịch nhất định.
+* `onlyAdmin` - BathHouse hiện được điều hành bởi nhóm Rubicon và có khả năng được quản lý bởi bất kỳ địa chỉ nào, bao gồm, ví dụ: DAO multi-sig.
