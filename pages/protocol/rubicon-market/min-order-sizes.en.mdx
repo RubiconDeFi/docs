@@ -1,0 +1,33 @@
+---
+title: Fees
+pageTitle: Fees
+description: Minimum Order Sizes on Rubicon
+---
+
+# Minimum Order Sizes
+
+To prevent "dust" offers, **RubiconMarket.sol** enforces minimum order sizes on some ERC-20 tokens.
+
+## Order Minimums Table
+
+| Token | Minimum Order Sizes| Minimum Order Size (uint256)  |
+|-------|--------------------|-------------------------------|
+| WETH  | 0.0022 ETH         | 2200000000000000              |
+| WBTC  | 0.00015 WBTC       | 15000                         |
+| USDC  | 5 USDC             | 5000000                       |
+| USDT  | 5 USDT             | 5000000                       |
+| DAI   | 5 DAI              | 5000000000000000000           |
+| OP    | 3 OP               | 3000000000000000000           |
+| ARB   | 4 ARB              | 4000000000000000000           |
+
+## Querying Minimum Order Sizes
+
+Use this view function to retrieve the minimum order size for a given token.
+
+```solidity copy
+    function getMinSell(
+        ERC20 pay_gem
+    ) external view returns (uint256)
+```
+
+Returns the minimum order size for the given ERC-20 token.
