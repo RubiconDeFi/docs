@@ -11,22 +11,22 @@ description: Fees on Rubicon
 import { Callout } from "/components/Callout";
 
 <Callout type="fees" title="Protocol Fee: 0.002%">
-	Paid by trades to the protocol. Paid in the token sent to the contract.
+	Paid by takers (buyers) to the protocol. Paid in the token sent from the taker to the contract.
 </Callout>
 
-<Callout type="fees" title="Maker Fee: 0.038%">
-	Paid by the taker to the "maker", the address that owns the filled offer
+<Callout type="fees" title="Maker Rebate: 0.038%">
+	Paid by the taker to the maker (seller), the address that owns the filled offer during a buy.
 </Callout>
 
-The **Taker Fee** is equal to the sum of the **Protocol Fee** and the **Maker Fee**.
+The **Total Taker Fee** is equal to the sum of the **Protocol Fee** and the **Maker Rebate**. All market fees (rebates) are paid in the token the buyer is paying to fill an offer.
 
-<Callout type="fees" title="Taker Fee: 0.04%">
-	Total fee paid by trades that "take" liquidity from the order book. Paid in the token sent to the contract.
+<Callout type="fees" title="Total Taker Fee: 0.04%">
+	Total fee paid by trades that "take" liquidity from the order book (a buy). Paid in the token sent to the contract from the taker.
 </Callout>
 
 ### Querying the Fees
 
-Use these view functions to query the fee values.
+Use these view functions to query the fee values. **Please note that "getFeeBPS" is a semantic misnomer and the integer value it returns is a pip, 1 / 100,000, and represents the input to the protocol fee**. This is maintained for backward compatibility and will be fixed in future updates.
 
 ```solidity copy
 function getFeeBPS()
