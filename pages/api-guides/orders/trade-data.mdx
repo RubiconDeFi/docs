@@ -290,3 +290,273 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
   </Tab>
 </Tabs>
 
+## List Historical Trades by Maker
+
+<Tabs items={['GraphQL', 'Python', 'Rust', 'Typescript']}>
+  <Tab>
+    <MakerAddress>
+    ```graphql copy
+    {
+    buys: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+            where:  {offer_ : { maker: "0xinput_address" }}) {
+        take_gem
+        take_amt
+        give_gem
+        give_amt
+        taker { 
+          id 
+        }
+        offer {
+          maker { 
+            id
+          }
+          id
+        }
+        transaction {
+          timestamp
+        }
+    }
+    
+    sells: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+            where:  {offer_ : { maker: "0xinput_address" }}) {
+        take_gem
+        take_amt
+        give_gem
+        give_amt
+        taker { 
+          id 
+        }
+        offer {
+          maker { 
+            id
+          }
+          id
+        }
+        transaction {
+          timestamp
+        }
+      }
+    }
+    ```
+    </MakerAddress>
+  </Tab>
+
+  <Tab>
+    <AssetAddress>
+    <QuoteAddress>
+    <DynamicEndpoint>
+    ```python copy
+    import requests
+    import json
+
+    url = "select network endpoint below"
+    maker = "0xinput_address"
+
+    headers = {'Content-Type': 'application/json'}
+
+    query = f"""
+    {{
+    buys: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+            where: {{offer_ : {{ maker: "{maker}" }}}}) {{
+        take_gem
+        take_amt
+        give_gem
+        give_amt
+        taker {{ 
+          id 
+        }}
+        offer {{
+          maker {{ 
+            id
+          }}
+          id
+        }}
+        transaction {{
+          timestamp
+        }}
+    }}
+    
+    sells: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+            where: {{offer_ : {{ maker: "{maker}" }}) {{
+        take_gem
+        take_amt
+        give_gem
+        give_amt
+        taker {{ 
+          id 
+        }}
+        offer {{
+          maker {{ 
+            id
+          }}
+          id
+        }}
+        transaction {{
+          timestamp
+        }}
+      }}
+    }}
+    }}
+    """
+
+    response = requests.post(url, headers=headers, data=json.dumps({'query': query}))
+
+    data = response.json()
+
+    print(data)
+    ```
+    </DynamicEndpoint>
+    </QuoteAddress>
+    </AssetAddress>
+  </Tab>
+
+  <Tab>
+    <AssetAddress>
+    <QuoteAddress>
+    <DynamicEndpoint>
+    ```rust copy
+    use reqwest::Error;
+    use serde_json::{json, Value};
+
+    #[tokio::main]
+    async fn main() -> Result<(), Error> {
+        let client = reqwest::Client::new();
+        let maker = "0xinput_address";
+
+        let query = format!(
+            r#"
+            {
+            buys: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+                    where: {offer_ : { maker: {} }}) {
+                take_gem
+                take_amt
+                give_gem
+                give_amt
+                taker { 
+                id 
+                }
+                offer {
+                  maker { 
+                    id
+                  }
+                  id
+                }
+                transaction {
+                timestamp
+                }
+            }
+            
+            sells: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+                    where: {offer_ : { maker: {} }}) {
+                take_gem
+                take_amt
+                give_gem
+                give_amt
+                taker { 
+                id 
+                }
+                offer {
+                  maker { 
+                    id
+                  }
+                  id
+                }
+                transaction {
+                timestamp
+                }
+              }
+            }
+        "#, 
+            maker, maker
+        );
+
+        let payload = json!({
+            "query": query
+        });
+
+        let url = "select network endpoint below";
+        let res: Value = client.post(url)
+            .json(&payload)
+            .send()
+            .await?
+            .json()
+            .await?;
+
+        println!("{:#?}", res);
+
+        Ok(())
+    }
+    ```
+    </DynamicEndpoint>
+    </QuoteAddress>
+    </AssetAddress>
+  </Tab>
+
+  <Tab>
+    <AssetAddress>
+    <QuoteAddress>
+    <DynamicEndpoint>
+    ```typescript copy
+    import axios, { AxiosResponse } from 'axios';
+
+    const url = "select network endpoint below"
+    const maker = "0xinput_address";
+
+    const query = `
+        {
+        buys: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+                where: {offer_ : { maker: "${maker} }}) {
+            take_gem
+            take_amt
+            give_gem
+            give_amt
+            taker { 
+            id 
+            }
+            offer {
+              maker { 
+                id
+              }
+              id
+            }
+            transaction {
+            timestamp
+            }
+        }
+        
+        sells: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+                where: {offer_ : { maker: "${maker} }}) {
+            take_gem
+            take_amt
+            give_gem
+            give_amt
+            taker { 
+              id 
+            }
+            offer {
+              maker { 
+                id
+              }
+              id
+            }
+            transaction {
+              timestamp
+            }
+          }
+        }
+    `;
+
+    axios.post(url, { query })
+    .then((response: AxiosResponse<any>) => {
+        console.log(response.data);
+    })
+    .catch((error) => {
+        console.error(error);
+    });
+    ```
+    </DynamicEndpoint>
+    </QuoteAddress>
+    </AssetAddress>
+  </Tab>
+</Tabs>
+
