@@ -5,6 +5,7 @@ description: Get a list of offers for a given address.
 ---
 
 import { Tab, Tabs } from 'nextra-theme-docs'
+import { Callout } from "/components/Callout";
 
 ## Network Endpoints
 
@@ -18,9 +19,13 @@ import { Tab, Tabs } from 'nextra-theme-docs'
 
 ## List Open Orders by Maker
 
-The maximum number of values returned in a single call is 1000.
+<Callout>
+    The maximum number of values returned in a single call is 1000.
+</Callout>
 
-**Any parameter filter must be lowercased, including addresses**
+<Callout type="warning" emoji="⚠️">
+  Any parameter filter must be lowercased, including addresses (`0xDeAd` -> `0xdead`)
+</Callout>
 
 <Tabs items={['GraphQL', 'Python', 'Rust', 'Typescript']}>
   <Tab>
