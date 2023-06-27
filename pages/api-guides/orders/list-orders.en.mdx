@@ -6,18 +6,88 @@ description: Get a list of offers for a given address.
 
 import { Tab, Tabs } from 'nextra-theme-docs'
 import { Callout } from "/components/Callout";
+import { EndpointSelector } from "/components/DynamicCode.jsx";
+import { useEffect, useRef } from 'react'
 
-## Network Endpoints
-
-| Network            | ChainID  | Endpoint                                                                             |
-|--------------------|----------|--------------------------------------------------------------------------------------|
-| `Optimism Mainnet` | `10`     | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-optimism-mainnet |
-| `Arbitrum One`     | `42161`  | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-arbitrum-one     |
-| `Optimism Goerli`  | `420`    | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-optimism-goerli  |
-| `Arbitrum Goerli`  | `421613` | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-arbitrum-goerli  |             |
-| `Polygon Mumbai`   | `80001`  | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-polygon-mumbai   |             |
-
-## List Open Orders by Maker
+export function DynamicEndpoint({ children }) {
+    const ref = useRef()
+    const tokenRef = useRef()
+    // Find the corresponding token from the DOM
+    useEffect(() => {
+      if (ref.current) {
+        const token = [...ref.current.querySelectorAll('code span')].find(
+          el => el.innerText === '"desired network endpoint"'
+        )
+        tokenRef.current = token
+      }
+    }, [])
+    return (
+      <>
+        <div ref={ref} style={{ marginTop: '1.5rem' }}>
+          {children}
+        </div>
+        <a
+          onClick={() => {
+            tokenRef.current.innerText = "https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-optimism-mainnet"
+          }}
+          style={{
+            cursor: 'pointer',
+            userSelect: 'none'
+          }}
+        >
+          Optimism Mainnet
+        </a>
+        <a
+          onClick={() => {
+            tokenRef.current.innerText = "https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-arbitrum-one"
+          }}
+          style={{
+            marginLeft: '.5rem',
+            cursor: 'pointer',
+            userSelect: 'none'
+          }}
+        >
+          Arbitrum One
+        </a>
+        <a
+          onClick={() => {
+            tokenRef.current.innerText = "https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-optimism-goerli"
+          }}
+          style={{
+            marginLeft: '.5rem',
+            cursor: 'pointer',
+            userSelect: 'none'
+          }}
+        >
+          Optimism Goerli
+        </a>
+        <a
+          onClick={() => {
+            tokenRef.current.innerText = "https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-arbitrum-goerli"
+          }}
+          style={{
+            marginLeft: '.5rem',
+            cursor: 'pointer',
+            userSelect: 'none'
+          }}
+        >
+          Arbitrum Goerli
+        </a>
+        <a
+          onClick={() => {
+            tokenRef.current.innerText = "https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-polygon-mumbai"
+          }}
+          style={{
+            marginLeft: '.5rem',
+            cursor: 'pointer',
+            userSelect: 'none'
+          }}
+        >
+          Polygon Mumbai
+        </a>
+      </>
+    )
+  }
 
 <Callout>
     The maximum number of values returned in a single call is 1000.
@@ -26,6 +96,8 @@ import { Callout } from "/components/Callout";
 <Callout type="warning" emoji="⚠️">
   Any parameter filter must be lowercased, including addresses (`0xDeAd` -> `0xdead`)
 </Callout>
+
+## List Open Orders by Maker
 
 <Tabs items={['GraphQL', 'Python', 'Rust', 'Typescript']}>
   <Tab>
@@ -52,11 +124,12 @@ import { Callout } from "/components/Callout";
 
   </Tab>
   <Tab>
+    <DynamicEndpoint>
     ```python copy
     import requests
     import json
 
-    url = '< desired network endpoint >'
+    url = "desired network endpoint"
 
     headers = {'Content-Type': 'application/json'}
 
@@ -80,10 +153,11 @@ import { Callout } from "/components/Callout";
 
     print(data)
     ```
+    </DynamicEndpoint>
   </Tab>
 
   <Tab>
-    **Rust**: 
+    <DynamicEndpoint>
     ```rust copy
     use reqwest::Error;
     use serde_json::{json, Value};
@@ -109,7 +183,7 @@ import { Callout } from "/components/Callout";
             "query": query
         });
 
-        let url = "< desired network endpoint >";
+        let url = "desired network endpoint";
         let res: Value = client.post(url)
             .json(&payload)
             .send()
@@ -122,14 +196,14 @@ import { Callout } from "/components/Callout";
         Ok(())
     }
     ```
-
+    </DynamicEndpoint>
   </Tab>
-
   <Tab>
+    <DynamicEndpoint>
     ```typescript copy
     import axios, { AxiosResponse } from 'axios';
 
-    const url = '< desired network endpoint >'
+    const url = "desired network endpoint"
 
     const query = `
     {
@@ -153,5 +227,6 @@ import { Callout } from "/components/Callout";
         console.error(error);
     });
     ```
+    </DynamicEndpoint>
   </Tab>
 </Tabs>
