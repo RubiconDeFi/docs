@@ -4,17 +4,15 @@ export function DynamicEndpoint({ children }) {
     const ref = useRef()
     const tokenRef = useRef()
     
-    const endpointStyle = {
-        marginLeft: '.5rem',
-        cursor: 'pointer',
-        userSelect: 'none',
-        fontWeight: 'bold',
-        color: '#0070f3',     
-        textDecoration: 'none',
-        backgroundColor: '#f3f4f6',
-        padding: '0.5em 1em', 
-        borderRadius: '0.3em', 
-      }
+    const [selectedEndpoint, setSelectedEndpoint] = useState('');
+
+    const endpoints = {
+        "Optimism Mainnet": "https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-optimism-mainnet",
+        "Arbitrum One": "https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-arbitrum-one",
+        "Optimism Goerli": "https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-optimism-goerli",
+        "Arbitrum Goerli": "https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-arbitrum-goerli",
+        "Polygon Mumbai": "https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-polygon-mumbai"
+    };
 
     useEffect(() => {
       if (ref.current) {
@@ -24,54 +22,45 @@ export function DynamicEndpoint({ children }) {
         tokenRef.current = token
       }
     }, [])
+
+    const handleChange = (event) => {
+      const endpointUrl = endpoints[event.target.value];
+      setSelectedEndpoint(event.target.value);
+      if (tokenRef.current) {
+        tokenRef.current.innerText = endpointUrl;
+      }
+    }
+
+    const dropdownStyle = {
+        padding: '0.5em 1em',
+        borderRadius: '0.3em',
+        border: 'none',
+        boxShadow: '0 2px 3px rgba(0,0,0,0.1)',
+        fontSize: '1em',
+        backgroundColor: '#f3f4f6',
+        color: '#000000',
+        fontWeight: 'bold',
+        cursor: 'pointer',
+        outline: 'none',
+        
+    }
+
     return (
       <>
         <div ref={ref} style={{ marginTop: '1.5rem' }}>
           {children}
         </div>
-        <a
-          onClick={() => {
-            tokenRef.current.innerText = "https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-optimism-mainnet"
-          }}
-          style={endpointStyle}
-        >
-          Optimism Mainnet
-        </a>
-        <a
-          onClick={() => {
-            tokenRef.current.innerText = "https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-arbitrum-one"
-          }}
-          style={endpointStyle}
-        >
-          Arbitrum One
-        </a>
-        <a
-          onClick={() => {
-            tokenRef.current.innerText = "https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-optimism-goerli"
-          }}
-          style={endpointStyle}
-        >
-          Optimism Goerli
-        </a>
-        <a
-          onClick={() => {
-            tokenRef.current.innerText = "https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-arbitrum-goerli"
-          }}
-          style={endpointStyle}
-        >
-          Arbitrum Goerli
-        </a>
-        <a
-          onClick={() => {
-            tokenRef.current.innerText = "https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-polygon-mumbai"
-          }}
-          style={endpointStyle}
-        >
-          Polygon Mumbai
-        </a>
+        <select style={dropdownStyle} value={selectedEndpoint} onChange={handleChange}>
+          <option value="">-- Select network endpoint --</option>
+          {Object.keys(endpoints).map(endpoint => 
+            <option key={endpoint} value={endpoint}>{endpoint}</option>
+          )}
+        </select>
       </>
     )
   }
+
+
 
   export function MakerAddress({ children }) {
     const ref = useRef()
@@ -89,9 +78,9 @@ export function DynamicEndpoint({ children }) {
     }
 
     const componentStyle = {
-        marginTop: '1.5rem',
-        marginBottom: '1.5rem',  // Add marginBottom to create space below this component
-        marginLeft: '.5rem',
+        
+        marginBottom: '1.5rem', 
+        
     };
 
     useEffect(() => {

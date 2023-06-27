@@ -8,8 +8,6 @@ import { Tab, Tabs } from 'nextra-theme-docs'
 import { Callout } from "/components/Callout";
 import { DynamicEndpoint, MakerAddress } from "/components/DynamicEndpoint.jsx";
 
-
-
 <Callout>
     The maximum number of values returned in a single call is 1000.
 </Callout>
@@ -81,6 +79,7 @@ import { DynamicEndpoint, MakerAddress } from "/components/DynamicEndpoint.jsx";
   </Tab>
 
   <Tab>
+    <MakerAddress>
     <DynamicEndpoint>
     ```rust copy
     use reqwest::Error;
@@ -121,8 +120,10 @@ import { DynamicEndpoint, MakerAddress } from "/components/DynamicEndpoint.jsx";
     }
     ```
     </DynamicEndpoint>
+    </MakerAddress>
   </Tab>
   <Tab>
+    <MakerAddress>
     <DynamicEndpoint>
     ```typescript copy
     import axios, { AxiosResponse } from 'axios';
@@ -152,5 +153,6 @@ import { DynamicEndpoint, MakerAddress } from "/components/DynamicEndpoint.jsx";
     });
     ```
     </DynamicEndpoint>
+    </MakerAddress>
   </Tab>
 </Tabs>
