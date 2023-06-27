@@ -4,6 +4,107 @@ pageTitle: List Offers
 description: Get a list of offers for a given address.
 ---
 
-Get a list of orders for a given address.
+import { Tab, Tabs } from 'nextra-theme-docs'
 
+## Network Endpoints
 
+| Network            | ChainID  | Endpoint                                                                             |
+|--------------------|----------|--------------------------------------------------------------------------------------|
+| `Optimism Mainnet` | `10`     | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-optimism-mainnet |
+| `Arbitrum One`     | `42161`  | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-arbitrum-one     |
+| `Optimism Goerli`  | `420`    | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-optimism-goerli  |
+| `Arbitrum Goerli`  | `421613` | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-arbitrum-goerli  |             |
+| `Polygon Mumbai`   | `80001`  | https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-polygon-mumbai   |             |
+
+## List Open Orders by Maker
+
+All 
+The maximum number of values returned in a single call is 1000.
+
+<Tabs items={['GraphQL', 'Python', 'Rust', 'Typescript']}>
+  <Tab>
+    ```GraphQL
+    {
+    offers( where: { open : true, maker: "0xMakerAddress" } , first: 1000) {
+        # the asset the offer is selling 
+        pay_gem
+        # the amount of the pay_gem that is being sold (not converted)
+        pay_amt
+        # the amount of the offer that has been paid out (not converted)
+        paid_amt
+        # the asset the offer is buying 
+        buy_gem
+        # the amount of the buy_gem that is being sold (not converted)
+        buy_amt
+        # the amount of the offer that has been bought (not converted)
+        bought_amt
+        # the offer owner (the address that controls the offer)
+        maker { id }
+      }
+    }
+    ```
+
+  </Tab>
+  <Tab>
+    ```Python
+    import requests
+    import json
+
+    url = '< desired network endpoint >'
+
+    headers = {'Content-Type': 'application/json'}
+
+    query = """
+    {
+    offers(where: { open: true, maker: "0xyour_address" }, first: 1000) {
+        pay_gem
+        pay_amt
+        paid_amt
+        buy_gem
+        buy_amt
+        bought_amt
+        maker { id }
+      }
+    }
+    """
+
+    response = requests.post(url, headers=headers, data=json.dumps({'query': query}))
+
+    data = response.json()
+
+    print(data)
+    ```
+  </Tab>
+  <Tab>
+    **Rust**
+  </Tab>
+  <Tab>
+    ```Typescript
+    import axios, { AxiosResponse } from 'axios';
+
+    const url = '< desired network endpoint >'
+
+    const query = `
+    {
+    offers(where: { open: true, maker: "0xyour_address" }, first: 1000) {
+        pay_gem
+        pay_amt
+        paid_amt
+        buy_gem
+        buy_amt
+        bought_amt
+        maker { id }
+      }
+    }
+    `;
+
+    axios.post(url, { query })
+    .then((response: AxiosResponse<any>) => {
+        console.log(response.data);
+    })
+    .catch((error) => {
+        console.error(error);
+    });
+    ```
+  </Tab>
+</Tabs>
