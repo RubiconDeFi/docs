@@ -118,7 +118,7 @@ export function MakerAddress({ children }) {
 
 export function QuoteAddress({ children }) {
     const ref = useRef()
-    const tokenRef = useRef()
+    const tokenRef = useRef([])
 
     const [inputValue, setInputValue] = useState('')
 
@@ -132,26 +132,22 @@ export function QuoteAddress({ children }) {
     }
 
     const componentStyle = {
-        
-        marginBottom: '1.5rem', 
-        
+        marginBottom: '1.5rem',
     };
 
     useEffect(() => {
         if (ref.current) {
-            const token = [...ref.current.querySelectorAll('code span')].find(
+            const tokens = [...ref.current.querySelectorAll('code span')].filter(
                 el => el.innerText === '"0xquote"'
             )
-            tokenRef.current = token
+            tokenRef.current = tokens
         }
     }, [])
 
     const handleInputChange = (e) => {
         const lowerCaseValue = e.target.value.toLowerCase()
         setInputValue(lowerCaseValue)
-        if (tokenRef.current) {
-            tokenRef.current.innerText = lowerCaseValue
-        }
+        tokenRef.current.forEach(token => token.innerText = lowerCaseValue)
     }
 
     return (
@@ -161,7 +157,7 @@ export function QuoteAddress({ children }) {
             </div>
             <input
                 type="text"
-                placeholder="Input Quote address" 
+                placeholder="Input Quote address"
                 value={inputValue}
                 onChange={handleInputChange}
                 style={inputStyle}
@@ -170,9 +166,10 @@ export function QuoteAddress({ children }) {
     )
 }
 
+
 export function AssetAddress({ children }) {
     const ref = useRef()
-    const tokenRef = useRef()
+    const tokenRef = useRef([])
 
     const [inputValue, setInputValue] = useState('')
 
@@ -186,26 +183,22 @@ export function AssetAddress({ children }) {
     }
 
     const componentStyle = {
-        
-        marginBottom: '1.5rem', 
-        
+        marginBottom: '1.5rem',
     };
 
     useEffect(() => {
         if (ref.current) {
-            const token = [...ref.current.querySelectorAll('code span')].find(
+            const tokens = [...ref.current.querySelectorAll('code span')].filter(
                 el => el.innerText === '"0xasset"'
             )
-            tokenRef.current = token
+            tokenRef.current = tokens
         }
     }, [])
 
     const handleInputChange = (e) => {
         const lowerCaseValue = e.target.value.toLowerCase()
         setInputValue(lowerCaseValue)
-        if (tokenRef.current) {
-            tokenRef.current.innerText = lowerCaseValue
-        }
+        tokenRef.current.forEach(token => token.innerText = lowerCaseValue)
     }
 
     return (
@@ -215,7 +208,7 @@ export function AssetAddress({ children }) {
             </div>
             <input
                 type="text"
-                placeholder="Input Asset address" 
+                placeholder="Input Asset address"
                 value={inputValue}
                 onChange={handleInputChange}
                 style={inputStyle}
