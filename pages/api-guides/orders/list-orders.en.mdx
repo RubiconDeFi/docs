@@ -18,14 +18,15 @@ import { Tab, Tabs } from 'nextra-theme-docs'
 
 ## List Open Orders by Maker
 
-All 
 The maximum number of values returned in a single call is 1000.
+
+**Any parameter filter must be lowercased, including addresses**
 
 <Tabs items={['GraphQL', 'Python', 'Rust', 'Typescript']}>
   <Tab>
-    ```GraphQL
+    ```graphql copy
     {
-    offers( where: { open : true, maker: "0xMakerAddress" } , first: 1000) {
+    offers( where: { open : true, maker: "0xmaker_address" } , first: 1000) {
         # the asset the offer is selling 
         pay_gem
         # the amount of the pay_gem that is being sold (not converted)
@@ -46,7 +47,7 @@ The maximum number of values returned in a single call is 1000.
 
   </Tab>
   <Tab>
-    ```Python
+    ```python copy
     import requests
     import json
 
@@ -56,7 +57,7 @@ The maximum number of values returned in a single call is 1000.
 
     query = """
     {
-    offers(where: { open: true, maker: "0xyour_address" }, first: 1000) {
+    offers(where: { open: true, maker: "0xmaker_address" }, first: 1000) {
         pay_gem
         pay_amt
         paid_amt
@@ -75,18 +76,59 @@ The maximum number of values returned in a single call is 1000.
     print(data)
     ```
   </Tab>
+
   <Tab>
-    **Rust**
+    **Rust**: 
+    ```rust copy
+    use reqwest::Error;
+    use serde_json::{json, Value};
+
+    #[tokio::main]
+    async fn main() -> Result<(), Error> {
+        let client = reqwest::Client::new();
+        let query = r#"
+        {
+            offers(where: { open: true, maker: "0xmaker_address" }, first: 1000) {
+                pay_gem
+                pay_amt
+                paid_amt
+                buy_gem
+                buy_amt
+                bought_amt
+                maker { id }
+            }
+        }
+        "#;
+
+        let payload = json!({
+            "query": query
+        });
+
+        let url = "< desired network endpoint >";
+        let res: Value = client.post(url)
+            .json(&payload)
+            .send()
+            .await?
+            .json()
+            .await?;
+
+        println!("{:#?}", res);
+
+        Ok(())
+    }
+    ```
+
   </Tab>
+
   <Tab>
-    ```Typescript
+    ```typescript copy
     import axios, { AxiosResponse } from 'axios';
 
     const url = '< desired network endpoint >'
 
     const query = `
     {
-    offers(where: { open: true, maker: "0xyour_address" }, first: 1000) {
+    offers(where: { open: true, maker: "0xmaker_address" }, first: 1000) {
         pay_gem
         pay_amt
         paid_amt
