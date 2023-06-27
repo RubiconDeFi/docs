@@ -62,7 +62,7 @@ export function DynamicEndpoint({ children }) {
 
 
 
-  export function MakerAddress({ children }) {
+export function MakerAddress({ children }) {
     const ref = useRef()
     const tokenRef = useRef()
 
@@ -108,6 +108,114 @@ export function DynamicEndpoint({ children }) {
             <input
                 type="text"
                 placeholder="Input maker address" // default text
+                value={inputValue}
+                onChange={handleInputChange}
+                style={inputStyle}
+            />
+        </>
+    )
+}
+
+export function QuoteAddress({ children }) {
+    const ref = useRef()
+    const tokenRef = useRef()
+
+    const [inputValue, setInputValue] = useState('')
+
+    const inputStyle = {
+        marginRight: '.5rem',
+        padding: '.5em',
+        backgroundColor: '#f0f0f0', 
+        borderRadius: '0.3em',      
+        border: 'none', 
+        color: '#000000', 
+    }
+
+    const componentStyle = {
+        
+        marginBottom: '1.5rem', 
+        
+    };
+
+    useEffect(() => {
+        if (ref.current) {
+            const token = [...ref.current.querySelectorAll('code span')].find(
+                el => el.innerText === '"0xquote"'
+            )
+            tokenRef.current = token
+        }
+    }, [])
+
+    const handleInputChange = (e) => {
+        const lowerCaseValue = e.target.value.toLowerCase()
+        setInputValue(lowerCaseValue)
+        if (tokenRef.current) {
+            tokenRef.current.innerText = lowerCaseValue
+        }
+    }
+
+    return (
+        <>
+            <div ref={ref} style={componentStyle}>
+                {children}
+            </div>
+            <input
+                type="text"
+                placeholder="Input Quote address" 
+                value={inputValue}
+                onChange={handleInputChange}
+                style={inputStyle}
+            />
+        </>
+    )
+}
+
+export function AssetAddress({ children }) {
+    const ref = useRef()
+    const tokenRef = useRef()
+
+    const [inputValue, setInputValue] = useState('')
+
+    const inputStyle = {
+        marginRight: '.5rem',
+        padding: '.5em',
+        backgroundColor: '#f0f0f0', 
+        borderRadius: '0.3em',      
+        border: 'none', 
+        color: '#000000', 
+    }
+
+    const componentStyle = {
+        
+        marginBottom: '1.5rem', 
+        
+    };
+
+    useEffect(() => {
+        if (ref.current) {
+            const token = [...ref.current.querySelectorAll('code span')].find(
+                el => el.innerText === '"0xasset"'
+            )
+            tokenRef.current = token
+        }
+    }, [])
+
+    const handleInputChange = (e) => {
+        const lowerCaseValue = e.target.value.toLowerCase()
+        setInputValue(lowerCaseValue)
+        if (tokenRef.current) {
+            tokenRef.current.innerText = lowerCaseValue
+        }
+    }
+
+    return (
+        <>
+            <div ref={ref} style={componentStyle}>
+                {children}
+            </div>
+            <input
+                type="text"
+                placeholder="Input Asset address" 
                 value={inputValue}
                 onChange={handleInputChange}
                 style={inputStyle}

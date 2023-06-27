@@ -6,7 +6,7 @@ description: Get a list of offers for a given address.
 
 import { Tab, Tabs } from 'nextra-theme-docs'
 import { Callout } from "/components/Callout";
-import { DynamicEndpoint, MakerAddress } from "/components/DynamicEndpoint.jsx";
+import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/components/DynamicEndpoint.jsx";
 
 <Callout>
     The maximum number of values returned in a single call is 1000.
@@ -156,3 +156,242 @@ import { DynamicEndpoint, MakerAddress } from "/components/DynamicEndpoint.jsx";
     </MakerAddress>
   </Tab>
 </Tabs>
+
+## List Open Orders by Pair
+
+<Tabs items={['GraphQL', 'Python', 'Rust', 'Typescript']}>
+  <Tab>
+    <AssetAddress>
+    <QuoteAddress>
+    ```graphql copy
+    {
+    asks: offers(
+        first: 1000
+        orderBy: price
+        orderDirection: desc
+        where: {pay_gem: "0xasset", buy_gem: "0xquote", open: true}
+    ) {
+        # the id of the offer
+        id
+        # the asset the offer is selling
+        pay_gem
+        # the asset the offer is buying 
+        buy_gem
+        # the amount of the asset being sold (not converted)
+        pay_amt
+        # the amount of the asset being bought (not converted)
+        buy_amt
+        # the amount of the asset sold (not converted)
+        paid_amt
+        # the amount of the asset bought (not converted)
+        bought_amt
+      }
+    bids: offers(
+        first: 1000
+        orderBy: price
+        orderDirection: desc
+        where: {pay_gem: "0xasset", buy_gem: "0xquote", open: true}
+    ) {
+        # the id of the offer
+        id
+        # the asset the offer is selling
+        pay_gem
+        # the asset the offer is buying 
+        buy_gem
+        # the amount of the asset being sold (not converted)
+        pay_amt
+        # the amount of the asset being bought (not converted)
+        buy_amt
+        # the amount of the asset sold (not converted)
+        paid_amt
+        # the amount of the asset bought (not converted)
+        bought_amt
+      } 
+    }
+    ```
+    </QuoteAddress>
+    </AssetAddress>
+  </Tab>
+  <Tab>
+    <AssetAddress>
+    <QuoteAddress>
+    <DynamicEndpoint>
+    ```python copy
+    import requests
+    import json
+
+    url = "select network endpoint below"
+
+    headers = {'Content-Type': 'application/json'}
+
+    query = """
+    {
+    asks: offers(
+        first: 1000
+        orderBy: price
+        orderDirection: desc
+        where: {pay_gem: "0xasset", buy_gem: "0xquote", open: true}
+    ) {
+        id
+        pay_gem
+        buy_gem
+        pay_amt
+        buy_amt
+        paid_amt
+        bought_amt
+        price
+    }
+    bids: offers(
+        first: 1000
+        orderBy: price
+        orderDirection: desc
+        where: {pay_gem: "0xquote", buy_gem: "0xasset", open: true}
+    ) {
+        id
+        pay_gem
+        buy_gem
+        pay_amt
+        buy_amt
+        paid_amt
+        bought_amt
+        price
+      }
+    }
+    """
+
+    response = requests.post(url, headers=headers, data=json.dumps({'query': query}))
+
+    data = response.json()
+
+    print(data)
+    ```
+    </DynamicEndpoint>
+    </QuoteAddress>
+    </AssetAddress>
+  </Tab>
+
+  <Tab>
+    <AssetAddress>
+    <QuoteAddress>
+    <DynamicEndpoint>
+    ```rust copy
+    use reqwest::Error;
+    use serde_json::{json, Value};
+
+    #[tokio::main]
+    async fn main() -> Result<(), Error> {
+        let client = reqwest::Client::new();
+        let query = r#"
+            {
+            asks: offers(
+                first: 1000
+                orderBy: price
+                orderDirection: desc
+                where: {pay_gem: "0xasset", buy_gem: "0xquote", open: true}
+            ) {
+                id
+                pay_gem
+                buy_gem
+                pay_amt
+                buy_amt
+                paid_amt
+                bought_amt
+                price
+              }
+            bids: offers(
+                first: 1000
+                orderBy: price
+                orderDirection: desc
+                where: {pay_gem: "0xquote", buy_gem: "0xasset", open: true}
+            ) {
+                id
+                pay_gem
+                buy_gem
+                pay_amt
+                buy_amt
+                paid_amt
+                bought_amt
+                price
+              }
+            }
+        "#;
+
+        let payload = json!({
+            "query": query
+        });
+
+        let url = "select network endpoint below";
+        let res: Value = client.post(url)
+            .json(&payload)
+            .send()
+            .await?
+            .json()
+            .await?;
+
+        println!("{:#?}", res);
+
+        Ok(())
+    }
+    ```
+    </DynamicEndpoint>
+    </QuoteAddress>
+    </AssetAddress>
+  </Tab>
+  <Tab>
+    <AssetAddress>
+    <QuoteAddress>
+    <DynamicEndpoint>
+    ```typescript copy
+    import axios, { AxiosResponse } from 'axios';
+
+    const url = "select network endpoint below"
+
+    const query = `
+        {
+        asks: offers(
+            first: 1000
+            orderBy: price
+            orderDirection: desc
+            where: {pay_gem: "0xasset", buy_gem: "0xquote", open: true}
+        ) {
+            id
+            pay_gem
+            buy_gem
+            pay_amt
+            buy_amt
+            paid_amt
+            bought_amt
+            price
+          }
+        bids: offers(
+            first: 1000
+            orderBy: price
+            orderDirection: desc
+            where: {pay_gem: "0xquote", buy_gem: "0xasset", open: true}
+        ) {
+            id
+            pay_gem
+            buy_gem
+            pay_amt
+            buy_amt
+            paid_amt
+            bought_amt
+            price
+          }
+        }
+    `;
+
+    axios.post(url, { query })
+    .then((response: AxiosResponse<any>) => {
+        console.log(response.data);
+    })
+    .catch((error) => {
+        console.error(error);
+    });
+    ```
+    </DynamicEndpoint>
+    </QuoteAddress>
+    </AssetAddress>
+  </Tab>
+</Tabs>
+
