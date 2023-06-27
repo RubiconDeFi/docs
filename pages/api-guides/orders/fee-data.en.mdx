@@ -1,0 +1,156 @@
+---
+title: Fee Data
+pageTitle: Fee Data
+description: Retrieve data regarding fees on the protocol. 
+---
+
+import { Tab, Tabs } from 'nextra-theme-docs'
+import { Callout } from "/components/Callout";
+import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/components/DynamicEndpoint.jsx";
+
+<Callout>
+    The maximum number of values returned in a single call is 1000.
+</Callout>
+
+<Callout type="warning" emoji="⚠️">
+  Any parameter filter must be lowercased, including addresses (`0xDeAd` -> `0xdead`)
+</Callout>
+
+## List Fees by Recipient
+
+<Tabs items={['GraphQL', 'Python', 'Rust', 'Typescript']}>
+  <Tab>
+    <MakerAddress>
+    ```graphql copy
+    {
+    fees(first: 1000, where: {recipient: "0xinput_address" }) {
+        # the timestamp of when the fee was received
+        timestamp
+        # the address of the user who paid the fee
+        user { id }
+        # the address of the recipient of the fee
+        recipient { id }
+        # the asset that the fee was paid in 
+        fee_gem
+        # the amount of the fee that was paid
+        fee_amt
+        # the offer that's fill originated the fee
+        offer { id }
+      }
+    }
+    ```
+    </MakerAddress>
+  </Tab>
+  <Tab>
+    <MakerAddress>
+    <DynamicEndpoint>
+    ```python copy
+    import requests
+    import json
+
+    url = "select network endpoint below"
+    headers = {'Content-Type': 'application/json'}
+
+    fee_address = "0xinput_address"  
+
+    query = f"""
+    {{
+    fees(first: 1000, where: {{recipient: "{fee_address}" }}) {{
+        timestamp
+        user {{ id }}
+        recipient {{ id }}
+        fee_gem
+        fee_amt
+        offer {{ id }}
+      }}
+    }}
+    """
+
+    response = requests.post(url, headers=headers, data=json.dumps({'query': query}))
+
+    data = response.json()
+
+    print(data)
+    ```
+    </DynamicEndpoint>
+    </MakerAddress>
+  </Tab>
+
+  <Tab>
+    <MakerAddress>
+    <DynamicEndpoint>
+    ```rust copy
+    use reqwest::Error;
+    use serde_json::{json, Value};
+
+    #[tokio::main]
+    async fn main() -> Result<(), Error> {
+        let client = reqwest::Client::new();
+        feeAddress = "0xinput_address"  
+
+        let query = format!(
+            r#"
+            {
+            fees(first: 1000, where: {recipient: "{}" }) {
+                timestamp
+                user { id }
+                recipient { id }
+                fee_gem
+                fee_amt
+                offer { id }
+              }
+            }
+            "#,
+            feeAddress
+        );
+
+        let url = "select network endpoint below";
+        let res: Value = client.post(url)
+            .json(&payload)
+            .send()
+            .await?
+            .json()
+            .await?;
+
+        println!("{:#?}", res);
+
+        Ok(())
+    }
+    ```
+    </DynamicEndpoint>
+    </MakerAddress>
+  </Tab>
+  <Tab>
+    <MakerAddress>
+    <DynamicEndpoint>
+    ```typescript copy
+    import axios, { AxiosResponse } from 'axios';
+
+    const url = "select network endpoint below";
+    const feeAddress = "0xinput_address"; 
+
+    const query = `
+        {
+        fees(first: 1000, where: {recipient: "${feeAddress}" }) {
+            timestamp
+            user { id }
+            recipient { id }
+            fee_gem
+            fee_amt
+            offer { id }
+            }
+        }
+    `;
+
+    axios.post(url, { query })
+    .then((response: AxiosResponse<any>) => {
+        console.log(response.data);
+    })
+    .catch((error) => {
+        console.error(error);
+    });
+    ```
+    </DynamicEndpoint>
+    </MakerAddress>
+  </Tab>
+</Tabs>

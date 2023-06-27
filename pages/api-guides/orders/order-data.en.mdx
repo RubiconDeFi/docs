@@ -93,17 +93,17 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
 
         let query = format!(
             r#"
-            {{
-                offers(where: {{ open: true, maker: "{}" }}, first: 1000) {{
+            {
+                offers(where: { open: true, maker: "{}" }, first: 1000) {
                     pay_gem
                     pay_amt
                     paid_amt
                     buy_gem
                     buy_amt
                     bought_amt
-                    maker {{ id }}
-                }}
-            }}
+                    maker { id }
+                }
+            }
             "#,
             maker_address
         );
