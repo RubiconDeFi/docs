@@ -78,51 +78,53 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
     import json
 
     url = "select network endpoint below"
+    asset = "0xasset"
+    quote = "0xquote"
 
     headers = {'Content-Type': 'application/json'}
 
-    query = """
-    {
+    query = f"""
+    {{
     buys: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
-            where: {take_gem: "0xasset", give_gem: "0xquote"}) {
+            where: {{take_gem: "{asset}", give_gem: "{quote}"}}) {{
         take_gem
         take_amt
         give_gem
         give_amt
-        taker { 
+        taker {{ 
           id 
-        }
-        offer {
-          maker { 
+        }}
+        offer {{
+          maker {{ 
             id
-          }
+          }}
           id
-        }
-        transaction {
+        }}
+        transaction {{
           timestamp
-        }
-    }
+        }}
+    }}
     
     sells: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
-            where: {take_gem: "0xquote", give_gem: "0xasset"}) {
+            where: {{take_gem: "{quote}", give_gem: "{asset}"}}) {{
         take_gem
         take_amt
         give_gem
         give_amt
-        taker { 
+        taker {{ 
           id 
-        }
-        offer {
-          maker { 
+        }}
+        offer {{
+          maker {{ 
             id
-          }
+          }}
           id
-        }
-        transaction {
+        }}
+        transaction {{
           timestamp
-        }
-      }
-    }
+        }}
+      }}
+    }}
     """
 
     response = requests.post(url, headers=headers, data=json.dumps({'query': query}))
@@ -147,10 +149,14 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
     #[tokio::main]
     async fn main() -> Result<(), Error> {
         let client = reqwest::Client::new();
-        let query = r#"
+        let asset = "0xasset";
+        let quote = "0xquote";
+
+        let query = format!(
+            r#"
             {
             buys: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
-                    where: {take_gem: "0xasset", give_gem: "0xquote"}) {
+                    where: {take_gem: "{}", give_gem: "{}"}) {
                 take_gem
                 take_amt
                 give_gem
@@ -170,7 +176,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
             }
             
             sells: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
-                    where: {take_gem: "0xquote", give_gem: "0xasset"}) {
+                    where: {take_gem: "{}", give_gem: "{}"}) {
                 take_gem
                 take_amt
                 give_gem
@@ -189,7 +195,9 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
                 }
               }
             }
-        "#;
+        "#, 
+            asset, quote, quote, asset
+        );
 
         let payload = json!({
             "query": query
@@ -221,11 +229,13 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
     import axios, { AxiosResponse } from 'axios';
 
     const url = "select network endpoint below"
+    const asset = "0xasset";
+    const quote = "0xquote";
 
     const query = `
         {
         buys: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
-                where: {take_gem: "0xasset", give_gem: "0xquote"}) {
+                where: {take_gem: "${asset}", give_gem: "${quote}"}) {
             take_gem
             take_amt
             give_gem
@@ -245,7 +255,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
         }
         
         sells: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
-                where: {take_gem: "0xquote", give_gem: "0xasset"}) {
+                where: {take_gem: "${quote}", give_gem: "${asset}"}) {
             take_gem
             take_amt
             give_gem

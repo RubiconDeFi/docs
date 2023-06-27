@@ -1,7 +1,7 @@
 ---
 title: List Offers
 pageTitle: List Offers
-description: Retrieve data regarding open offers. 
+description: Get a list of offers for a given address.
 ---
 
 import { Tab, Tabs } from 'nextra-theme-docs'
@@ -51,21 +51,22 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
     import json
 
     url = "select network endpoint below"
-
     headers = {'Content-Type': 'application/json'}
 
-    query = """
-    {
-    offers(where: { open: true, maker: "0xinput_address" }, first: 1000) {
+    maker_address = "0xinput_address"  
+
+    query = f"""
+    {{
+    offers(where: {{ open: true, maker: "{maker_address}" }}, first: 1000) {{
         pay_gem
         pay_amt
         paid_amt
         buy_gem
         buy_amt
         bought_amt
-        maker { id }
-      }
-    }
+        maker {{ id }}
+      }}
+    }}
     """
 
     response = requests.post(url, headers=headers, data=json.dumps({'query': query}))
@@ -88,23 +89,24 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
     #[tokio::main]
     async fn main() -> Result<(), Error> {
         let client = reqwest::Client::new();
-        let query = r#"
-        {
-            offers(where: { open: true, maker: "0xinput_address" }, first: 1000) {
-                pay_gem
-                pay_amt
-                paid_amt
-                buy_gem
-                buy_amt
-                bought_amt
-                maker { id }
-            }
-        }
-        "#;
+        let maker_address = "0xinput_address"; 
 
-        let payload = json!({
-            "query": query
-        });
+        let query = format!(
+            r#"
+            {{
+                offers(where: {{ open: true, maker: "{}" }}, first: 1000) {{
+                    pay_gem
+                    pay_amt
+                    paid_amt
+                    buy_gem
+                    buy_amt
+                    bought_amt
+                    maker {{ id }}
+                }}
+            }}
+            "#,
+            maker_address
+        );
 
         let url = "select network endpoint below";
         let res: Value = client.post(url)
@@ -128,11 +130,12 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
     ```typescript copy
     import axios, { AxiosResponse } from 'axios';
 
-    const url = "select network endpoint below"
+    const url = "select network endpoint below";
+    const makerAddress = "0xinput_address"; 
 
     const query = `
     {
-    offers(where: { open: true, maker: "0xinput_address" }, first: 1000) {
+    offers(where: { open: true, maker: "${makerAddress}" }, first: 1000) {
         pay_gem
         pay_amt
         paid_amt
@@ -223,15 +226,17 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
     url = "select network endpoint below"
 
     headers = {'Content-Type': 'application/json'}
+    asset = "0xasset"
+    quote = "0xquote"
 
-    query = """
-    {
+    query = f"""
+    {{
     asks: offers(
         first: 1000
         orderBy: price
         orderDirection: desc
-        where: {pay_gem: "0xasset", buy_gem: "0xquote", open: true}
-    ) {
+        where: {{pay_gem: "{asset}", buy_gem: "{quote}", open: true}}
+    ) {{
         id
         pay_gem
         buy_gem
@@ -240,13 +245,13 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
         paid_amt
         bought_amt
         price
-    }
+    }}
     bids: offers(
         first: 1000
         orderBy: price
         orderDirection: desc
-        where: {pay_gem: "0xquote", buy_gem: "0xasset", open: true}
-    ) {
+        where: {{pay_gem: "{quote}", buy_gem: "{asset}", open: true}}
+    ) {{
         id
         pay_gem
         buy_gem
@@ -255,8 +260,8 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
         paid_amt
         bought_amt
         price
-      }
-    }
+      }}
+    }}
     """
 
     response = requests.post(url, headers=headers, data=json.dumps({'query': query}))
@@ -281,13 +286,17 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
     #[tokio::main]
     async fn main() -> Result<(), Error> {
         let client = reqwest::Client::new();
-        let query = r#"
+        let asset = "0xasset";
+        let quote = "0xquote";
+
+        let query = format!(
+            r#"
             {
             asks: offers(
                 first: 1000
                 orderBy: price
                 orderDirection: desc
-                where: {pay_gem: "0xasset", buy_gem: "0xquote", open: true}
+                where: {pay_gem: "{}", buy_gem: "{}", open: true}
             ) {
                 id
                 pay_gem
@@ -302,7 +311,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
                 first: 1000
                 orderBy: price
                 orderDirection: desc
-                where: {pay_gem: "0xquote", buy_gem: "0xasset", open: true}
+                where: {pay_gem: "{}", buy_gem: "{}", open: true}
             ) {
                 id
                 pay_gem
@@ -314,7 +323,9 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
                 price
               }
             }
-        "#;
+        "#,
+            asset, quote, quote, asset
+        );
 
         let payload = json!({
             "query": query
@@ -345,6 +356,8 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
     import axios, { AxiosResponse } from 'axios';
 
     const url = "select network endpoint below"
+    const asset = "0xasset";
+    const quote = "0xquote";
 
     const query = `
         {
@@ -352,7 +365,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
             first: 1000
             orderBy: price
             orderDirection: desc
-            where: {pay_gem: "0xasset", buy_gem: "0xquote", open: true}
+            where: {pay_gem: "${asset}", buy_gem: "${quote}", open: true}
         ) {
             id
             pay_gem
@@ -367,7 +380,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
             first: 1000
             orderBy: price
             orderDirection: desc
-            where: {pay_gem: "0xquote", buy_gem: "0xasset", open: true}
+            where: {pay_gem: "${quote}", buy_gem: "${asset}", open: true}
         ) {
             id
             pay_gem
