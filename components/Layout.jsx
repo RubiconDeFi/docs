@@ -111,6 +111,24 @@ const navigation = [
     title: 'API',
     links: [
       {
+        title: 'Orders',
+        href: '/docs/api/orders',
+        sublinnks: [
+          {
+            title: 'Order Data', 
+            href: '/docs/api/orders/order-data'
+          },
+          {
+            title: 'Trade Data',
+            href: '/docs/api/orders/trade-data'
+          },
+          {
+            title: 'Fee Data',
+            href: '/docs/api/orders/fee-data'
+          },
+        ]
+      },
+      {
         title: 'Subgraphs',
         href: '/docs/api/subgraphs/subgraphs',
         sublinks: [
