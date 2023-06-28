@@ -114,6 +114,9 @@ export default {
 	feedback: {
 		content: Feedback,
 	},
+	sidebar: {
+		defaultMenuCollapseLevel: 1,
+	},
 	search: {},
 	useNextSeoProps() {
 		return {
