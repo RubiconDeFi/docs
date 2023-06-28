@@ -9,7 +9,7 @@ export function DynamicEndpoint({ children }) {
     const endpoints = {
         "Optimism Mainnet": "https://api.rubicon.finance/subgraphs/name/RubiconV2_Optimism_Mainnet",
         "Arbitrum One": "https://api.rubicon.finance/subgraphs/name/RubiconV2_Arbitrum_One",
-        "Optimism Goerli": "https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-optimism-goerli",
+        "Optimism Goerli": "https://api.rubicon.finance/subgraphs/name/RubiconV2_Optimism_Goerli",
         "Arbitrum Goerli": "https://api.rubicon.finance/subgraphs/name/RubiconV2_Arbitrum_Goerli",
         "Polygon Mumbai": "https://api.thegraph.com/subgraphs/name/denverbaumgartner/rubiconv2-polygon-mumbai"
     };
