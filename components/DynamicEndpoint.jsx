@@ -216,3 +216,53 @@ export function AssetAddress({ children }) {
         </>
     )
 }
+
+export function OfferID({ children }) {
+    const ref = useRef()
+    const tokenRef = useRef([])
+
+    const [inputValue, setInputValue] = useState('')
+
+    const inputStyle = {
+        marginRight: '.5rem',
+        padding: '.5em',
+        backgroundColor: '#f0f0f0', 
+        borderRadius: '0.3em',      
+        border: 'none', 
+        color: '#000000', 
+    }
+
+    const componentStyle = {
+        marginBottom: '1.5rem',
+    };
+
+    useEffect(() => {
+        if (ref.current) {
+            const tokens = [...ref.current.querySelectorAll('code span')].filter(
+                el => el.innerText === '"input_order_id"'
+            )
+            tokenRef.current = tokens
+        }
+    }, [])
+
+    const handleInputChange = (e) => {
+        const lowerCaseValue = e.target.value.toLowerCase()
+        setInputValue(lowerCaseValue)
+        tokenRef.current.forEach(token => token.innerText = lowerCaseValue)
+    }
+
+    return (
+        <>
+            <div ref={ref} style={componentStyle}>
+                {children}
+            </div>
+            <input
+                type="text"
+                placeholder="Input Offer ID"
+                value={inputValue}
+                onChange={handleInputChange}
+                style={inputStyle}
+            />
+        </>
+    )
+}
