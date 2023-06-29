@@ -117,7 +117,9 @@ export default {
 	sidebar: {
 		defaultMenuCollapseLevel: 1,
 	},
-	search: {},
+	search: {
+		placeholder: "Search documentation...",
+	},
 	useNextSeoProps() {
 		return {
 			titleTemplate: "%s",
