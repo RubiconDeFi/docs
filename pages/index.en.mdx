@@ -6,6 +6,7 @@ description: Welcome to the Rubicon docs
 
 # Rubicon Docs
 
+import { Callout } from "/components/Callout";
 import { QuickLinks, QuickLink } from "/components/QuickLinks.jsx";
 
 <QuickLinks>
@@ -38,8 +39,34 @@ import { QuickLinks, QuickLink } from "/components/QuickLinks.jsx";
 
 Rubicon is an order book protocol for trading [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) tokens, built on Ethereum [layer 2](https://ethereum.org/en/layer-2/) (L2) networks.
 
-## Protocol Overview
-
 [**RubiconMarket.sol**](/protocol/rubicon-market/contract-overview) is the core order book contract. It implements order books and a matching engine for peer-to-peer trading of ERC-20 tokens.
 
 [**RubiconRouter.sol**](/protocol/rubicon-router/rubicon-router) routes token swaps and enables multi-hop swaps if two tokens do not have an underlying order book. It also has helpful view functions for reading data from **RubiconMarket.sol** and contains wrapper functions for handling native ETH throughout the protocol.
+
+## Protocol Overview: Rubicon Order Book
+The [**RubiconMarket.sol**](/protocol/rubicon-market/contract-overview) order book is a key component of the Rubicon protocol. It serves as a data structure where all open orders in the marketplace are recorded.
+
+### What is an Order Book?
+In the context of financial markets, an order book is a list of buy and sell orders for a specific asset, such as a token or a stock, organized by price level. An order book lists the number of tokens being bid on or offered at each price point, or market depth. It is dynamically updated as orders are placed and executed.
+
+An order book helps traders make informed decisions as it provides detailed information about the buying and selling activity of a particular asset. The order book is divided into the bid side (buy orders) and the ask side (sell orders).
+
+- **Bid side**: These are orders of market participants looking to buy the asset. Bids are ordered by price from highest to lowest.
+- **Ask side**: These are orders of market participants looking to sell the asset. Asks are ordered by price from lowest to highest.
+
+The gap between the highest bid and the lowest ask is known as the [bid-ask spread](https://en.wikipedia.org/wiki/Bid%E2%80%93ask_spread), which is a key indicator of the liquidity of the asset.
+
+### What are Offers?
+In Rubicon's implementation, orders are represented as `offers`. An offer is a data structure that contains all the information about a buy or sell order, including:
+
+- The address of the person (or smart contract) that created the offer.
+- The type and amount of the asset to be sold (known as the "pay" asset).
+- The type and amount of the asset to be received in exchange (known as the "buy" asset).
+- The time when the offer was created.
+
+Offers provide an efficient way to encode order information on the blockchain. This structure can also be used to perform complex multi-asset trades, analogous to bartering in a traditional market setting.
+
+### Why are Offers Important?
+Offers not only encapsulate the details of a trade but they also form the foundational structure for a peer-to-peer, decentralized marketplace. They help to create an environment where users can trade directly with each other without the need for intermediaries, thereby increasing the efficiency and lowering the cost of trades. By creating a seamless and frictionless trading experience, offers contribute significantly to the value proposition of decentralized exchanges.
+
+In conclusion, Rubicon's implementation of an order book through the usage of offers provides a robust, efficient, and secure environment for peer-to-peer trading of ERC-20 tokens. It is an integral part of Rubicon's mission to provide a high-performance decentralized trading platform on Ethereum's Layer 2 networks. If Etherum is the World's computer, Rubicon is the World's order book.
