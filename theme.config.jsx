@@ -114,7 +114,12 @@ export default {
 	feedback: {
 		content: Feedback,
 	},
-	search: {},
+	sidebar: {
+		defaultMenuCollapseLevel: 1,
+	},
+	search: {
+		placeholder: "Search documentation...",
+	},
 	useNextSeoProps() {
 		return {
 			titleTemplate: "%s",

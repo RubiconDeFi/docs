@@ -1,0 +1,6 @@
+{
+	"order-data": "List Orders",
+    "trade-data": "List Fills",
+    "fee-data": "Fee Data",
+    "get-order": "Get Order"
+}
