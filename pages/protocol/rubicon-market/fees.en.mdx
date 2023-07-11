@@ -35,7 +35,7 @@ Use these view functions to query the fee values.
         returns (uint256)
 ```
 
-Returns the current protocol fee.
+Returns the current protocol fee. Return value is an integer at this precision (1 / 100,000 or 0.001%).
 
 ```solidity copy
 function makerFee() 
@@ -44,7 +44,7 @@ function makerFee()
     returns (uint256)
 ```
 
-Returns the current maker fee.
+Returns the current maker fee. Return value is an integer at this precision (1 / 100,000 or 0.001%).
 
 ### Calculating Fees for a Trade
 
