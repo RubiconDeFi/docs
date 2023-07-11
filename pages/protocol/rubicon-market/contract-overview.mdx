@@ -259,16 +259,25 @@ function getOfferCount(ERC20 sell_gem, ERC20 buy_gem)
 
 Returns the number of offers in the order book for a specified pair.
 
-### getFeeBPS()
-
+```solidity copy
+    function protocolFee() 
+        public
+        view 
+        returns (uint256)
 ```
-function getFeeBPS()
-    public
-    view
+
+Returns the current protocol fee.
+
+### makerFee()
+
+```solidity copy
+function makerFee() 
+    public 
+    view 
     returns (uint256)
 ```
 
-Returns the protocol fee, in basis points.
+Returns the current maker fee.
 
 ## Key Events
 

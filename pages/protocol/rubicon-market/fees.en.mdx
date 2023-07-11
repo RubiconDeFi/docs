@@ -26,13 +26,13 @@ The **Total Taker Fee** is equal to the sum of the **Protocol Fee** and the **Ma
 
 ### Querying the Fees
 
-Use these view functions to query the fee values. **Please note that "getFeeBPS" is a semantic misnomer and the integer value it returns is a pip, 1 / 100,000, and represents the input to the protocol fee**. This is maintained for backward compatibility and will be fixed in future updates.
+Use these view functions to query the fee values.
 
 ```solidity copy
-function getFeeBPS()
-    public
-    view
-    returns (uint256)
+    function protocolFee() 
+        public
+        view 
+        returns (uint256)
 ```
 
 Returns the current protocol fee.
