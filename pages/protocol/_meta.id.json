@@ -3,6 +3,5 @@
 	"rubicon-pools": "Kolam Rubicon",
 	"mainnet_deployments": "Penyebutan Mainnet",
 	"testnet_deployments": "Penyebutan Testnet",
-	"deployments": "Penyebutan v1",
-	"audits": "Audit"
+	"deployments": "Penyebutan v1"
 }

@@ -3,6 +3,5 @@
 	"rubicon-pools": "ルビコン・プール",
 	"mainnet_deployments": "メインネット展開",
 	"testnet_deployments": "テストネット展開",
-	"deployments": "v1展開",
-	"audits": "監査"
+	"deployments": "v1展開"
 }

@@ -3,6 +3,5 @@
 	"rubicon-pools": "Пулы Рубикон",
 	"mainnet_deployments": "Развертывание Mainnet",
 	"testnet_deployments": "Развертывание Testnet",
-	"deployments": "v1 Развертывания",
-	"audits": "Аудиты"
+	"deployments": "v1 Развертывания"
 }
