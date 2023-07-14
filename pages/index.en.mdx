@@ -6,6 +6,7 @@ description: Welcome to the Rubicon docs
 
 # Rubicon Docs
 
+import { Callout } from "/components/Callout";
 import { QuickLinks, QuickLink } from "/components/QuickLinks.jsx";
 
 <QuickLinks>
@@ -36,10 +37,24 @@ import { QuickLinks, QuickLink } from "/components/QuickLinks.jsx";
 
 ## What is Rubicon?
 
-Rubicon is an order book protocol for trading [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) tokens, built on Ethereum [layer 2](https://ethereum.org/en/layer-2/) (L2) networks.
+Rubicon is an order book protocol for trading [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) tokens. It's built on leading Ethereum [layer 2](https://ethereum.org/en/layer-2/) (L2) networks like Arbitrum and Optimism, so traders have instant confirmations and low transaction fees.
+
+Trade tokens on the [Rubicon App](https://app.rubicon.finance/) with Swaps, Limit Orders, and Market Orders.
 
 ## Protocol Overview
 
 [**RubiconMarket.sol**](/protocol/rubicon-market/contract-overview) is the core order book contract. It implements order books and a matching engine for peer-to-peer trading of ERC-20 tokens.
 
 [**RubiconRouter.sol**](/protocol/rubicon-router/rubicon-router) routes token swaps and enables multi-hop swaps if two tokens do not have an underlying order book. It also has helpful view functions for reading data from **RubiconMarket.sol** and contains wrapper functions for handling native ETH throughout the protocol.
+
+## What is an Order Book?
+
+An [order book](https://en.wikipedia.org/wiki/Order_book) is a list of buy and sell orders for an asset, sorted by price level. It's the best way to reflect supply and demand between two assets. 
+
+To learn more about Rubicon's order book, visit the [RubiconMarket docs](/protocol/rubicon-market/contract-overview).
+
+## Why is this important?
+
+One of crypto's many promises is a decentralized financial system, but today the majority of crypto trading volumes are on centralized exchanges (CEXs). These exchanges have custody of user funds, charge predatory fees, and their incentives are not aligned with their users.
+
+Rubicon is an order book protocol built to bring price discovery on-chain. For this space to fulfill its promise, trading needs to be on open protocols, not centralized blackboxes.
