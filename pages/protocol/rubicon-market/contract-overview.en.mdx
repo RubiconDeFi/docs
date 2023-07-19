@@ -220,16 +220,16 @@ function getOfferCount(ERC20 sell_gem, ERC20 buy_gem)
 
 Returns the number of offers in the order book for a specified pair.
 
-### getFeeBPS()
+### protocolFee()
 
 ```solidity copy
-function getFeeBPS()
-    public
-    view
-    returns (uint256)
+    function protocolFee() 
+        public
+        view 
+        returns (uint256)
 ```
 
-Returns the current protocol fee.
+Returns the current protocol fee. Return value is an integer at this precision (1 / 100,000 or 0.001%).
 
 ### makerFee()
 
@@ -240,7 +240,7 @@ function makerFee()
     returns (uint256)
 ```
 
-Returns the current maker fee.
+Returns the current maker fee. Return value is an integer at this precision (1 / 100,000 or 0.001%).
 
 ## Events
 
