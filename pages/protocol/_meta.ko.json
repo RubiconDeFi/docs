@@ -3,6 +3,5 @@
 	"rubicon-pools": "루비콘 풀",
 	"mainnet_deployments": "메인넷 배포",
 	"testnet_deployments": "테스트넷 배포",
-	"deployments": "v1 배포",
-	"audits": "감사"
+	"deployments": "v1 배포"
 }
