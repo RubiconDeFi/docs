@@ -1,0 +1,203 @@
+---
+title: Individual Order Data
+pageTitle: Individual Order Data
+description: Retrieve data regarding a single order on the protocol. 
+---
+
+import { Tab, Tabs } from 'nextra-theme-docs'
+import { Callout } from "/components/Callout";
+import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress, OfferID } from "/components/DynamicEndpoint.jsx";
+
+<Callout type="warning" emoji="⚠️">
+    Order IDs must be converted to hexadecimals and padded to 64 characters 
+    
+    such as: 2049126 -> 0x00000000000000000000000000000000000000000000000000000000001f4466
+</Callout>
+
+## Get Order 
+
+<Tabs items={['GraphQL', 'Python', 'Rust', 'Typescript']}>
+  <Tab>
+    ```graphql copy
+    {
+    offer(id:"0x00000000000000000000000000000000000000000000000000000000001f4466") {
+        # the offer id 
+        id
+        # the asset the offer is selling 
+        pay_gem
+        # the amount the offer is selling 
+        pay_amt
+        # the amount the offer sold 
+        paid_amt
+        # the asset the offer is buying 
+        buy_gem
+        # the amount the offer is buying
+        buy_amt
+        # th amount the offer bought
+        bought_amt
+        # the offer status (boolean: open/closed)
+        open
+        # the maker of the offer
+        maker { id }
+        # the originator of the offer transaction (can differ from maker)
+        from { id }
+        # transaction data
+        transaction {
+            # the time the transaction occurred 
+            timestamp
+            # the block the transaction was in 
+            block_number
+            # the transaction hash
+            id
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab>
+    <OfferID>
+    <DynamicEndpoint>
+    ```python copy
+    import requests
+    import json
+
+    url = "select network endpoint below"
+    headers = {'Content-Type': 'application/json'}
+
+    order_id = "input_order_id"  
+    order_id = '0x{:064x}'.format(order_id) 
+
+    query = f"""
+    {{
+    offer(id:"{order_id}") {{
+        id
+        pay_gem
+        pay_amt
+        paid_amt
+        buy_gem
+        buy_amt
+        bought_amt
+        open
+        maker {{ id }}
+        from {{ id }}
+        transaction {{
+            timestamp
+            block_number
+            id
+        }}
+      }}
+    }}
+    """
+
+    response = requests.post(url, headers=headers, data=json.dumps({'query': query}))
+
+    data = response.json()
+
+    print(data)
+    ```
+    </DynamicEndpoint>
+    </OfferID>
+  </Tab>
+
+  <Tab>
+    <OfferID>
+    <DynamicEndpoint>
+    ```rust copy
+    use reqwest::Error;
+    use serde_json::{json, Value};
+
+    #[tokio::main]
+    async fn main() -> Result<(), Error> {
+        let client = reqwest::Client::new();
+        let order_id = format!("0x{:016x}", "input_order_id"); 
+
+        let query = format!(
+            r#"
+            {
+            offer(id: "{}" ) {
+                id
+                pay_gem
+                pay_amt
+                paid_amt
+                buy_gem
+                buy_amt
+                bought_amt
+                open
+                maker { id }
+                from { id }
+                transaction {
+                    timestamp
+                    block_number
+                    id
+                }
+              }
+            }
+            "#,
+            order_id
+        );
+
+        let url = "select network endpoint below";
+        let res: Value = client.post(url)
+            .json(&payload)
+            .send()
+            .await?
+            .json()
+            .await?;
+
+        println!("{:#?}", res);
+
+        Ok(())
+    }
+    ```
+    </DynamicEndpoint>
+    </OfferID>
+  </Tab>
+  <Tab>
+    <OfferID>
+    <DynamicEndpoint>
+    ```typescript copy
+    import axios, { AxiosResponse } from 'axios';
+
+    const url = "select network endpoint below";
+    const order_id = "input_order_id"; 
+
+    let hex = order_id.toString(16);
+    while (hex.length < 64) {
+        hex = '0' + hex;
+    };
+    hex = '0x' + hex;
+
+    const query = `
+    {
+    offer(id: "${hex}" ) {
+        id
+        pay_gem
+        pay_amt
+        paid_amt
+        buy_gem
+        buy_amt
+        bought_amt
+        open
+        maker { id }
+        from { id }
+        transaction {
+            timestamp
+            block_number
+            id
+        }
+        }
+    }
+    `;
+
+    axios.post(url, { query })
+    .then((response: AxiosResponse<any>) => {
+        console.log(response.data);
+    })
+    .catch((error) => {
+        console.error(error);
+    });
+    ```
+    </DynamicEndpoint>
+    </OfferID>
+  </Tab>
+</Tabs>
