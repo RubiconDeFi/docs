@@ -24,7 +24,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
     <QuoteAddress>
     ```graphql copy
     {
-    buys: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+    buys: takes(first: 1000, orderBy:timestamp, orderDirection:desc,
             where: {take_gem: "0xasset", give_gem: "0xquote"}) {
         take_gem
         take_amt
@@ -44,7 +44,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
         }
     }
     
-    sells: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+    sells: takes(first: 1000, orderBy:timestamp, orderDirection:desc,
             where: {take_gem: "0xquote", give_gem: "0xasset"}) {
         take_gem
         take_amt
@@ -85,7 +85,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
 
     query = f"""
     {{
-    buys: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+    buys: takes(first: 1000, orderBy:timestamp, orderDirection:desc,
             where: {{take_gem: "{asset}", give_gem: "{quote}"}}) {{
         take_gem
         take_amt
@@ -105,7 +105,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
         }}
     }}
     
-    sells: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+    sells: takes(first: 1000, orderBy:timestamp, orderDirection:desc,
             where: {{take_gem: "{quote}", give_gem: "{asset}"}}) {{
         take_gem
         take_amt
@@ -155,7 +155,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
         let query = format!(
             r#"
             {
-            buys: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+            buys: takes(first: 1000, orderBy:timestamp, orderDirection:desc,
                     where: {take_gem: "{}", give_gem: "{}"}) {
                 take_gem
                 take_amt
@@ -175,7 +175,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
                 }
             }
             
-            sells: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+            sells: takes(first: 1000, orderBy:timestamp, orderDirection:desc,
                     where: {take_gem: "{}", give_gem: "{}"}) {
                 take_gem
                 take_amt
@@ -234,7 +234,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
 
     const query = `
         {
-        buys: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+        buys: takes(first: 1000, orderBy:timestamp, orderDirection:desc,
                 where: {take_gem: "${asset}", give_gem: "${quote}"}) {
             take_gem
             take_amt
@@ -254,7 +254,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
             }
         }
         
-        sells: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+        sells: takes(first: 1000, orderBy:timestamp, orderDirection:desc,
                 where: {take_gem: "${quote}", give_gem: "${asset}"}) {
             take_gem
             take_amt
@@ -297,7 +297,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
     <MakerAddress>
     ```graphql copy
     {
-    buys: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+    buys: takes(first: 1000, orderBy:timestamp, orderDirection:desc,
             where:  {offer_ : { maker: "0xinput_address" }}) {
         take_gem
         take_amt
@@ -317,7 +317,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
         }
     }
     
-    sells: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+    sells: takes(first: 1000, orderBy:timestamp, orderDirection:desc,
             where:  {offer_ : { maker: "0xinput_address" }}) {
         take_gem
         take_amt
@@ -356,7 +356,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
 
     query = f"""
     {{
-    buys: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+    buys: takes(first: 1000, orderBy:timestamp, orderDirection:desc,
             where: {{offer_ : {{ maker: "{maker}" }}}}) {{
         take_gem
         take_amt
@@ -376,7 +376,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
         }}
     }}
     
-    sells: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+    sells: takes(first: 1000, orderBy:timestamp, orderDirection:desc,
             where: {{offer_ : {{ maker: "{maker}" }}) {{
         take_gem
         take_amt
@@ -426,7 +426,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
         let query = format!(
             r#"
             {
-            buys: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+            buys: takes(first: 1000, orderBy:timestamp, orderDirection:desc,
                     where: {offer_ : { maker: {} }}) {
                 take_gem
                 take_amt
@@ -446,7 +446,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
                 }
             }
             
-            sells: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+            sells: takes(first: 1000, orderBy:timestamp, orderDirection:desc,
                     where: {offer_ : { maker: {} }}) {
                 take_gem
                 take_amt
@@ -504,7 +504,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
 
     const query = `
         {
-        buys: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+        buys: takes(first: 1000, orderBy:timestamp, orderDirection:desc,
                 where: {offer_ : { maker: "${maker} }}) {
             take_gem
             take_amt
@@ -524,7 +524,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
             }
         }
         
-        sells: takes(first: 1000, orderBy:transaction__timestamp, orderDirection:desc,
+        sells: takes(first: 1000, orderBy:timestamp, orderDirection:desc,
                 where: {offer_ : { maker: "${maker} }}) {
             take_gem
             take_amt
