@@ -96,7 +96,7 @@ export function MakerAddress({ children }) {
         const lowerCaseValue = e.target.value.toLowerCase()
         setInputValue(lowerCaseValue)
         if (tokenRef.current) {
-            tokenRef.current.innerText = lowerCaseValue
+            tokenRef.current.innerText = `"${lowerCaseValue}"`;
         }
     }
 
@@ -147,7 +147,7 @@ export function QuoteAddress({ children }) {
     const handleInputChange = (e) => {
         const lowerCaseValue = e.target.value.toLowerCase()
         setInputValue(lowerCaseValue)
-        tokenRef.current.forEach(token => token.innerText = lowerCaseValue)
+        tokenRef.current.forEach(token => token.innerText = `"${lowerCaseValue}"`);
     }
 
     return (
@@ -198,7 +198,7 @@ export function AssetAddress({ children }) {
     const handleInputChange = (e) => {
         const lowerCaseValue = e.target.value.toLowerCase()
         setInputValue(lowerCaseValue)
-        tokenRef.current.forEach(token => token.innerText = lowerCaseValue)
+        tokenRef.current.forEach(token => token.innerText = `"${lowerCaseValue}"`);
     }
 
     return (
