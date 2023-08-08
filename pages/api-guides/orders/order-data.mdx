@@ -193,7 +193,7 @@ import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/comp
         first: 1000
         orderBy: price
         orderDirection: desc
-        where: {pay_gem: "0xasset", buy_gem: "0xquote", open: true}
+        where: {pay_gem: "0xquote", buy_gem: "0xasset", open: true}
     ) {
         # the id of the offer
         id
