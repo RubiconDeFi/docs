@@ -1,0 +1,138 @@
+---
+title: Contract Overview
+pageTitle: Contract Overview
+description: Overview and docs for the Rubicon order book contract
+---
+
+# Chợ Rubicon
+
+|****78****|
+
+## Tổng quan
+
+RubiconMarket.sol triển khai sổ lệnh và công cụ khớp lệnh cho giao dịch ngang hàng của [ERC-20 tokens](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/).
+
+Sổ lệnh là danh sách các lệnh mua và bán đối với một tài sản, được sắp xếp theo mức giá. Hợp đồng này lưu trữ mọi sổ đặt hàng ERC20/ERC20 dưới dạng hai danh sách được sắp xếp liên kết kép, mỗi danh sách dành cho một bên của thị trường nhất định.
+
+Hợp đồng sử dụng mô hình ký quỹ để thanh khoản; khi `offer()` được gọi, các mã thông báo đó sẽ được gửi đến hợp đồng. Nếu/khi một đơn đặt hàng được thực hiện, hợp đồng sẽ khớp trực tiếp với các nhà giao dịch và mã thông báo sẽ được gửi cho mỗi bên. Một đơn đặt hàng có thể bị hủy và hợp đồng sẽ trả lại mã thông báo cho người gửi.
+
+Rubicon Market là sản phẩm phái sinh từ mã nguồn mở |****80****| của MakerDAO. và kế thừa giấy phép AGPL-3.0.
+
+## Chức năng
+
+### lời đề nghị()
+
+|****57****|
+
+| Thông số | Loại | Mô tả |
+| ---------------------- | ----------- | ------------------------------------------------------| **** 15 ****|------------------|**** 19 * ***|------------------------|* *** 24 ****|--------------- |
+| pay\_amt               | uint256     | Quantity of ERC-20 tokens the caller is selling                                                                                   |
+| pay\_gem               | address     | ERC-20 token the caller is selling                                                                                                |
+| buy\_amt               | uint256     | Quantity of ERC-20 tokens the caller is buying                                                                                    |
+| buy\_gem               | address     | ERC-20 token the caller is buying                                                                                                 |
+| \[Optional] pos        | uint256     | Optional: Position in the sorted list to place the offer. Use `0` unless you know the exact pos (closest ID) to insert the order  |
+| \[Optional] recipient  | address     | Optional: Custom recipient address for the filled offer                                                                           |
+
+
+Calling the `offer()` function places a limit order on Rubicon. The `pay_amt` quantity of the `pay_gem` token will be sent to the contract, sitting in escrow until the offer is filled or canceled. There are more advanced `offer()` functions that have parameters for specifying the position in the order book or a custom recipient address for the filled offer.
+
+### cancel()
+
+```
+    function cancel(uint id)
+        public
+        can_cancel(id)
+        returns (bool success)
+```
+
+| Parameter Name | Type    | Description                                  |
+| ---|**** 28 ** ***|----- | ------- | ---------------|** ** 33 ****|------------------|**** 37 *** *|------------ | |****40****|-| -------------------------------------- |
+| mua_gem | địa chỉ | Mã thông báo ERC-20 mà người nhận đang mua |
+| mua_amt | uint256 | Số lượng mã thông báo mà người nhận đang mua |
+| trả_gem | địa chỉ | Token ERC-20 mà người nhận đang bán |
+| max_fill_amount | uint256 | Số lượng mã thông báo thanh toán tối đa được bán |
+
+Nỗ lực giao dịch số lượng `buy_amt` của mã thông báo `buy_gem` để lấy tối đa số lượng `max_fill_amount` của mã thông báo `pay_gem`. Giao dịch sẽ hoàn nguyên nếu nhà giao dịch chi tiêu nhiều hơn số tiền tối đa được chỉ định. Đây là lệnh mua "Fill-or-Kill".
+
+### sellAllAmount()
+
+|****63****|
+
+| Tên thông số | Loại | Mô tả |
+| --------------- | ------- | ---------------------------------| **** 56 ****| |
+| trả_gem | địa chỉ | Token ERC-20 mà người nhận đang bán |
+| trả_amt | uint256 | Số lượng mã thông báo mà người nhận đang bán |
+| mua_gem | địa chỉ | Mã thông báo ERC-20 mà người nhận đang mua |
+| min_fill_amount | uint256 | Số lượng mã thông báo mua tối thiểu nhận được |
+
+Nỗ lực giao dịch số lượng `sell_amt` của mã thông báo `sell_gem` để lấy ít nhất số lượng `min_fill_amount` của mã thông báo `pay_gem`. Giao dịch sẽ hoàn nguyên nếu nhà giao dịch nhận được ít hơn số tiền tối thiểu được chỉ định. Đây là lệnh bán "Fill-or-Kill".
+
+## Xem chức năng
+
+### getBuyAmountWithFee()
+
+|****64****|
+
+Trả về `buy_amt`, số lượng mã thông báo `buy_gem` để gửi tới hợp đồng để nhận số lượng `pay_amt` của mã thông báo `pay_gem`.
+
+### getPayAmountWithFee
+
+|****65****|
+
+Trả về `pay_amt`, số lượng mã thông báo `pay_gem` để gửi đến hợp đồng để nhận số lượng `buy_amt` của mã thông báo `buy_gem`.
+
+### getBestOffer()
+
+|****66****|
+
+Trả về ID của phiếu mua hàng ở đầu sổ đặt hàng.
+
+Bán tại. Gọi chức năng này với WETH là `pay_gem` và USDC là `buy_gem` sẽ trả về yêu cầu tốt nhất trên WETH/USDC. Chuyển đổi mã thông báo sẽ trả lại giá thầu tốt nhất.
+
+### getWorseOffer()
+
+|****67****|
+
+Trả về ưu đãi tệ hơn tiếp theo trong danh sách đã sắp xếp. Ưu đãi tệ hơn là ưu đãi cao hơn nếu đơn đặt hàng mục tiêu là yêu cầu và thấp hơn nếu đó là giá thầu. Trong cả hai trường hợp, nó sẽ trả về một cái mới hơn nếu chúng bằng nhau.
+
+### getBuyAmount()
+
+|****68****|
+
+Trả về số lượng mã thông báo `buy_gem` nhận được nếu một lượng mã thông báo `pay_gem` cụ thể được chi tiêu. Được sử dụng để kiểm tra trạng thái hiện tại của sổ lệnh.
+
+### getPayAmount()
+
+|****69****|
+
+Trả về số lượng mã thông báo `pay_gem` cần thiết để mua một lượng mã thông báo `buy_gem` cụ thể. Được sử dụng để kiểm tra trạng thái hiện tại của sổ đặt hàng.
+
+### getOfferCount()
+
+|****70****|
+
+Trả về số lượng phiếu mua hàng trong sổ đặt hàng cho một cặp được chỉ định.
+
+### phí giao thức()
+
+|****71****|
+
+Trả về phí giao thức hiện tại. Giá trị trả về là một số nguyên ở độ chính xác này (1/100.000 hoặc 0,001%).
+
+### makerFee()
+
+|****72****|
+
+Trả về phí maker hiện tại. Giá trị trả về là một số nguyên ở độ chính xác này (1/100.000 hoặc 0,001%).
+
+## Sự kiện chính
+
+|****73****|
+
+|****74****|
+
+|****75****|
+
+|****76****|
+
+|****77****|

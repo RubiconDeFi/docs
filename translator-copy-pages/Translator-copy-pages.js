@@ -2,6 +2,10 @@ const fs = require("fs");
 const path = require("path");
 const translate = require("@vitalets/google-translate-api");
 
+// const { HttpProxyAgent } = require('http-proxy-agent');
+// const agent = new HttpProxyAgent('http://178.128.200.87:80');
+
+
 function replaceMetaData(text, blockArray) {
 	const regex = /---([\s\S]*?)---/g;
 	const importRegex = /import\s+.*?\s+from\s+['"].*?['"]?;/g;
@@ -58,7 +62,19 @@ const translateMarkdownFile = async (inputFilePath, outputFilePath, languageCode
 	if (onlyCopy) {
 		translatedFileContent = data;
 	} else {
-		const translated = await translate.translate(result.text, { to: languageCode });
+
+		const startTime = Date.now();
+        const timer = setInterval(() => {
+            const elapsedTime = (Date.now() - startTime) / 1000;
+            console.log(`Time elapsed: ${elapsedTime.toFixed(2)} seconds`);
+        }, 1000); // Update every second
+
+		const translated = await translate.translate(result.text, { to: languageCode }); // , fetchOptions: { agent }
+
+        clearInterval(timer); // Stop the timer
+        const totalTime = (Date.now() - startTime) / 1000;
+        console.log(`Total translation time: ${totalTime.toFixed(2)} seconds`);
+
 		translatedFileContent = translated.text;
 	}
 
@@ -69,6 +85,139 @@ const translateMarkdownFile = async (inputFilePath, outputFilePath, languageCode
 
 	fs.writeFileSync(outputFilePath, translatedFileContent, "utf8");
 };
+
+async function processFiles(dirPath, processedFiles, targetLanguageCode) {
+	fs.readdir(dirPath, async (err, files) => {
+	  if (err) throw err;
+  
+	  for (let i = 0; i < files.length; i++) {
+		const file = files[i];
+		console.log(`Processing file: ${file}`)
+		await new Promise((resolve, reject) => {
+		  const filePath = path.join(dirPath, file);
+		  fs.stat(filePath, (err, stat) => {
+			if (err) return reject(err);
+  
+			if (stat.isDirectory()) {
+			  return resolve(processFiles(filePath, processedFiles, targetLanguageCode));
+			}
+
+			// add sections to avoid translating
+			if (filePath.includes('api-guides/orders')) {
+				return resolve();
+			}
+  
+			const { name, ext } = path.parse(filePath);
+			const nameComponents = name.split(".");
+			const hasLanguageCode = nameComponents.some((component) => languageCodes.includes(component));
+			const isTargetExtension = extensions.includes(ext);
+			const isTargetLanguage = targetLanguageCode ? languageCodes.includes(targetLanguageCode) : true;
+			const isProcessed = processedFiles.has(filePath);
+  
+			if (!hasLanguageCode && isTargetExtension && isTargetLanguage && !isProcessed) {
+			  const newFileName = `${name}.${targetLanguageCode}${ext}`;
+			  const newFilePath = path.join(dirPath, newFileName);
+  
+			  if (path.extname(filePath) === ".md" || path.extname(filePath) === ".mdx") {
+				translateMarkdownFile(filePath, newFilePath, targetLanguageCode)
+				  .then(() => {
+					console.log(`The file has been successfully translated and saved to ${newFilePath}`);
+					processedFiles.add(filePath);
+  
+					// Introduce a delay only after a successful translation
+					setTimeout(() => {
+					  resolve();
+					}, 1000); // 1 second delay
+				  })
+				  .catch((err) => {
+					console.error(`An error occurred while translating the File: ${filePath} | Error: ${err.message}`);
+					reject(err);
+				  });
+			  } else {
+				fs.copyFile(filePath, newFilePath, (err) => {
+				  if (err) return reject(err);
+				  console.log(`Copy file: ${filePath} => ${newFilePath}`);
+				  processedFiles.add(filePath);
+				  resolve();
+				});
+			  }
+			} else {
+			  resolve();
+			}
+		  });
+		});
+	  }
+  
+	  console.log('All translations complete');
+	});
+  }
+  
+  
+
+/**
+function processFiles(dirPath, processedFiles, targetLanguageCode) {
+	fs.readdir(dirPath, (err, files) => {
+	  if (err) throw err;
+  
+	  const translationPromises = files.map((file) => {
+		return new Promise((resolve, reject) => {
+		  const filePath = path.join(dirPath, file);
+		  fs.stat(filePath, (err, stat) => {
+			if (err) return reject(err);
+  
+			if (stat.isDirectory()) {
+			  return resolve(processFiles(filePath, processedFiles, targetLanguageCode));
+			}
+  
+			const { name, ext } = path.parse(filePath);
+			const nameComponents = name.split(".");
+			const hasLanguageCode = nameComponents.some((component) => languageCodes.includes(component));
+			const isTargetExtension = extensions.includes(ext);
+			const isTargetLanguage = targetLanguageCode ? languageCodes.includes(targetLanguageCode) : true;
+			const isProcessed = processedFiles.has(filePath);
+			
+
+			if (!hasLanguageCode && isTargetExtension && isTargetLanguage && !isProcessed) {
+			const newFileName = `${name}.${targetLanguageCode}${ext}`;
+			const newFilePath = path.join(dirPath, newFileName);
+
+			if (path.extname(filePath) === ".md" || path.extname(filePath) === ".mdx") {
+				translateMarkdownFile(filePath, newFilePath, targetLanguageCode)
+				.then(() => {
+					console.log(`The file has been successfully translated and saved to ${newFilePath}`);
+					processedFiles.add(filePath);
+					resolve();
+				})
+				.catch((err) => {
+					console.error(`An error occurred while translating the File: ${filePath} | Error: ${err.message}`);
+					reject(err);
+				});
+			} else {
+				fs.copyFile(filePath, newFilePath, (err) => {
+				if (err) return reject(err);
+				console.log(`Copy file: ${filePath} => ${newFilePath}`);
+				processedFiles.add(filePath);
+				resolve();
+				});
+			}
+			} else {
+			resolve();
+			}
+			});
+		});
+	  });
+  
+	  // Wait for all the translations to complete
+	  Promise.all(translationPromises)
+		.then(() => {
+		  console.log('All translations complete');
+		})
+		.catch((err) => {
+		  console.error(err);
+		});
+	});
+  }
+  
 
 function processFiles(dirPath, processedFiles, targetLanguageCode) {
     fs.readdir(dirPath, (err, files) => {
@@ -132,6 +281,7 @@ function processFiles(dirPath, processedFiles, targetLanguageCode) {
         });
     });
 }
+*/
 
 
 function batchProcess(dirPath) {

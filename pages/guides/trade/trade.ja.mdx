@@ -1,35 +1,33 @@
 ---
-title: ルビコン/トレード
-pageTitle: 貿易
-description: Rubicon Webアプリでの取引
+title: Trade
+pageTitle: Trade
+description: Trading on the Rubicon App
 ---
 
-＃＃ 概要
+# 取引概要
 
-[Trade](https://app.rubicon.finance/trade)でオーダーブックを閲覧したり、ERC-20 トークンを [Market](/guides/trade/order-types) と取引したりできます。と [Limit](/guides/trade/order-types)注文:
+**[Trade](https://app.rubicon.finance/trade)** ページで、Rubicon アプリの指値注文と成行注文を使用して ERC-20 トークン ペアを取引します。
 
-![](</assets/image(91).png>)
+TradingViewのチャートには、各トークンペアの過去のルビコン取引データが表示されます。
 
-### トレードメニュー
+![](</assets/Trade Page.png>)
 
-![](</assets/image(76).png>)
+## 注文タイプ
 
-送信 [Market](/guides/trade/order-types)と [Limit](/guides/trade/order-types)買い側または売り側の注文。
+成行注文は数量を指定し、利用可能な最良の価格で約定します。成行注文は [Taker Fee](/protocol/rubicon-market/fees) を支払います。
 
-### トークンメニュー
+指値注文は価格と数量を指定し、市場価格が指値価格を超えると約定します。指値注文は [Maker Fee](/protocol/rubicon-market/fees) を獲得します。それらが満たされたとき。
 
-![](</assets/image(9).png>)
+![](</assets/MarketOrder.png>)
 
-相場トークンでソートされたアクティブな市場と取引ペアを表示します。チェックアウト [this guide](/guides/trade/order-types/adding-a-trading-pair)新しいペアを追加するには!
+## オープンオーダー
 
-### オーダーブック
+未処理の注文を管理およびキャンセルし、ブロック エクスプローラーでトランザクションの詳細を表示します。
 
-![](</assets/image(47).png>)
+![](</assets/OpenOrders.png>)
 
-オーダーブックのステータスを表示します。オーダーブックのデータは、表示されている最新のブロックを通じて同期されます。
+## オーダーブック
 
-### オープンオーダー
+ルビコンのオーダーブックの現在のステータスを表示します。データは表示されている最新のブロックまでライブです。
 
-![](</assets/image(102).png>)
-
-未処理の注文を管理またはキャンセルし、ブロック エクスプローラーで取引の詳細を表示する
+![](</assets/OrderBook.png>)

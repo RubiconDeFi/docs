@@ -1,6 +1,4 @@
 {
-	"trade": "Placing a Trade",
-	"order-types": "Order Types",
-	"adding-a-trading-pair": "Adding a Trading Pair",
-	"fees": "Fees"
+	"swap": "Swap",
+	"trade": "Trade"
 }

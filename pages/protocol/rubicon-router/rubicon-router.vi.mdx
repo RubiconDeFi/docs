@@ -1,0 +1,36 @@
+---
+title: Contract Overview
+pageTitle: Contract Overview
+description: Overview and docs for the Rubicon Router contract
+---
+
+# Tổng quan
+
+RubiconRouter.sol định tuyến các giao dịch hoán đổi mã thông báo ERC-20 trên hợp đồng RubiconMarket.
+
+|****12****|
+
+## Chức năng
+
+|****11****|
+
+| Tên thông số | Loại | Mô tả |
+| --------------- | ------- | ---------------------------------| ****10****| |
+| trả_amt | uint256 | Số lượng mã thông báo mà người nhận đang bán |
+| mua_amt_min | uint256 | Số lượng tối thiểu nhận được của địa chỉ mã thông báo cuối cùng trong `route` |
+| lộ trình | địa chỉ | Địa chỉ mã thông báo đầu tiên là mã thông báo pay_amt, địa chỉ cuối cùng là mã thông báo buy_amt |
+| đến | địa chỉ | Địa chỉ là mã thông báo pay_amt, địa chỉ cuối cùng là mã thông báo buy_amt |
+
+Hàm này hoán đổi mã thông báo trên một `tuyến đường` địa chỉ mã thông báo được chỉ định với số lượng tối thiểu nhận được. Nó cho phép hoán đổi mã thông báo trên nhiều sổ đặt hàng trên RubiconMarket, trong trường hợp các mã thông báo không có sổ đặt hàng hiện có.
+
+## Sự kiện chính
+
+    sự kiện phát raHoán đổi (
+        địa chỉ người nhận được lập chỉ mục,
+        địa chỉ đầu vào được lập chỉ mụcERC20,
+        địa chỉ mục tiêu được lập chỉ mụcERC20,
+        cặp byte32,
+        đầu vào uint256Số lượng,
+        uint256 đã nhận ra Điền,
+        rào cản uint256BuyAmtMin
+    );
