@@ -9,7 +9,7 @@ Rubicon is built on Optimism, a low-cost and lightning-fast Ethereum L2 chain.
 
 ## Contributing
 
-The documentation repository follows a pattern as follows: 
+The documentation repository adhears to a structure as follows: 
 
 ```
 ├── docs
