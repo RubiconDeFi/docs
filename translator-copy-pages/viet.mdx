@@ -1,0 +1,2658 @@
+Tổng quan
+
+Rubicon là gì?
+
+Rubicon là giao thức sổ lệnh để trao đổi token [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/), xây dựng trên mạng lưới [layer 2](https://ethereum.org/en/layer-2/) của Ethereum.
+
+Tổng quan giao thức
+
+[RubiconMarket.sol](https://docs.rubicon.finance/protocol/rubicon-market/contract-overview) là phần cốt lõi của hợp đồng sổ lệnh. Nó thực thi sổ lệnh và khớp lệnh giữa những người giao dịch token ERC-20.
+
+[RubiconRouter.sol](https://docs.rubicon.finance/protocol/rubicon-router/rubicon-router) giúp hoán đổi token và cho phép hoán đổi nhiều bước nếu hai token không có trên sổ lệnh. Nó cũng có các hàm hữu ích để đọc dữ liệu từ RubiconMarket.sol và chứa các hàm bên trong để xử lý ETH gốc trong toàn bộ giao thức.
+
+Câu hỏi thường gặp
+==================
+
+Rubicon là gì?
+
+Rubicon là giao thức sổ lệnh để trao đổi token [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/), xây dựng trên mạng lưới [layer 2](https://ethereum.org/en/layer-2/) của Ethereum.\
+Để bắt đầu giao dịch, truy cập : [app.rubicon.finance
+
+](http://app.rubicon.finance)Chuỗi/mạng nào được hỗ trợ?
+
+Rubicon đang hoạt động trên [Optimism](https://www.optimism.io/) và sẽ có trên nhiều mạng L2 hơn trong tương lai gần!
+
+Token nào được hỗ trợ?
+
+Giao thức Rubicon hỗ trợ giao dịch bất kỳ token nào tuân thủ [tiêu chuẩn ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/).
+
+Ứng dụng sử dụng danh sách mặc định các token phổ biến của mỗi mạng. Thực hiện theo hướng dẫn để thêm token mới vào danh sách token cục bộ của bạn. Hãy nhớ rằng thanh khoản có thể thấp đối với token mới, bạn có thể là người đầu tiên đặt lệnh giới hạn trên sổ lệnh.
+
+Nơi nào tôi có thể đọc code?
+
+Xem code trên Github [ở đây](https://github.com/RubiconDeFi/rubi-protocol-v2). Giao thức là mã nguồn mở và tất cả hợp đồng thông minh đều đã được xác minh
+
+Nơi nào tôi có thể tìm địa chỉ hợp đồng?\
+[Thực thi
+
+](https://docs.rubicon.finance/protocol/deployments)
+
+Các khoản phí là gì?\
+[Phí](https://docs.rubicon.finance/protocol/rubicon-market/fees)
+
+Rubicon đã được kiểm tra chưa?\
+Có, hãy [truy cập](https://docs.rubicon.finance/protocol/audits) để xem các lần kiểm tra bảo mật trước đó trên hợp đồng thông minh.
+
+Ở đây có chương trình thưởng khi phát hiện lỗi không?
+
+Có, hãy truy cập [chương trình thưởng lỗi](https://immunefi.com/bounty/rubicon/) trang trên Immunefi để biết chi tiết.
+
+Nơi nào tôi có thể tìm các phân tích?
+
+Ở trên Rubicon [Dune bảng điều khiển](https://dune.com/rubicondefi/rubicon) có các chỉ số sử dụng và khối lượng lịch sử cho giao thức..
+
+Nơi nào tôi có thể được hỗ trợ?\
+Để được hỗ trợ, hãy tham gia [Rubicon Discord](https://discord.com/invite/E7pS24J) và nhắn một tin nhắn trên kênh #support. Hãy cẩn thận lừa đảo và kẻ mạo danh, nhóm của chúng tôi sẽ không bao giờ nhắn tin với bạn trước hay hỏi cụm từ khoá bị mật hoặc khoá riêng tư của bạn!
+
+Rubicon có mã token không?
+
+Rubicon hiện không có token, nhóm đang tập trung vào việc xây dựng và tìm kiếm sản phẩm phù hợp với thị trường. Mọi thông báo sẽ đến từ nhóm Rubicon trên các kênh chính thức.
+
+Giao thức
+
+Thị trường Rubicon
+==================
+
+Tổng quan về hợp đồng
+---------------------
+
+Tổng quan
+
+RubiconMarket.sol triển khai sổ lệnh và công cụ khớp lệnh để giao dịch ngang hàng token [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/).
+
+Một sổ lệnh là một danh sách các lệnh mua và bán cho một loại tài sản, sắp xếp theo mức giá. Hợp đồng này lưu trữ mọi sổ lệnh ERC20/ERC20 dưới dạng hai danh sách được sắp xếp liên kết đôi, mỗi danh sách dành cho một bên của thị trường nhất định.
+
+Hợp đồng sử dụng như một mô hình ký quỹ cho thanh khoản; khi offer() được gọi, tokens được gửi đến hợp đồng. Nếu/khi ấy một lệnh được lấp đầy, hợp đồng sẽ khớp với những nhà giao dịch trực tiếp và tokens được gửi đến cho mỗi bên. Khi cancel() được gọi, hợp đồng sẽ loại bỏ offer() và trả lại tokens cho người sở hữu.
+
+Hợp đồng là một cách hoạt động phái sinh của MakerDAO's mã nguồn mở [OasisDEX](https://oasisdex.com/) và kế thừa giấy phép của  AGPL-3.0.
+
+Hàm
+
+offer()
+
+    function offer(
+
+        uint256 pay_amt,
+
+        IERC20 pay_gem,
+
+        uint256 buy_amt,
+
+        IERC20 buy_gem,
+
+    ) public returns (uint256)
+
+|
+
+Thông số
+
+ |
+
+Loại/ Kiểu
+
+ |
+
+Mô tả
+
+ |
+|
+
+pay_amt
+
+ |
+
+uint256
+
+ |
+
+Lượng tokens ERC-20 được gọi để bán
+
+ |
+|
+
+pay_gem
+
+ |
+
+address
+
+ |
+
+Token ERC-20 được gọi để bán
+
+ |
+|
+
+buy_amt
+
+ |
+
+uint256
+
+ |
+
+Lượng tokens ERC-20 được gọi để mua
+
+ |
+|
+
+buy_gem
+
+ |
+
+address
+
+ |
+
+Token ERC-20 được gọi để mua
+
+ |
+|
+
+[Optional] pos
+
+ |
+
+uint256
+
+ |
+
+Tuỳ chọn: Vị trí trong danh sách được sắp xếp để đặt lệnh mua. Sử dụng 0 trừ khi bạn biết vị trí chính xác (ID gần nhất) để chèn lệnh
+
+ |
+|
+
+[Optional] recipient
+
+ |
+
+address
+
+ |
+
+Tuỳ chọn: tuỳ chọn địa chỉ người nhận cho lệnh mua đã hoàn thành
+
+ |
+
+Gọi hàm offer() là đặt một lệnh giới hạn trên Rubicon. pay_amt là lượng pay_gem token sẽ được gửi vào hợp đồng, ký quỹ cho đến khi lệnh được lấp đầy hoặc được huỷ. Hàm nâng cao offer() thứ mà có những thông số cho vị trí cụ thể trong sổ lệnh hoặc tuỳ chỉnh địa chỉ người nhận cho lệnh đã được lấp đầy.
+
+cancel()
+
+    function cancel(uint id)
+
+        public
+
+        can_cancel(id)
+
+        returns (bool success)
+
+|
+
+Thông số
+
+ |
+
+Loại/ Kiểu
+
+ |
+
+Mô tả
+
+ |
+|
+
+id
+
+ |
+
+uint256
+
+ |
+
+Id của lệnh mà người dùng muốn huỷ
+
+ |
+
+Huỷ một offer() trên sổ lệnh và hoàn trả lại tokens cho người sở hữu. Công cụ sửa đổi can_cancel kiểm tra xem lệnh đang nhắm đến có đang hoạt động và thuộc sở hữu của người gọi hay không.
+
+batchOffer()
+
+    function batchOffer(
+
+        uint[] calldata payAmts,
+
+        address[] calldata payGems,
+
+        uint[] calldata buyAmts,
+
+        address[] calldata buyGems
+
+    ) external
+
+Sử dụng batchOffer() để đặt nhiều lệnh trong 1 giao dịch. Hàm lấy bốn mảng làm tham số: payAmts, payGems, buyAmts, và buyGems. Các mảng phải cùng độ dài và và thứ tự của các phần tử phải khớp nhau. Hàm sẽ lặp qua từng phần tử trong mảng và đặt một lệnh với các tham số tương ứng.
+
+batchCancel()
+
+    function batchCancel(uint[] calldata ids) external
+
+Sử dụng batchCancel() để huỷ nhiều lệnh trong một giao dịch. Hàm lấy một mảng offer() ids làm tham số. Hàm sẽ lặp qua từng phần tử trong mảng và hủy lệnh tương ứng.
+
+batchRequote()
+
+    function batchRequote(
+
+        uint[] calldata ids,
+
+        uint[] calldata payAmts,
+
+        address[] calldata payGems,
+
+        uint[] calldata buyAmts,
+
+        address[] calldata buyGems
+
+    ) external
+
+Sử dụng batchRequote() để hủy và thay thế nhiều lệnh mua trong một giao dịch. Hàm lấy năm mảng làm tham số: ids, payAmts, payGems, buyAmts và buyGems. Các mảng phải có cùng độ dài và thứ tự của các phần tử phải khớp nhau. Hàm sẽ lặp qua từng phần trong mảng và hủy lệnh tương ứng. Sau đó, nó sẽ đặt các lệnh mới với các thông số tương ứng.
+
+buyAllAmount()
+
+     function buyAllAmount(
+
+        ERC20 buy_gem,
+
+        uint256 buy_amt,
+
+        ERC20 pay_gem,
+
+        uint256 max_fill_amount
+
+    ) external returns (uint256 fill_amt)
+
+|
+
+Thông số
+
+ |
+
+Loại/ Kiểu
+
+ |
+
+Mô tả
+
+ |
+|
+
+buy_gem
+
+ |
+
+address
+
+ |
+
+Token ERC-20 mà người mua đang mua
+
+ |
+|
+
+buy_amt
+
+ |
+
+uint256
+
+ |
+
+Lượng token mà người mua đang mua
+
+ |
+|
+
+pay_gem
+
+ |
+
+address
+
+ |
+
+Token ERC-20 mà người bán đang bán
+
+ |
+|
+
+max_fill_amount
+
+ |
+
+uint256
+
+ |
+
+Lượng token tối đa được bán
+
+ |
+
+Giao dịch buy_amt lượng token buy_gem để lấy tối đa số lượng token max_fill_amount của token pay_gem. Giao dịch sẽ hoàn nguyên nếu nhà giao dịch chi tiêu nhiều hơn số tiền tối đa được chỉ định. Đây là lệnh mua "Fill-or-Kill".
+
+sellAllAmount()
+
+     function sellAllAmount(
+
+        ERC20 pay_gem,
+
+        uint256 pay_amt,
+
+        ERC20 buy_gem,
+
+        uint256 min_fill_amount
+
+    ) external returns (uint256 fill_amt)
+
+|
+
+Thông số
+
+ |
+
+Loại/ Kiểu
+
+ |
+
+Mô tả
+
+ |
+|
+
+pay_gem
+
+ |
+
+address
+
+ |
+
+Token ERC-20 mà người mua đang bán
+
+ |
+|
+
+pay_amt
+
+ |
+
+uint256
+
+ |
+
+Lượng token mà người mua đang bán
+
+ |
+|
+
+buy_gem
+
+ |
+
+address
+
+ |
+
+Token ERC-20 mà người mua đang mua
+
+ |
+|
+
+min_fill_amount
+
+ |
+
+uint256
+
+ |
+
+Lượng token tối thiểu nhận được
+
+ |
+
+Giao dịch pay_amt token pay_gem lấy ít nhất số lượng min_fill_amount của token buy_gem. Giao dịch sẽ hoàn nguyên nếu nhà giao dịch nhận được ít hơn số tiền tối thiểu được chỉ định. Đây là lệnh bán "Fill-or-Kill".
+
+Xem chức năng
+
+Sử dụng xem chức năng để đọc tình trạng của hợp đồng sổ lệnh. RubiconRouter.sol cũng có  [nhiều chức năng hữu ích](https://docs.rubicon.finance/protocol/rubicon-router/rubicon-router#view-functions) để đọc tình trạng của RubiconMarket.sol.
+
+getBuyAmountWithFee()
+
+    function getBuyAmountWithFee(
+
+        IERC20 buy_gem,
+
+        IERC20 pay_gem,
+
+        uint256 pay_amt
+
+    ) external view returns (uint256 buy_amt, uint256 approvalAmount)
+
+Trả về buy_amt, số lượng token buy_gem gửi đến hợp đồng để nhận số tiền pay_amt của token pay_gem. Cũng trả về approvalAmount, số lượng token pay_gem để phê duyệt cho tương tác, tính phí.
+
+getPayAmountWithFee()
+
+    function getPayAmountWithFee(
+
+        IERC20 pay_gem,
+
+        IERC20 buy_gem,
+
+        uint256 buy_amt
+
+    ) public view returns (uint256 pay_amt, uint256 approvalAmount)
+
+Trả về pay_amt, số lượng token pay_gem gửi đến hợp đồng để nhận số lượng buy_amt token buy_gem. Đồng thời trả về approvalAmount, số lượng token buy_gem để phê duyệt cho tương tác, tính phí.
+
+getBuyAmount()
+
+    function getBuyAmount(
+
+        ERC20 buy_gem,
+
+        ERC20 pay_gem,
+
+        uint256 pay_amt
+
+    ) external view returns (uint256 fill_amt)
+
+Trả về số lượng token buy_gem nhận được nếu một lượng token pay_gem cụ thể được chi tiêu.
+
+getPayAmount()
+
+function getPayAmount(
+
+        ERC20 pay_gem,
+
+        ERC20 buy_gem,
+
+        uint256 buy_amt
+
+    ) external view returns (uint256 fill_amt)
+
+Trả về số lượng token pay_gem cần thiết để mua một lượng token buy_gem được chỉ định.
+
+getBestOffer()
+
+function getBestOffer(ERC20 pay_gem, ERC20 buy_gem)
+
+    public
+
+    view
+
+    returns (uint256)
+
+Trả về ID của lệnh đặt trên cùng sổ lệnh
+
+Ví dụ: Gọi hàm này với WETH là pay_gem và USDC là buy_gem sẽ trả  về giá bán tốt nhất cho WETH/USDC. Chuyển đổi token sẽ trả lại giá mua tốt nhất.
+
+getWorseOffer()
+
+function getWorseOffer(uint256 id)
+
+    public
+
+    view
+
+    returns (uint256)
+
+Trả về lệnh tệ hơn tiếp theo trong danh sách đã sắp xếp. Lệnh tệ hơn là lệnh cao hơn nếu lệnh mục tiêu là là lệnh bán và thấp hơn khi nó là lệnh mua. Trong cả hai trường hợp, nó sẽ trả về một cái mới hơn nếu chúng bằng nhau.
+
+getOfferCount()
+
+function getOfferCount(ERC20 sell_gem, ERC20 buy_gem)
+
+        public
+
+        view
+
+        returns (uint256)
+
+Trả về số lượng lệnh trên sổ lệnh cho một cặp cụ thể
+
+getFeeBPS()
+
+function getFeeBPS()
+
+    public
+
+    view
+
+    returns (uint256)
+
+Trả về phí hiện tại của giao thức
+
+Sự kiện
+
+event emitOffer(
+
+        bytes32 indexed id,
+
+        bytes32 indexed pair,
+
+        address indexed maker,
+
+        ERC20 pay_gem,
+
+        ERC20 buy_gem,
+
+        uint128 pay_amt,
+
+        uint128 buy_amt
+
+    );
+
+    event emitCancel(
+
+        bytes32 indexed id,
+
+        bytes32 indexed pair,
+
+        address indexed maker,
+
+        ERC20 pay_gem,
+
+        ERC20 buy_gem,
+
+        uint128 pay_amt,
+
+        uint128 buy_amt
+
+    );
+
+    event emitTake(
+
+        bytes32 indexed id,
+
+        bytes32 indexed pair,
+
+        address indexed taker,
+
+        address maker,
+
+        ERC20 pay_gem,
+
+        ERC20 buy_gem,
+
+        uint128 take_amt,
+
+        uint128 give_amt
+
+    );
+
+    event emitFee(
+
+        bytes32 indexed id,
+
+        address indexed taker,
+
+        address indexed feeTo,
+
+        bytes32 pair,
+
+        ERC20 asset,
+
+        uint256 feeAmt
+
+    );
+
+    event emitDelete(
+
+        bytes32 indexed id,
+
+        bytes32 indexed pair,
+
+        address indexed maker
+
+    );
+
+Phí 
+----
+
+Phí giao thức: 0.002%
+
+Trả bởi người mua cho giao thức. Trả bằng token từ người mua đến hợp đồng.
+
+Phí hoàn trả người bán: 0.038%\
+Trả bởi người mua cho người bán, địa chỉ sở hữu đã mua
+
+Tổng phí người mua bằng tổng phí giao thức và phí hoàn trả người bán. Tất cả phí thị trường (hoàn trả) đều được trả bằng token người mua đang đặt lệnh.
+
+Tổng phí người mua: 0.04%\
+Tổng phí trả khi giao dịch "mua" lấy thanh khoản từ sổ lệnh. Trả bằng token được gửi đến hợp đồng từ người mua.
+
+Truy vấn các khoản phí
+
+Sử dụng các hàm xem này để truy vấn số phí. Vui lòng lưu ý rằng "getFeeBPS" là một cách gọi sai ngữ nghĩa và giá trị số nguyên mà nó trả về là một pip, 1/100.000 và biểu thị đầu vào cho phí giao thức. Điều này được duy trì để tương thích ngược và sẽ được khắc phục trong các bản cập nhật trong tương lai.
+
+function getFeeBPS()
+
+    public
+
+    view
+
+    returns (uint256)
+
+Trả về phí hiện tại của giao thức.
+
+function makerFee() 
+
+    public 
+
+    view 
+
+    returns (uint256)
+
+Trả về phí của người bán.
+
+Tính Phí cho một giao dịch
+
+Sử dụng getBuyAmountWithFee() hoặc getPayAmountWithFee() để tính tổng số tiền gửi đến hợp đồng cho một giao dịch nhất định, bao gồm cả phí.
+
+    function getBuyAmountWithFee(
+
+        IERC20 buy_gem,
+
+        IERC20 pay_gem,
+
+        uint256 pay_amt
+
+    ) external view returns (uint256 buy_amt, uint256 approvalAmount) {
+
+        uint modifiedAmount = calculateFees(pay_amt, false);
+
+        buy_amt = (getBuyAmount(buy_gem, pay_gem, modifiedAmount));
+
+        approvalAmount = pay_amt;
+
+        return (buy_amt, approvalAmount);
+
+    }
+
+Hoàn trả buy_amt, lượng token buy_gem gửi vào hợp đồng để nhận lượng pay_amt lượng pay_amt   token. Cũng hoàn trả approvalAmount lượng pay_gem token để chấp thuận tương tác, dựa theo phí.
+
+    function getPayAmountWithFee(
+
+        IERC20 pay_gem,
+
+        IERC20 buy_gem,
+
+        uint256 buy_amt
+
+    ) public view returns (uint256 pay_amt, uint256 approvalAmount) {
+
+        pay_amt = (getPayAmount(pay_gem, buy_gem, buy_amt));
+
+        uint modifiedAmount = calculateFees(pay_amt, true);
+
+        approvalAmount = modifiedAmount;
+
+        return (pay_amt, approvalAmount);
+
+    }
+
+Hoàn trả pay_amt lượng pay_gem token gửi vào hợp đồng để nhận buy_amt lượng buy_gem token. Cũng hoàn trả approvalAmount lượng buy_gem token để chấp thuận tương tác, dựa theo phí.
+
+Phí mạng lưới
+
+Sổ lệnh Rubicon nằm trên mạng lưới Blockchain, tất cả giao dịch phải trả phí mạng lưới (gas) bằng ETH. Giao dịch trên mạng lưới L2 như Arbitrum và Optimism thì rẻ hơn gấp 50-100 lần so với giao dịch tương đương trên Ethereum Mainnet.
+
+Đặt hàng loạt
+-------------
+
+Tổng quan
+
+Với đặt hàng loạt, nhà giao dịch có thể đặt, hủy, hoặc cập nhật nhiều lệnh giới hạn trên Rubicon trên một giao dịch, chỉ giới hạn bởi khối/giao dịch phí gas của mạng lưới
+
+Đặt hàng loạt lệnh vào một lệnh, nhà giao dịch có thể chia theo tỷ lệ phí gas thông qua nhiều lệnh, giảm chi phí từng lệnh. Điều này đặc biệt hữu ích cho người bán, người mà thường xuyên cập nhật lệnh của họ và người nhạy cảm với chi phí giao dịch.
+
+Ngoài ra, lệnh hàng loạt thì không giới hạn cho một cặp token. Bạn có thể đặt, hủy, hoặc cập nhật lệnh trên WETH/USDC, WETH/DAI và WETH/USDT trong cùng một giao dịch.
+
+Nhà giao dịch có thể dùng đặt lệnh hàng loạt thông qua các hàm mức độ cao thấp trong [RubiconMarket.sol](https://docs.rubicon.finance/protocol/rubicon-market/contract-overview) hoặc giao dịch thông qua hợp đồng [MarketAid.sol](https://docs.rubicon.finance/protocol/rubicon-market/market-aid)
+
+Hàm
+
+batchOffer() mở rộng chức năng của offer(), lấy bốn mảng làm tham số: payAmts, payGems, buyAmts và buyGems. Các mảng phải có cùng độ dài và thứ tự của các phần tử phải khớp nhau. Hàm sẽ lặp qua từng phần tử trong mảng và đặt lệnh với các tham số tương ứng:
+
+    function batchOffer(
+
+        uint[] calldata payAmts,
+
+        address[] calldata payGems,
+
+        uint[] calldata buyAmts,
+
+        address[] calldata buyGems
+
+    ) external
+
+batchCancel() mở rộng chức năng của cancel(), lấy một mảng id của offer() làm tham số. Hàm sẽ lặp qua từng phần tử trong mảng và hủy lệnh tương ứng:
+
+    function batchCancel(uint[] calldata ids) external
+
+batchRequote() kết hợp offer() và cancel(), cho phép các nhà giao dịch hủy và thay thế hoặc "báo giá lại" các lệnh của họ trong một giao dịch. Hàm lấy năm mảng làm tham số: ids, payAmts, payGems, buyAmts và buyGems. Các mảng phải có cùng độ dài và thứ tự của các phần tử phải khớp nhau. Hàm sẽ lặp qua từng phần tử trong mảng và hủy lệnh tương ứng. Sau đó, nó sẽ đặt các lệnh mới với các tham số tương ứng:
+
+    function batchRequote(
+
+        uint[] calldata ids,
+
+        uint[] calldata payAmts,
+
+        address[] calldata payGems,
+
+        uint[] calldata buyAmts,
+
+        address[] calldata buyGems
+
+    ) external
+
+Viện trợ thị trường
+-------------------
+
+[Contract Source Code](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/utilities/MarketAid.sol)
+
+Tổng quan\
+MarketAid.sol là một hợp đồng giúp đỡ cho giao dịch nâng cao và tạo lập thị trường trên RubiconMarket.sol. Hãy nghĩ về nó như một hợp đồng lớp trung gian cho phép các nhà giao dịch thực hiện các giao dịch lớn hơn, hiệu quả hơn và phức tạp hơn trên sổ lệnh Rubicon.
+
+Người dùng cần tạo MarketAid.sol bằng cách sử dụng phiên bản MarketAid. Nếu bạn có bất kỳ câu hỏi hoặc sự cố nào với MarketAid, hãy tham gia [máy chủ Discord](https://discord.com/invite/E7pS24J) của chúng tôi, nhóm của chúng tôi sẵn lòng giúp bạn bắt đầu giao dịch tự động trên Rubicon!
+
+Từ chối trách nhiệm\
+MarketAid.sol đang ở giai đoạn thử nghiệm và chỉ dành cho các nhà phát triển chuyên sâu và người dùng. Sử dụng nó dựa trên mức độ chịu rủi ro của bạn.
+
+Bắt đầu nhanh
+
+Để bắt đầu, hãy tạo phiên bản MarketAid.sol của riêng bạn, cấp tiền cho hợp đồng bằng token ERC-20 và gửi lệnh hàng loạt đầu tiên của bạn đến RubiconMarket.sol! Bạn có thể sử dụng ethers.js để tích hợp tính năng này vào một bot hiện có và chúng tôi đang thực hiện các hướng dẫn để giúp việc này trở nên dễ dàng hơn nữa! Bắt đầu nào:
+
+1\. Tạo một phiên bản mới của hợp đồng MarketAid
+
+1.  Triển khai phiên bản MarketAid bằng cách gọi hàm createMarketAidInstance() trên hợp đồng MarketAidFactory. Thao tác này sẽ tạo ra một phiên bản MarketAid mới được cấp phép cho người gọi hàm createMarketAidInstance() và tự động phê duyệt họ với tư cách là nhà chiến lược có quyền truy cập vào hợp đồng.
+
+2.  Nạp tiền cho phiên bản MarketAid của bạn bằng ERC-20 mà bạn muốn giao dịch (WETH, USDC, DAI, v.v.)
+
+1.  Phiên bản MarketAid của bạn có thể được truy vấn thông qua getUserMarketAid() trên MarketAidFactory hoặc bằng cách đọc sự kiện phát ra từ lệnh createMarketAidInstance()
+
+2.  Xác minh rằng bạn kiểm soát hợp đồng trước thông qua Etherscan bằng cách kiểm tra admin là địa chỉ của bạn và bạn cũng là một approvedStrategist
+
+3.  Xác minh rằng bạn đang gửi tiền đến đúng địa chỉ!
+
+3\. Gửi các lệnh Rubicon từ hợp đồng MarketAid của bạn bằng cách sử dụng các chức năng được mô tả bên dưới.
+
+Lưu ý: Chủ sở hữu của phiên bản MarketAid có thể phê duyệt các địa chỉ bổ sung để sử dụng và truy cập vào hợp đồng (nhiều địa chỉ có thể xóa kiểm tra onlyApprovedStrategist)
+
+Xử lý sự cố
+
+Đảm bảo kiểm tra những điều sau:
+
+Phiên bản MarketAid của tôi ở đâu?
+
+-   Truy vấn với getUserMarketAid() -> trả về một mảng gồm tất cả các phiên bản bạn đã tạo
+
+Phiên bản MarketAid của bạn đã phê duyệt các hợp đồng mà bạn muốn tương tác
+
+-   Nếu không, giao dịch sẽ sử dụng placeMarketMakingTrades() sẽ tự động phê duyệt hợp đồng RubiconMarket
+
+Bạn là quản trị viên của phiên bản Market Aid của bạn
+
+-   Truy vấn với admin() trên phiên bản của bạn -> trả về EOA sở hữu phiên bản
+
+Bất kỳ EOA nào mà bạn đang cố gắng quản lý một cặp ERC20, thông qua MarketAid đều là một chiến lược gia được phê duyệt
+
+-   Kiểm tra bảo mật chính trong hợp đồng, quản trị viên được tự động phê duyệt là chiến lược gia
+
+Các hàm (Trong tiến trình)
+
+Nói chung, mỗi đầu vào đều giống hệt như nhau sẽ đặt trên RubiconMarket cấp thấp: giá trị uint thô của ERC20 mà bạn muốn mua và/ hoặc bán khi đặt nhiều lệnh ( offer() ). Để đặt nhiều lệnh, hãy chuyển các giá trị cho tất cả các lệnh dưới dạng mảng, với tất cả các biến tương tự (ví dụ: tử số yêu cầu) được ghép nối với nhau. Các mảng được truyền vào phải khớp với nhau - điều này có thể hữu ích khi đặt một số lệnh cùng một lúc với các mức giá khác nhau. Lưu ý rằng việc sử dụng formatUnits() và parseUnits() thông qua ethers giúp xử lý các số và giá trị ERC-20 khi xử lý số người = wei chuyển đổi.
+
+Một khái niệm quan trọng là mỗi đơn đặt hàng được đặt thông qua MarketAid (thông qua placeMarketMakingTrades ) sẽ tạo một ID duy nhất có thể xác định các lệnh nổi bật của nhà tạo lập thị trường. Sách nổi bật có thể được truy vấn bất cứ lúc nào cho bất kỳ EOA cụ thể nào thông qua getOutstandingStrategistTrades() - điều này hữu ích để quản lý sách nổi bật và lấy danh sách ID duy nhất hoặc strategistTrades một người kiểm soát người dùng nhất định. Nhà tạo lập thị trường có thể truy vấn sách của họ, sau đó báo giá lại ( batchRequoteOffers ) hoặc hủy bỏ ( ScrubStrategistTrades ) nếu cần. Lưu ý rằng số tiền điền sẽ tự động tích lũy vào phiên bản MarketAid mà người dùng kiểm soát.
+
+placeMarketMakingTrades 
+
+-   Đặt một lệnh mua và/hoặc một lệnh bán trong một "strategistTrade" duy nhất
+
+batchMarketMakingTrades 
+
+-   Tùy chọn đặt nhiều lệnh gọi placeMarketMakingTrades theo kiểu hàng loạt để triển khai toàn bộ đường cong thanh khoản (ví dụ: 10 mua và 10 bán ở các mức giá và quy mô khác nhau tùy thuộc vào điều kiện thị trường)
+
+getOutstandingStrategistTrades view 
+
+-   Trả về ID duy nhất những lệnh nổi bật của người dùng (hàng loạt)
+
+getStrategistTotalLiquidity view 
+
+-   Trả về tổng giá trị sổ sách ERC-20 mà người dùng kiểm soát trên toàn thị trường và giá trị trong phiên bản MarketAid
+
+requote 
+
+-   Yêu cầu duy nhất của một strategistTrade (mua và/hoặc bán cặp) thành một cặp mới tạo ra một id duy nhất mới
+
+batchRequoteOffers 
+
+-   Gọi requote() hàng loạt để cập nhật toàn bộ đường cong thanh khoản trong một lần. Thao tác này sẽ hủy tất cả id đã xác định và thay thế chúng bằng vị thế lệnh mới được chỉ định
+
+batchRequoteAllOffers 
+
+-   Lấy ID sách nổi bật của người dùng qua getOutstandingStrategistTrades() sau đó cập nhật tất cả chúng qua batchRequoteOffers()
+
+scrubStrategistTrade 
+
+-   Hủy bỏ một strategistTrade và trả lại các khoản tiền chưa được lấp đầy/được đưa đến Market Aid
+
+scrubStrategistTrades 
+
+-   Hủy nhiều strategistTrades trong một giao dịch
+
+adminPullAllFunds 
+
+-   Hàm hữu ích để quản trị viên lấy lại tất cả tiền của họ bằng cách chỉ định các ERC-20 mà họ muốn
+
+strategistRebalanceFunds 
+
+-   Hàm tùy chọn để sử dụng một địa điểm thanh khoản bên ngoài để chênh lệch giá hoặc tái cân bằng tiền thông qua
+
+Kích thước lệnh tối thiểu
+-------------------------
+
+Để ngăn chặn các lệnh "rãi rác", RubiconMarket.sol thực thi các kích thước lệnh tối thiểu trên một số token ERC-20.
+
+Bảng lệnh tối thiểu
+
+|
+
+Token
+
+ |
+
+Kích thước lệnh tối thiểu
+
+ |
+
+Quy mô đặt hàng tối thiểu (uint256)
+
+ |
+|
+
+WETH
+
+ |
+
+0.0022 ETH
+
+ |
+
+2200000000000000
+
+ |
+|
+
+WBTC
+
+ |
+
+0.00015 WBTC
+
+ |
+
+15000
+
+ |
+|
+
+USDC
+
+ |
+
+5 USDC
+
+ |
+
+5000000
+
+ |
+|
+
+USDT
+
+ |
+
+5 USDT
+
+ |
+
+5000000
+
+ |
+|
+
+DAI
+
+ |
+
+5 DAI
+
+ |
+
+5000000000000000000
+
+ |
+|
+
+OP
+
+ |
+
+3 OP
+
+ |
+
+3000000000000000000
+
+ |
+|
+
+ARB
+
+ |
+
+4 ARB
+
+ |
+
+4000000000000000000
+
+ |
+
+Truy vấn kích thước lệnh tối thiểu
+
+Sử dụng hàm xem này để truy xuất kích thước lệnh tối thiểu cho một token nhất định.
+
+    function getMinSell(
+
+        ERC20 pay_gem
+
+    ) external view returns (uint256)
+
+Trả về kích thước lệnh tối thiểu cho token ERC-20 đã cho.
+
+Bộ định tuyến Rubicon
+=====================
+
+[Contract Source Code](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/utilities/RubiconRouter.sol)
+
+Tổng quan hợp đồng
+------------------
+
+RubiconRouter.sol là một hợp đồng cấp cao bổ sung chức năng thuận tiện để tương tác với các hợp đồng thông minh cấp thấp của Rubicon.
+
+Nó chủ yếu hoạt động như một bộ định tuyến cho các giao dịch hoán đổi token ERC-20/ERC-20 trên RubiconMarket.sol và cho phép các giao dịch hoán đổi nhiều chặng nếu hai mã token không có trong sổ lệnh.
+
+Hợp đồng có các hàm bao bọc để xử lý ETH gốc trong toàn bộ giao thức. Điều này bao gồm các chức năng mua và hoán đổi ETH với/lấy mã token ERC-20 và để gửi/rút ETH trong Rubicon Pools.
+
+Nó cũng có các chức năng xem hữu ích để đọc dữ liệu sổ lệnh từ hợp đồng RubiconMarket.sol cấp thấp.
+
+Các hàm
+
+swap()
+
+function swap(
+
+        uint256 pay_amt,
+
+        uint256 buy_amt_min,
+
+        address[] memory route,
+
+        address to
+
+    ) public returns (uint256)
+
+|
+
+Tên thông số
+
+ |
+
+Kiểu/ Loại
+
+ |
+
+Mô tả
+
+ |
+|
+
+pay_amt
+
+ |
+
+uint256
+
+ |
+
+Lượng token mà người mua đang bán
+
+ |
+|
+
+buy_amt_min
+
+ |
+
+uint256
+
+ |
+
+Số lượng tối thiểu nhận được của địa chỉ token cuối cùng trong route
+
+ |
+|
+
+route
+
+ |
+
+addresses
+
+ |
+
+Địa chỉ token đầu tiên là token pay_amt, địa chỉ cuối cùng là token buy_amt
+
+ |
+|
+
+to
+
+ |
+
+address
+
+ |
+
+Địa chỉ là token pay_amt, địa chỉ cuối cùng là token buy_amt
+
+ |
+
+Hoán đổi số lượng token pay_amt lấy ít nhất số lượng buy_amt_min của token cuối cùng trong route đã chỉ định.
+
+multiswap()
+
+    function multiswap(
+
+        address[][] memory routes,
+
+        uint256[] memory pay_amts,
+
+        uint256[] memory buy_amts_min,
+
+        address to
+
+    ) public
+
+|
+
+Tên thông số
+
+ |
+
+Kiểu/ Loại
+
+ |
+
+Mô tả
+
+ |
+|
+
+routes
+
+ |
+
+addresses
+
+ |
+
+Địa chỉ token đầu tiên là token pay_amt, địa chỉ cuối cùng là token buy_amt
+
+ |
+|
+
+pay_amts
+
+ |
+
+uint256
+
+ |
+
+Lượng token mà người mua đang bán cho buy_gem token
+
+ |
+|
+
+buy_amts_min
+
+ |
+
+uint256
+
+ |
+
+Lượng token nhận tối thiểu của địa chỉ token cuối cùng trong route
+
+ |
+|
+
+to
+
+ |
+
+address
+
+ |
+
+Địa chỉ là token pay_amt, địa chỉ cuối cùng là token buy_amt
+
+ |
+
+Hoán đổi token trên nhiều routes địa chỉ token với số lượng nhận được tối thiểu. Nó cho phép hoán đổi token trên nhiều sổ lệnh RubiconMarket, trong trường hợp các token không có sổ lệnh hiện có.
+
+swapWithETH()
+
+    function swapWithETH(
+
+        uint256 pay_amt,
+
+        uint256 buy_amt_min,
+
+        address[] calldata route,
+
+        address to
+
+    ) external payable returns (uint256)
+
+|
+
+Tên thông số
+
+ |
+
+Kiểu/ Loại
+
+ |
+
+Mô tả
+
+ |
+|
+
+pay_amt
+
+ |
+
+uint256
+
+ |
+
+Lượng token mà người mua đang bán
+
+ |
+|
+
+buy_amt_min
+
+ |
+
+uint256
+
+ |
+
+Lượng nhỏ nhất nhận được của địa chỉ token cuối cùng trong route
+
+ |
+|
+
+route
+
+ |
+
+addresses
+
+ |
+
+Địa chỉ token đầu tiên nên là WETH, địa chỉ cuối là buy_amt token
+
+ |
+|
+
+to
+
+ |
+
+address
+
+ |
+
+Địa chỉ là token pay_amt, địa chỉ cuối cùng là token buy_amt
+
+ |
+
+Hoán đổi số lượng pay_amt của ETH lấy ít nhất số lượng buy_amt_min token cuối cùng trong route đã chỉ định.
+
+swapForETH()
+
+    function swapForETH(
+
+        uint256 pay_amt,
+
+        uint256 buy_amt_min,
+
+        address[] calldata route
+
+    ) external beGoneReentrantScum returns (uint256 fill)
+
+|
+
+Tên thông số
+
+ |
+
+Kiểu/ Loại
+
+ |
+
+Mô tả
+
+ |
+|
+
+pay_amt
+
+ |
+
+uint256
+
+ |
+
+Lượng token mà người mua đang bán
+
+ |
+|
+
+buy_amt_min
+
+ |
+
+uint256
+
+ |
+
+Lượng nhỏ nhất nhận được của địa chỉ token cuối cùng trong route
+
+ |
+|
+
+route
+
+ |
+
+addresses
+
+ |
+
+Địa chỉ token đầu tiên là pay_amt, địa chỉ cuối cùng nên là WETH
+
+ |
+
+Hoán đổi số lượng pay_amt token đầu tiên trong route lấy ít nhất số lượng buy_amt_min của ETH.
+
+buyAllAmountWithETH()
+
+function buyAllAmountWithETH(
+
+        IERC20 buy_gem,
+
+        uint256 buy_amt,
+
+        uint256 max_fill_amount
+
+    ) external payable beGoneReentrantScum returns (uint256 fill)
+
+|
+
+Tên thông số
+
+ |
+
+Kiểu/ Loại
+
+ |
+
+Mô tả
+
+ |
+|
+
+buy_gem
+
+ |
+
+address
+
+ |
+
+Token ERC-20 người mua đang mua
+
+ |
+|
+
+buy_amt
+
+ |
+
+uint256
+
+ |
+
+Lượng token người mua đang mua
+
+ |
+|
+
+max_fill_amount
+
+ |
+
+uint256
+
+ |
+
+Lượng ETH bán nhiều nhất
+
+ |
+
+Nỗ lực mua token buy_amt của buy_gem token với số lượng tối đa max_fill_amount của ETH. Giao dịch sẽ hoàn nguyên nếu người mua chi tiêu nhiều hơn số tiền tối đa đã định.
+
+buyAllAmountForETH()
+
+function buyAllAmountForETH(
+
+        uint256 buy_amt,
+
+        IERC20 pay_gem,
+
+        uint256 max_fill_amount
+
+    ) external beGoneReentrantScum returns (uint256 fill)
+
+|
+
+Tên thông số
+
+ |
+
+Kiểu/ Loại
+
+ |
+
+Mô tả
+
+ |
+|
+
+buy_amt
+
+ |
+
+uint256
+
+ |
+
+Lượng ETH người mua đang mua
+
+ |
+|
+
+pay_gem
+
+ |
+
+address
+
+ |
+
+ERC-20 token người mua đang bán
+
+ |
+|
+
+max_fill_amount
+
+ |
+
+unit256
+
+ |
+
+Lượng pay_gem token nhiều nhất bán được
+
+ |
+
+Nỗ lực mua buy_amt ETH với số lượng tối đa max_fill_amount token pay_gem. Giao dịch sẽ hoàn nguyên nếu người mua chi tiêu nhiều hơn số tiền tối đa được chỉ định.
+
+sellAllAmountWithETH()
+
+function sellAllAmountWithETH(
+
+        uint256 pay_amt,
+
+        IERC20 buy_gem,
+
+        uint256 min_fill_amount
+
+    ) external payable beGoneReentrantScum returns (uint256 fill)
+
+|
+
+Tên thông số
+
+ |
+
+Kiểu/ Loại
+
+ |
+
+Mô tả
+
+ |
+|
+
+pay_amt
+
+ |
+
+uint256
+
+ |
+
+Lượng ETH người mua đang mua
+
+ |
+|
+
+buy_gem
+
+ |
+
+address
+
+ |
+
+ERC-20 token người mua đang mua
+
+ |
+|
+
+min_fill_amount
+
+ |
+
+uint256
+
+ |
+
+Lượng pay_gem token ít nhất nhận được
+
+ |
+
+Nỗ lực bán pay_amt ETH với số lượng tối thiểu min_fill_amount token buy_gem. Giao dịch sẽ hoàn nguyên nếu người mua nhận được ít hơn số tiền tối thiểu được chỉ định.
+
+sellAllAmountForETH()
+
+    function sellAllAmountForETH(
+
+        IERC20 pay_gem,
+
+        uint256 pay_amt,
+
+        // buy_gem = ETH,
+
+        uint256 min_fill_amount
+
+    ) external beGoneReentrantScum returns (uint256 fill)
+
+|
+
+Tên thông số
+
+ |
+
+Kiểu/ Loại
+
+ |
+
+Mô tả
+
+ |
+|
+
+pay_gem
+
+ |
+
+address
+
+ |
+
+ERC-20 token người mua đang bán
+
+ |
+|
+
+pay_amt
+
+ |
+
+uint256
+
+ |
+
+Lượng token người mua đang bán
+
+ |
+|
+
+min_fill_amount
+
+ |
+
+uint256
+
+ |
+
+Lượng ETH nhận tối thiểu
+
+ |
+
+Nỗ lực bán token pay_amt token pay_gem với số lượng tối thiểu min_fill_amount ETH. Giao dịch sẽ hoàn nguyên nếu người mua sẽ nhận được ít hơn số tiền tối thiểu được chỉ định.
+
+Xem chức năng
+
+getExpectedSwapFill()
+
+function getExpectedSwapFill(
+
+        uint256 pay_amt,
+
+        uint256 buy_amt_min,
+
+        address[] calldata route
+
+    ) public view returns (uint256 currentAmount)
+
+|
+
+Tên thông số
+
+ |
+
+Kiểu/ Loại
+
+ |
+
+Mô tả
+
+ |
+|
+
+pay_amt
+
+ |
+
+uint256
+
+ |
+
+Lượng token người mua đang bán
+
+ |
+|
+
+buy_amt_min
+
+ |
+
+uint256
+
+ |
+
+Lượng nhận tối thiểu của địa chỉ token cuối cùng trong route
+
+ |
+|
+
+route
+
+ |
+
+addresses
+
+ |
+
+Địa chỉ token đầu tiên là pay_amt, địa chỉ cuối cùng là buy_amt token
+
+ |
+
+Sử dụng các tham số giống như swap() và trả về số tiền dự kiến nhận được.
+
+getExpectedMultiswapFill()
+
+    function getExpectedMultiswapFill(
+
+        uint256[] memory pay_amts,
+
+        uint256[] memory buy_amt_mins,
+
+        address[][] memory routes
+
+    ) public view returns (uint256 outputAmount)
+
+|
+
+Tên thông số
+
+ |
+
+Kiểu/ Loại
+
+ |
+
+Mô tả
+
+ |
+|
+
+pay_amts
+
+ |
+
+uint256
+
+ |
+
+Lượng token mà người mua đang bán cho buy_gem token
+
+ |
+|
+
+buy_amt_mins
+
+ |
+
+uint256
+
+ |
+
+Lượng ít nhất nhận được của địa chỉ token cuối cùng trong route
+
+ |
+|
+
+routes
+
+ |
+
+addresses
+
+ |
+
+Địa chỉ token đầu tiên là pay_amt, địa chỉ cuối cùng là buy_amt token
+
+ |
+
+Sử dụng các tham số giống như multiswap() và trả về số tiền dự kiến nhận được.
+
+getBookFromPair()
+
+    function getBookFromPair(
+
+        IERC20 asset,
+
+        IERC20 quote
+
+    ) public view returns (uint256[3][] memory asks, uint256[3][] memory bids)
+
+|
+
+Tên thông số
+
+ |
+
+Kiểu/ Loại
+
+ |
+
+Mô tả
+
+ |
+|
+
+asset
+
+ |
+
+address
+
+ |
+
+Token ERC-20 ở phía bán của sổ lệnh mục tiêu
+
+ |
+|
+
+quote
+
+ |
+
+address
+
+ |
+
+Token ERC-20 ở phía mua của sổ lệnh mục tiêu
+
+ |
+
+Trả về tất cả các lệnh nổi bật trên sổ lệnh cho một cặp token nhất định. Thứ tự cặp asset/quote sẽ được sắp xếp theo giá trị trả về - tài sản phải ở trên cùng của cặp: ví dụ: (ETH, USDC) sẽ trả lại (ETH bán, mua USDC)
+
+getOffersFromPair()
+
+    function getOffersFromPair(
+
+        IERC20 tokenIn,
+
+        IERC20 tokenOut
+
+    ) public view returns (uint256[3][] memory offers)
+
+|
+
+Tên thông số
+
+ |
+
+Kiểu/ Loại
+
+ |
+
+Mô tả
+
+ |
+|
+
+tokenIn
+
+ |
+
+address
+
+ |
+
+Token ERC-20 ở phía bán của sổ lệnh mục tiêu
+
+ |
+|
+
+tokenOut
+
+ |
+
+address
+
+ |
+
+Token ERC-20 ở phía mua của sổ lệnh mục tiêu
+
+ |
+
+Trả lại các lệnh từ một phía của sổ lệnh được chỉ định.
+
+getBookDepth()
+
+    function getBookDepth(
+
+        IERC20 tokenIn,
+
+        IERC20 tokenOut
+
+    ) public view returns (uint256 depth, uint256 bestOfferID)
+
+Trả về độ sâu của một mặt của sổ lệnh và ID của offer() tốt nhất.
+
+getOfferIDsFromPair()
+
+    function getOfferIDsFromPair(
+
+        IERC20 tokenIn,
+
+        IERC20 tokenOut
+
+    ) public view returns (uint256[] memory IDs)
+
+Trả về tất cả ID offer() từ cặp tokenIn/tokenOut.
+
+getBestOfferAndInfo()
+
+    function getBestOfferAndInfo(
+
+        address asset,
+
+        address quote
+
+    )
+
+        public
+
+        view
+
+        returns (
+
+            uint256,
+
+            uint256,
+
+            IERC20,
+
+            uint256,
+
+            IERC20
+
+        )
+
+Trả về ID và thông tin cho offer() tốt nhất trên một cặp lệnh asset/quote nhất định.
+
+Events
+
+    event emitSwap(
+
+        address indexed recipient,
+
+        address indexed inputERC20,
+
+        address indexed targetERC20,
+
+        bytes32 pair,
+
+        uint256 inputAmount,
+
+        uint256 realizedFill,
+
+        uint256 hurdleBuyAmtMin
+
+    );
+
+Rubicon Pools
+=============
+
+Pool
+----
+
+Phiên bản tiếp theo của Rubicon Pools đang được hoàn thiện, tài liệu sẽ sớm được phát hành!
+
+Triển khai
+==========
+
+Các bảng bên dưới có địa chỉ hợp đồng thông minh cho Rubicon trên tất cả các mạng.
+
+Xin lưu ý rằng Rubicon sử dụng [tiêu chuẩn proxy có thể nâng cấp minh bạch](https://docs.openzeppelin.com/upgrades-plugins/1.x/proxies). Bạn có thể xem triển khai cơ bản của từng hợp đồng proxy trên trình khám phá khối.
+
+Triển khai trực tiếp
+
+Optimism
+
+|
+
+Tên hợp đồng
+
+ |
+
+Địa chỉ
+
+ |
+|
+
+RubiconMarket
+
+ |
+
+[0x7a512d3609211e719737E82c7bb7271eC05Da70d](https://optimistic.etherscan.io/address/0x7a512d3609211e719737E82c7bb7271eC05Da70d)
+
+ |
+|
+
+RubiconRouter
+
+ |
+
+[0x7Af14ADc8Aea70f063c7eA3B2C1AD0D7A59C4bFf](https://optimistic.etherscan.io/address/0x7Af14ADc8Aea70f063c7eA3B2C1AD0D7A59C4bFf)
+
+ |
+|
+
+MarketAidFactory
+
+ |
+
+[0x267D94C6e67e4436EFfE092b08d040cFF36B2DA7](https://optimistic.etherscan.io/address/0x267D94C6e67e4436EFfE092b08d040cFF36B2DA7)
+
+ |
+
+Triển khai Testnet
+
+Danh sách các địa chỉ hợp đồng trên các mạng thử nghiệm khác nhau. Bao gồm các địa chỉ cho token thử nghiệm(nhận token testnet), bạn có thể có các token này bằng cách sử dụng faucet trên hợp đồng hoặc bằng cách sử dụng faucet trong ứng dụng.
+
+Arbitrum Goerli
+
+|
+
+Tên hợp đồng
+
+ |
+
+Địa chỉ
+
+ |
+|
+
+RubiconMarket
+
+ |
+
+[0x506407f25B746C39807c03A96DD595a6BE223211](https://goerli.arbiscan.io/address/0x506407f25B746C39807c03A96DD595a6BE223211)
+
+ |
+|
+
+RubiconRouter
+
+ |
+
+[0x3AbA34a8C9616eA927225C045EEa5d5b51a7a6FC](https://goerli.arbiscan.io/address/0x3AbA34a8C9616eA927225C045EEa5d5b51a7a6FC)
+
+ |
+|
+
+MarketAidFactory
+
+ |
+
+Coming Soon
+
+ |
+|
+
+WETH
+
+ |
+
+[0x175A6D830579CAcf1086ECC718fAB2A86b12e0D3](https://goerli.arbiscan.io/address/0x175A6D830579CAcf1086ECC718fAB2A86b12e0D3)
+
+ |
+|
+
+USDC
+
+ |
+
+[0x34cB584d2E4f3Cd37e93A46A4C754044085439b4](https://goerli.arbiscan.io/address/0x34cB584d2E4f3Cd37e93A46A4C754044085439b4)
+
+ |
+|
+
+TEST
+
+ |
+
+[0x83250b2783554D4D401c45c39fF8A161dE44BC15](https://goerli.arbiscan.io/address/0x83250b2783554D4D401c45c39fF8A161dE44BC15)
+
+ |
+|
+
+USDT
+
+ |
+
+[0x6ABc1231d85D422c9Fe25b5974B4C0D4AB85d9b5](https://goerli.arbiscan.io/address/0x6ABc1231d85D422c9Fe25b5974B4C0D4AB85d9b5)
+
+ |
+|
+
+DAI
+
+ |
+
+[0xb37b4399880AfEF7025755d65C193363966b8b89](https://goerli.arbiscan.io/address/0xb37b4399880AfEF7025755d65C193363966b8b89)
+
+ |
+|
+
+WBTC
+
+ |
+
+[0x710c1A969cbC8ab5644571697824c655ffBDE926](https://goerli.arbiscan.io/address/0x710c1A969cbC8ab5644571697824c655ffBDE926)
+
+ |
+
+Optimism Goerli
+
+|
+
+Tên hợp đồng
+
+ |
+
+Địa chỉ
+
+ |
+|
+
+RubiconMarket
+
+ |
+
+[0x9d0D6c259566d8161a1b2c513af0463992db38bc](https://goerli-optimism.etherscan.io/address/0x9d0D6c259566d8161a1b2c513af0463992db38bc)
+
+ |
+|
+
+RubiconRouter
+
+ |
+
+[0x7a1B7720E691E74ee523E4ecBD6C77A094222757](https://goerli-optimism.etherscan.io/address/0x7a1B7720E691E74ee523E4ecBD6C77A094222757)
+
+ |
+|
+
+MarketAidFactory
+
+ |
+
+[0x267D94C6e67e4436EFfE092b08d040cFF36B2DA7](https://goerli-optimism.etherscan.io/address/0x2D77E00EfE8375903eaD1135BD1eb31cBcf1bA69)
+
+ |
+|
+
+WETH
+
+ |
+
+[0x4200000000000000000000000000000000000006](https://goerli-optimism.etherscan.io/address/0x4200000000000000000000000000000000000006)
+
+ |
+|
+
+OP
+
+ |
+
+[0xCeE7148028Ff1B08163343794E85883174a61393](https://goerli-optimism.etherscan.io/address/0xCeE7148028Ff1B08163343794E85883174a61393)
+
+ |
+|
+
+USDC
+
+ |
+
+[0xe432f229521eE954f80C83257485405E3d848d17](https://goerli-optimism.etherscan.io/address/0xe432f229521eE954f80C83257485405E3d848d17)
+
+ |
+|
+
+testWETH
+
+ |
+
+[0x54e63385c13ECbE3B859991eEdad539d9fDa1167](https://goerli-optimism.etherscan.io/address/0x54e63385c13ECbE3B859991eEdad539d9fDa1167)
+
+ |
+
+Polygon Mumbai
+
+|
+
+Tên hợp đồng
+
+ |
+
+Địa chỉ
+
+ |
+|
+
+RubiconMarket
+
+ |
+
+[0x10418D9e730fa659b0Baf0b640ee41FcF4EA2aaE](https://mumbai.polygonscan.com/address/0x10418D9e730fa659b0Baf0b640ee41FcF4EA2aaE)
+
+ |
+|
+
+RubiconRouter
+
+ |
+
+[0xbA81dF0251A017C2fB687e5469a897529442f008](https://mumbai.polygonscan.com/address/0xbA81dF0251A017C2fB687e5469a897529442f008)
+
+ |
+|
+
+MarketAidFactory
+
+ |
+
+[0x4841DcC66F6CfC600382ec98f34d43332c535B9B](https://mumbai.polygonscan.com/address/0x4841DcC66F6CfC600382ec98f34d43332c535B9B)
+
+ |
+|
+
+WETH
+
+ |
+
+[0xE412a307764cCBE02E055e926516ebD74230cfE0](https://mumbai.polygonscan.com/address/0xE412a307764cCBE02E055e926516ebD74230cfE0)
+
+ |
+|
+
+USDC
+
+ |
+
+[0xcC5f8571D858DAD7fA2238FB9df4Ad384493013C](https://mumbai.polygonscan.com/address/0xcC5f8571D858DAD7fA2238FB9df4Ad384493013C)
+
+ |
+|
+
+TEST
+
+ |
+
+[0x6aeda41c98ab5399044fc36162B57d39c13b658a](https://mumbai.polygonscan.com/address/0x6aeda41c98ab5399044fc36162B57d39c13b658a)
+
+ |
+|
+
+USDT
+
+ |
+
+[0x97fcdaA045F4a3Bc8Fc7ad721EFf38d66B234C7F](https://mumbai.polygonscan.com/address/0x97fcdaA045F4a3Bc8Fc7ad721EFf38d66B234C7F)
+
+ |
+|
+
+DAI
+
+ |
+
+[0xAb647DF8262580c1caB61Eb165B22616365d3C67](https://mumbai.polygonscan.com/address/0xAb647DF8262580c1caB61Eb165B22616365d3C67)
+
+ |
+|
+
+WBTC
+
+ |
+
+[0x639C6472C45037F7aA868729dFfF69eB3843f1A0](https://mumbai.polygonscan.com/address/0x639C6472C45037F7aA868729dFfF69eB3843f1A0)
+
+ |
+
+Triển khai không còn dùng
+
+Danh sách các địa chỉ hợp đồng không còn được sử dụng. Tương tác với các hợp đồng này không được khuyến khích. Nếu bạn có token trong nhóm V1, bạn có thể rút tiền trên [ứng dụng](https://app.rubicon.finance/pools) hoặc bằng cách gọi chức năng withdraw() trên hợp đồng bathToken có liên quan.
+
+|
+
+Tên hợp đồng
+
+ |
+
+Địa chỉ
+
+ |
+|
+
+BathHouse V1
+
+ |
+
+[0x203328C161D23dCEee3E439DeEB25cA19e2c4984](https://optimistic.etherscan.io/address/0x203328C161D23dCEee3E439DeEB25cA19e2c4984)
+
+ |
+|
+
+BathPair
+
+ |
+
+[0xF8780E00Ce8ed2e79aeC10908a169900eD1D4AFe](https://optimistic.etherscan.io/address/0xF8780E00Ce8ed2e79aeC10908a169900eD1D4AFe)
+
+ |
+|
+
+bathETH
+
+ |
+
+[0xB0bE5d911E3BD4Ee2A8706cF1fAc8d767A550497](https://optimistic.etherscan.io/address/0xB0bE5d911E3BD4Ee2A8706cF1fAc8d767A550497)
+
+ |
+|
+
+bathWBTC
+
+ |
+
+[0x7571CC9895D8E997853B1e0A1521eBd8481aa186](https://optimistic.etherscan.io/address/0x7571CC9895D8E997853B1e0A1521eBd8481aa186)
+
+ |
+|
+
+bathUSDC
+
+ |
+
+[0xe0e112e8f33d3f437D1F895cbb1A456836125952](https://optimistic.etherscan.io/address/0xe0e112e8f33d3f437D1F895cbb1A456836125952)
+
+ |
+|
+
+bathUSDT
+
+ |
+
+[0xfFBD695bf246c514110f5DAe3Fa88B8c2f42c411](https://optimistic.etherscan.io/address/0xfFBD695bf246c514110f5DAe3Fa88B8c2f42c411)
+
+ |
+|
+
+bathDAI
+
+ |
+
+[0x60daEC2Fc9d2e0de0577A5C708BcaDBA1458A833](https://optimistic.etherscan.io/address/0x60daEC2Fc9d2e0de0577A5C708BcaDBA1458A833)
+
+ |
+|
+
+bathSNX
+
+ |
+
+[0xeb5F29AfaaA3f44eca8559c3e8173003060e919f](https://optimistic.etherscan.io/address/0xeb5F29AfaaA3f44eca8559c3e8173003060e919f)
+
+ |
+|
+
+bathOP
+
+ |
+
+[0x574a21fE5ea9666DbCA804C9d69d8Caf21d5322b](https://optimistic.etherscan.io/address/0x574a21fE5ea9666DbCA804C9d69d8Caf21d5322b)
+
+ |
+
+Kiểm toán
+=========
+
+Code4rena -- 5-13/Tháng 4, 2023
+
+Hợp đồng thông minh Rubicon V2 đã được kiểm tra trong một cuộc thi [Code4rena](https://code4rena.com/contests/2023-04-rubicon-v2) công khai trị giá 60.500 USD.
+
+Báo cáo kiểm toán - Sắp ra mắt
+
+Bản phát hành giao thức kết quả - Sắp ra mắt
+
+Code4rena - 23-28/Tháng 5, 2022
+
+Hợp đồng thông minh Rubicon V1 đã được kiểm tra trong một cuộc thi [Code4rena](https://code4rena.com/contests/2022-05-rubicon-contest) công khai trị giá 50.000 đô la, nơi hàng trăm nhà phát triển và nhà nghiên cứu bảo mật đã kiểm tra mã và báo cáo kết quả cho nhóm.
+
+[Báo cáo kiểm toán](https://code4rena.com/reports/2022-05-rubicon/)
+
+[Bản phát hành giao thức kết quả](https://github.com/RubiconDeFi/rubicon-protocol-v1/releases/tag/v1.3.0)
+
+Rủi ro
+======
+
+Từ chối trách nhiệm
+
+Giao thức Rubicon là phần mềm thử nghiệm và tương tác với nó có những rủi ro nhất định. Chúng bao gồm nhưng không giới hạn ở rủi ro hợp đồng thông minh, rủi ro quản trị, rủi ro cơ chế và rủi ro liên quan đến việc cung cấp thanh khoản. Bạn được khuyến khích tự nghiên cứu và đọc mã trước khi tương tác với các hợp đồng thông minh. Chỉ gửi hoặc nạp những gì bạn có thể đủ khả năng để mất, tương tác với các hợp đồng thông minh không đúng cách có thể dẫn đến mất toàn bộ số tiền.
+
+Bằng cách tương tác với các trang web và ứng dụng của Rubicon, bạn chấp nhận và thừa nhận [Điều khoản Sử dụng](https://www.rubicon.finance/terms)
+
+Tổng quan tạo lập thị trường
+
+Tổng quan
+=========
+
+Những cơ hội
+
+Giao dịch nguồn mở 24/7: Rubicon là một giao thức giao dịch nguồn mở và không uỷ quyền được xây dựng trên mạng Ethereum Layer 2 (L2). Tích hợp ngay hôm nay để [bắt đầu tạo lập thị trường](https://docs.rubicon.finance/protocol/deployments).
+
+Kiếm tiền chiết khấu: Các nhà tạo lập thị trường nhận được 95% phí người nhận dưới dạng chiết khấu trong thời gian thực, tương đương với khoản chiết khấu 0,038% cho mỗi lệnh được thực hiện. Tìm hiểu thêm về [phí và giảm giá](https://docs.rubicon.finance/protocol/rubicon-market/fees) trên Rubicon.
+
+Lợi thế cạnh tranh: Các nhà tạo lập thị trường tích cực có thể vượt trội so với các nhà cung cấp thanh khoản AMM thụ động bằng cách điều chỉnh các ưu đãi trên cơ sở từng khối. Trên Rubicon, các nhà tạo lập có thể cung cấp ưu đãi giá mua tốt nhất trong mạng (NBBO) cho bất kỳ tài sản nào vào bất kỳ lúc nào.
+
+Phần thưởng dành cho người tạo: Kiếm phần thưởng bổ sung bằng cách cung cấp tính thanh khoản trên Rubicon. Trong 3-5 tháng, hơn 26.000 OP sẽ được phân phối bốn tuần một lần, tỷ lệ thuận với Khối lượng của Maker trên Optimism.
+
+Quản trị: Đóng vai trò tích cực trong việc định hình cấu trúc thị trường Rubicon và thúc đẩy quá trình phân cấp tiến bộ của giao thức. Tham gia thảo luận trong [Diễn đàn](https://forum.rubicon.finance/).
+
+Ý chính
+
+Chi phí cố định: Trên Rubicon, chi phí duy nhất cho các nhà tạo lập thị trường là phí gas. Không có phí nhà tạo lập(tạo thanh khoản) biến đổi, các nhà tạo lập thị trường có thể triển khai thêm vốn trên lệnh và tận hưởng cùng mức chi phí gas thấp để quản lý chiến lược của họ. Trần chi phí cố định có nghĩa là các chiến lược giao dịch tích cực trên Rubicon có thể rẻ hơn nhiều so với trên các sàn giao dịch tập trung với phí nhà tạo lập thay đổi.
+
+Đặt lệnh hàng loạt: Bằng cách gộp nhiều lệnh vào một giao dịch, nhà giao dịch có thể chia tỷ lệ phí gas trên nhiều lệnh, giảm chi phí cho mỗi lệnh. Với các hàm batchOffer(), batchCancel() và batchRequote(), các nhà tạo lập thị trường có thể cập nhật hơn 30 lệnh nổi bật trong một giao dịch. Tìm hiểu thêm về [Batch Orders](https://docs.rubicon.finance/protocol/rubicon-market/batch-orders).
+
+Mạng có độ trễ thấp: Rubicon được xây dựng trên mạng Ethereum L2 với độ trễ thấp và xác nhận gần như tức thì. Giao thức sẽ tiếp tục ra mắt trên nhiều mạng hơn cho phép giao dịch tần số cao trên chuỗi.
+
+Rủi ro: Tạo thị trường và cung cấp thanh khoản vốn đã rủi ro. Không có gì đảm bảo rằng việc cung cấp thanh khoản sẽ mang lại lợi nhuận, hãy tìm hiểu thêm về [rủi ro trên Rubicon](https://docs.rubicon.finance/protocol/risks)
+
+EIP-4844: Bản nâng cấp Ethereum tiếp theo sẽ giảm phí gas trên mạng L2 xuống 10-20 lần, khiến giờ đây là thời điểm hoàn hảo để tích hợp trước đợt hard fork! Tìm hiểu thêm về [EIP-4844](https://www.eip4844.com/).
+
+Tài nguyên
+
+Bot mã nguồn mở
+
+Các bot mẫu để giao dịch trên Rubicon. Những bot này là điểm khởi đầu tuyệt vời để các nhà tạo lập thị trường bắt đầu giao dịch trên Rubicon.
+
+[Kho lưu trữ mã nguồn](https://github.com/RubiconDeFi/rubi-bots)
+
+Viện trợ thị trường
+
+Hợp đồng trợ giúp cho giao dịch nâng cao và tạo thị trường trên Rubicon. Cho phép các nhà giao dịch thực hiện các giao dịch lớn hơn, hiệu quả hơn và phức tạp hơn.
+
+[Mã nguồn hợp đồng](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/utilities/MarketAid.sol)
+
+[Tài liệu hỗ trợ thị trường](https://docs.rubicon.finance/protocol/rubicon-market/market-aid)
+
+Python SDK
+
+Thư viện Python để tương tác với Rubicon, hoàn chỉnh với các ví dụ và tài liệu.
+
+[Bắt đầu nhanh](https://rubi.readthedocs.io/en/latest/quickstart.html)
+
+[Xem gói](https://pypi.org/project/rubi)
+
+[Kho lưu trữ mã nguồn](https://github.com/RubiconDeFi/rubi-py)
+
+Rust SDK (WIP)
+
+Thư viện Rust để tương tác với Rubicon. (Chưa sẵn sàng để sử dụng sản xuất)
+
+[Tài liệu SDK](https://docs.rs/rubi/latest/rubi/)
+
+[Xem Crate](https://crates.io/crates/rubi)
+
+[Kho lưu trữ mã nguồn](https://github.com/RubiconDeFi/rubi-rs)
+
+Câu hỏi và hỗ trợ
+
+Đặt câu hỏi giới thiệu trong máy chủ [Rubicon Discord](https://discord.com/invite/E7pS24J) hoặc gửi ghi chú đến integrations@rubicon.finance.
+
+Hướng dẫn
+
+Giao dịch
+=========
+
+Đặt lệnh
+--------
+
+Tổng quan
+
+Mục [Trade](https://app.rubicon.finance/trade), bạn có thể duyệt qua sổ lệnh và giao dịch tokens ERC-20 với 2 lệnh có thể thực hiện đó là: lệnh thị trường ([Markets](https://docs.rubicon.finance/guides/trade/order-types)) và lệnh giới hạn ([Limit Orders](https://docs.rubicon.finance/guides/trade/order-types))
+
+![https://docs.rubicon.finance/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fimage(91).a74d4dad.png&w=3840&q=75](https://lh5.googleusercontent.com/ryd41TKn-SAXDyBPk5W0ZTfiZgNG7kp2YN64l9NY6ppqqM6RION9XP_a8SJN3v11HHIbp_JXabi4tICyCQZFkniZNi5qV8BYC83Y__Jbx9KvgGUFjYr2ITe0ednUDESaF5zUFnLmlix4IYPPoil_BuPi-hw49b4A)
+
+Trade Menu
+
+![https://docs.rubicon.finance/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fimage(76).ab2f341d.png&w=1920&q=75](https://lh4.googleusercontent.com/V5rEY4_rlBgDh6U7LOYBancgUTt3HrvYRTEnHrcLx7UOhUIQV19Nrz3LrqIsjhX78UkselZK33qc4DNFl4ssJvprWrKd1E2Gi-1wY9zWdkcgdlSqO1r0Rlanp-Vpc1FApWFpyYZll6NQ8mPTuxh1o-G-Fy1U6g6G)
+
+Chọn lệnh thị trường (Market) và giới hạn (Limit) để mua và bán.\
+Token Menu
+
+![https://docs.rubicon.finance/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fimage(9).783c622a.png&w=828&q=75](https://lh5.googleusercontent.com/UC0O3NGVkpdXhgviLsDu33MECtxrTwmu7nCX7N_TODfcg3LI4hOmYbG9WyYGh_h-msyeAACB4bj6OMlgedzzYbLeRU0QJNQbXEIvwzrw-a0PjlhRXPkHBZQ7k0aOMAuPrJ0_GB9wJHNWRcZCOgiKhZf7G_vb-9As)
+
+Xem các thị trường hoạt động và các cặp giao dịch được sắp xếp theo cặp. Kiểm tra [hướng dẫn](https://docs.rubicon.finance/guides/trade/order-types/adding-a-trading-pair) này để thêm một cặp token mới!
+
+Order Book
+
+![https://docs.rubicon.finance/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fimage(47).4fc68095.png&w=3840&q=75](https://lh5.googleusercontent.com/nghLQ46E4XtkYxPsAsuo0GHe3bjEiuIQnmn_33KrJrQPtZVdv9PiJjY9WacYtchD0VCyl87AH6g_GEWCxUihhiO8CHynNvAOxBgoa-ZZ4V0usR6tfs2lEjvZcPDvFl2GuLBJjJ9nG_BeHGPa4b4axW914ga1sGG3)
+
+Kiểm tra trạng thái của sổ lệnh. Dữ liệu của sổ lệnh được hiển thị đồng bộ thông qua khối mới nhất.
+
+Open Orders
+
+![https://docs.rubicon.finance/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fimage(102).2907b549.png&w=3840&q=75](https://lh5.googleusercontent.com/ewbFrF84AjjHBiuD2kmU8-FMFb5mlOqZbAu7PFfATkBK38gLNuD3ZG3Z32IxfIDwQnDBlYSIEkVyfFmckC5uETM_sqVrCU3uYnGkcZBA5R8FdC8lMJPWrBU-ojKxDUY0GM9FsU3uufY7Q2m8Q2a7Kw1pFnXI7AGA)
+
+Quản lý hoặc hủy các lệnh chưa thanh toán và xem các giao dịch đã giao dịch trên Explorer
+
+Kiểu đặt lệnh
+-------------\
+Các kiểu lệnh được hỗ trợ trên giao thức Rubicon
+
+Lệnh thị trường (Market Orders)\
+Lệnh thị trường chỉ định một số lượng và được lấp đầy ngay lập tức với giá tốt nhất có thể trên sổ đặt hàng. Những lệnh này trả phí (taker fee).
+
+Lệnh giới hạn (Limit Orders)\
+Lệnh giới hạn chỉ định một mức giá và một lượng và chỉ lấp đầy nếu giá thị trường vượt qua giá giới hạn (giá mốc). Không có phí maker (maker fee) trên Rubicon, vì thế một lệnh giới hạn nó tạo thanh khoản trên sổ lệnh nên phải không trả phí nào khác ngoài phí gas.
+
+Bạn có thể quản lý và hủy các lệnh chưa thanh toán trên tab Open Orders trên tab [Trade ](https://app.rubicon.finance/trade)trong ứng dụng.
+
+Tham gia [Discord ](https://discord.com/invite/E7pS24J)của chúng tôi và cho chúng tôi biết những loại lệnh khác bạn muốn trên Rubicon!\
+Thêm một cặp giao dịch
+------------------------\
+Cách thêm một cặp giao dịch mới trên Rubicon
+
+Giao thức Rubicon không yêu cầu quyền truy cập của bất cứ ai: hợp đồng của sổ lệnh (Order books)  hỗ trợ giao dịch của bất kỳ tokens [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) nào! Bạn có thể thêm một cặp giao dịch với tokens mới vào [ứng dụng Rubicon](https://app.rubicon.finance/trade) chỉ trong vài bước:
+
+1\. Chọn Token Menu Trên cùng mục Trade: ![https://lh3.googleusercontent.com/7852fvcHaw1Ypv9jrGRRb5IlObDS9AM_AAUSIyAUBlAz4V5_y4ctxfeklUDMgU5YtNb1pyY-_Bf6WmVVLq6QdRwkdozVvkGREFkSNtzipGeUov17_tAJWe3J38b5943yVdPBaSGBN6_w6OZJ](https://lh6.googleusercontent.com/ovOUiqT37RGrx6w2Uwca7JG7RBNLO9m75JuU9aNMG-PiSDWehzRfTaKOCJXVn5-y25D_IoHPw-9mwouAJGdTmmdd9_g8BSr_-CYo1ZVPueR81cp2UGOiv6oRKbQMlfCd1WJxAPvRNadnljXH6n_kJLV1BlLos9F1)
+
+2.Chọn Quote Token bạn muốn giao dịch cho một cặp mới::![https://lh5.googleusercontent.com/Euz93tduQfi7Hhm4Xc3CISqlnW-CAGyo9HubwmEr1vUDghLZQL8SbXcisDhsIbdBPlirfGaXlq4KRfQIzWASkCOpJFxV7u7xYhsdWxUOIwCiAKP7Wvg0M08yD9fgVut7DDPYmh5ecIbD_MU0](https://lh4.googleusercontent.com/ssRINWKl186_G6zE_XZEmwmCJARrkqcP4ZsZ4e-vF6oJuyMCCWnN50hwL6aaPgMu8OWQIoi_EvrPkv6H9S6yMPa0mQedwQz89qQ9eT-Jbdx2VLTtjBIWK_jxc5t2q-w3yksrJtGZH0NeSJfNIorPWaYlZcTusRGW)
+
+3\. Chọn Add Token và sao chép địa chỉ contract vào mục add token. Hãy đảm bảo rằng là đúng địa chỉ cho token trên Optimism, xác nhận nó trên [Optimism block explorer](https://optimistic.etherscan.io/tokens):\
+![https://lh6.googleusercontent.com/-3_Vq2fn3qcoQewiGbH5fBqBjKz7Vaod4YJPrv2jKz8yhAabOGHOl1DTPvVyBopTqOELZaIsOp4wwf3mapKak8bFdz850RQ7dB91SD5AMnLwcJcbFqemRXzRp-Qj4HKFav2PdTupoVtokos7](https://lh6.googleusercontent.com/e9dk3UmuofIaMysQTHuDG1VqDEc0Fm_c9lwEw3PPu0pLUUkG9er3S7TV8x7s2adLx_ONSfRGMS7jHLZUzm_WfzibITq21nyiJWTGlAuuxkQhkhjnxRmA7jGn0HIsSgmvFiTOGKUkimO_nx7NuFlZU9jEI6VVpvxl)
+
+4\. Khi bạn đã sao chép địa chỉ token vào thì thêm nó (add it), bạn sẽ thấy cặp giao dịch trên menu của bạn.\
+![https://lh6.googleusercontent.com/txUXuwhmUp99RzPTCp4ItYD-ZIA8JhPXEZtulcOqklxpW2YmOyuks2MrjhKgLujUSTIe20mciEeR1PQ3eGWrfd1ep3l8rzHuEc6zUTHtZvKLV68d9TnH8fymxbX6UvKGFIQdft8SAmu3E8r4](https://lh3.googleusercontent.com/_dKID208B_DwB4PixuB_KrzAUqvmJrhDdduSFfXFR8hq0AJfaYNiLAHOeRAwuGWQOMJj5YpwW5ZFzfFMJvaSW7y3vEyHUEx-tHjiIF2xzfgd0zBCUtlMzJiz6B1n0INvBNEZolxIScmqwTeZ2y7mJQZw7Nzx_Xua)
+
+5.Chọn cặp giao dịch mới để xem trên sổ lệnh và bắt đầu đặt lệnh giới hạn.\
+![https://lh3.googleusercontent.com/pCXJMZzutBRYylKJuYdyZLilgIJpCmGP6lvAXYCsgHUuMXRYP19ZcFgbmrnIR1aLQeiQlVNO-yt4exlIFV5o19mFXIONLEXidRvj3jzQO8AFXFALD-ysL9j4eEerzVj5WQaYxCtQDOOkHL-2](https://lh4.googleusercontent.com/3WzWI-OZLak3SqvwPKtFDXSiPiIpRHJHSW19jAthme-tNOhhxX1kxlLQPKGW21pd_8D0VOjSpAZ0l4QemOu-xxYKGWt-xlmJqJO_tV8f5e39f186oYsMlYkVZ8CieXz7oBEspjl2ySPxluJsJrVLKS-K04zIZFU4)
+
+Tạo thanh khoản cho một sổ lệnh mới có thể khó khăn. Trên một cặp mới, bạn có thể là người đầu tiên thêm thanh khoản và đặt lệnh giới hạn trên sổ lệnh.
+
+Nhà tạo lập thị trường của Rubicon giám sát các cặp mới và có thể thêm hỗ trợ cho một cặp nếu nó đạt được nhiều giao dịch. Nhóm nghiên cứu đang làm việc trên một giải pháp lâu dài hơn cho phép bất kỳ ai tạo ra một pools thanh khoản mới, cặp giao dịch và khởi tạo một sổ lệnh trên một giao dịch độc lập.
+
+Tham gia [Discord ](https://discord.com/invite/E7pS24J)của chúng tôi và cho chúng tôi biết trong kênh #Suggestions những tokens/cặp token Rubicon nên hỗ trợ tiếp theo!
+
+Phí
+---
+
+Phí mạng lưới\
+Sổ lệnh Rubicon nằm trên chuỗi khối, tất cả các giao dịch đều yêu cầu phí mạng (gas) được thanh toán bằng ETH. Phí gas trên [Optimism](https://www.optimism.io/) rẻ hơn 50-100 lần so với Ethereum Mainnet, bạn có thể theo dõi chúng trên [bảng điều khiển công khai](https://public-grafana.optimism.io/d/9hkhMxn7z/public-dashboard?orgId=1&refresh=5m) này
+
+Phí giao dịch
+
+Phí người mua: 0.01%
+
+Thanh toán khi Swap, đặt lệnh thị trường và các lệnh lấy thanh khoản từ sổ lệnh
+
+Phí người bán: 0%
+
+Lệnh giới hạn tạo thanh khoản trên sổ lệnh không trả các khoản phí khác ngoài gas
+
+Phí pool thanh khoản
+
+Phí rút tiền: 0.03%
+
+Phí rút tiền được trả lại vào pool, mang lại hiệu quả cho các nhà cung cấp thanh khoản còn lại. Dừng spam pool. (Đây là các tham số giao thức biến đổi và có thể thay đổi)
+
+Thực thi giao dịch
+==================
+
+[Swap](https://app.rubicon.finance/swap) tìm lộ trình tốt nhất để giao dịch token trên sổ lệnh Rubicon:
+
+![https://docs.rubicon.finance/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fimage(18).d1842437.png&w=3840&q=75](https://lh3.googleusercontent.com/BRdcqATfPEbG-oVN47Fgla4ir8lra59ssuJPzCz4YUEq1kqJLCHQWrCtw3N9SvmupndeZ0P_Acxc72v-Dky-4MthA_iZ-BT__Yf2R-h5ErgBnS8e1nTTljpkKjQ2FX2I_Ym8v3VXhF-7IOqvRrflhMvnqcHZINDi)
+
+Chọn một mã token để tìm kiếm tài sản có thể giao dịch:
+
+![https://docs.rubicon.finance/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fimage(89).442a50df.png&w=2048&q=75](https://lh3.googleusercontent.com/32s3mqtENpodXdd0fFOlUEWBOwBkGpmFB2X31DQy_1GoClIeseDcAmvi0G1oNsuHglzEMcVBD4FMIlncb5sub-kutlrFp-7iUFPD5Py61kI-NmTM8HunicWaS0-gME5MtEwRgHo9FXf-aZHL7wC8aY5rxUTqL2NW)
+
+Nếu sổ lệnh không có token bạn đang hoán đổi, bộ định tuyến sẽ gửi hoán đổi thông qua token như (W)ETH hoặc USDC. Để giao dịch trực tiếp trên sổ lệnh, hãy truy cập [Giao dịch](https://docs.rubicon.finance/docs/guides/trade/trade) .
+
+Cầu nối
+=======
+
+Cầu nối trên ứng dụng
+---------------------
+
+[Cầu nối](https://app.rubicon.finance/bridge) (Bridge) trên Rubicon sử dụng sức mạnh [Socket API](https://www.socket.tech/) mạnh mẽ để tìm tuyến đường cầu tốt nhất để bạn gửi token giữa các blockchains. Ghé thăm [Hướng dẫn Bridge](https://docs.rubicon.finance/rubicon-docs/bridge/bridging-to-optimism) của chúng tôi để tìm hiểu làm thế nào để kết nối các token đến Optimism. Bạn có thể xem đường nào giúp bạn có được nhiều token nhất trên chuỗi đích và so sánh các khoản phí cho mỗi cầu nối:
+
+![https://lh5.googleusercontent.com/jKBXcQAMeWNj96eEtNWbl9tsv56OtUxY51QcLfhQuboH67-I5U6KCc-ZnVnl02wu_IT0BaRgQUxM2_JDEPeO9CT6guw50XDzEpJAlmECaoM8tUsDtuOaJxA0MdAW-UAyfH43zrFJmKn70b5g](https://lh6.googleusercontent.com/UEq1vythR2rnks1k_n5Ot2KxSE39B2j4a2hVRthr_YQNGSam3ctaE4QKO2DMGQazY7UXpyKqALewhWXjESR0SzY-clwGmNynTBhCDmp5-bVY9u0QWjp3tdUq-5HHZHPrFow8hUlIg79etLgsGYRMk2idvVph0q2D)
+
+Nó cũng hỗ trợ hoán đổi chuỗi chéo! Ví dụ: bạn có thể dễ dàng trao đổi USDC trên Polygon qua ETH trên Optimism:
+
+![https://lh6.googleusercontent.com/tsi41QzKF-zHm6oHJnYgU_hLEsHwJXoN9xl7IN_l7qduz25yotlma8DgxmUQn2z8ztSGed_l7j1RWOIXj5drTI_mjT8dEcOhlzCVqR23sfT5Pwx4k-U9ioidjx5MPQU3BW57zRN5kOliefIQ](https://lh5.googleusercontent.com/Gnw_o_14TexiaMExf7fwukbENjo6DWpvp-lm5VEEGT1Icgez1t2IgvOeUQPMrqGE8CjmFPFE3DYnBX8-59ojuQ5-OgeZ3ZH2KTCy6nYhCQOEhgpqon5g6WzZfr1s-TLqKuQWgZQDGTg-MNqUGiLIodh2UR2pYS13)
+
+Cầu hiện đang hỗ trợ cầu nối sang phần lớn các token chính khác, hàng trăm tokens ERC-20 và Blockchains/L2s EVM phổ biến:
+
+![https://lh5.googleusercontent.com/ZhXdFfKEAq0Fb7UaL-RKGj2tbwUKCmUfsO2JNKh3NqLv11zV6V_gIXTUrhMkHbh-IqXHnLHwmph98YuLYhZ6tln16Ob1i3-StkT47hzH1Gpber-UtsnrG2vCHUr9Ruucig4-FgFMtzN-5gMo](https://lh5.googleusercontent.com/BiK19U_O0mb9ywelUncRL3bfrhGvwJ4R9YcsEafPxZCSffxdIg24VSz0Wc313fRaJcHZ7yWxE3ubRoLAvbde1NL1fE8uz77wicHMcpjlqqJx4BKnPCxYGxhwAINq7hT7jFCDxmqPkOkSciOaGDeuewFTj9Q4x5bn)
+
+Để được hỗ trợ với giao dịch bridge, hãy truy cập để biết [thông tin cơ bản](https://socketdottech.zendesk.com/hc/en-us) của Socket để biết câu trả lời cho Câu hỏi thường gặp và giúp khắc phục sự cố.
+
+Cầu nối đến Optimism
+--------------------
+
+Gửi tokens đến Optimism và những chuỗi khác với cầu nối Rubicon Bridge.
+
+Để bắt đầu giao dịch và cung cấp thanh khoản trên Rubicon, bạn cần ETH trên [Optimism](https://www.optimism.io/).\
+Sử dụng Bridge trên [Rubicon App](https://app.rubicon.finance/) để tìm cầu nối tốt nhất.
+
+Hướng dẫn Bridge
+
+Hướng dẫn này sẽ chỉ cho bạn cách bridge tokens đến Optimism từ các chuỗi khác. Ví dụ của chúng tôi là chuyển USDC từ Polygon qua ETH trên Optimism:
+
+1\. Kết nối Rubicon App và chọn Bridge từ thanh bên trái![https://lh5.googleusercontent.com/QFQZFJ-KqpXp6Z-Z7YdUCQNZ82RFCw8EFrn-esgcpY2dLctum6MKhsBoNA8-xmXx71nf_FJD-iOikcm6zwvvS4sv71NiaddhTsd4crN1ITkqrVZyhnA8UAZModt2kASOXl8Ca9uQrmxzqG6M](https://lh3.googleusercontent.com/cCWSA-uRnHPXEjfnWNtzEhRzWLVWnkw4p_yxmA1NPvWwzsVbKynm_LPgzuVHCt4A8MHiE03L3jd9ooOnMlSZK09j8g_9JC1ikOZXoCU-EGJnhoaMfDy6uTLCcIzHBFY-db65YHysfSuadH1lb8PQgMxN3cj33px7)
+
+2\. Chọn chuỗi mà bạn muốn chuyển từ bên nào sang bên nào. Trong trường hợp này, chúng tôi chuyển từ Polygon sang Optimism:
+
+![https://lh4.googleusercontent.com/RIxcj2qy1qSNuPoK7y6GkEG_AwcTDivm4DMTQ7R6XQ3KaSte3e_-TfLJAM6Irtl77J8kG8R_hVH68IpxN6VlQnKRQNFENAh8Da8_d4-OZ6XEfypzipeiMz7Yr1643BUrOmdCtZlsQ83SvgvP](https://lh6.googleusercontent.com/LVrKwPCxY54t-MQEHvsslGAaYGN5QuI1U-wQMq4E1QLNORfqdG1XhP4cJzhOqLS16elNhoH6CDRPqmj0mepsaHo-b1tCmK4b8UFmnmskufL_hbkw_OFzfeTqGUh3NNaincGuldzH_1RPJKZykYlpNpFm3HqnF3Ai)
+
+3\. Chọn token mà bạn muốn chuyển và nhận, chúng thì không giống nhau! Ở đây chúng tôi chuyển USDC trên Polygon sang ETH trên Optimism:\
+![https://lh4.googleusercontent.com/-t7AZyRnZ8BpiIu0j-rlH7A7-qdPSs9eEWYSRpzXaj3RM6xgSplGakFFA2b5Uc9VR9dVkfQhd6FBFy5KlOcMGRbhdijOrpN00ulDcy-771qUXT7JGB0GaBODbnrmdLesQifu0pVyB2mjjv86](https://lh6.googleusercontent.com/78IfY28xmy0DY5mNKiPNimBLJ4UlJUSGvnRt-H3WLF_C6-t9ZI6ZXpLI5SLxGafcMLLF599_DkPHbnUeQ7-VSP9Vj3-iSwQk9BckKNGniJecigFeKc5WjzMkEenUm0K2eIVHiIfzRcs2UNhUYkyKiwcHdQ-zR6Tm)
+
+4.Sau khi chọn số lượng tokens bạn muốn chuyển, bạn sẽ nhắc nhở chuyển sang chuỗi trong ví của bạn (nếu bạn chưa chuyển chuỗi)\
+![https://lh6.googleusercontent.com/9xQETK6wNztcSAwxZqozFibvxsmCkogCSTd89MJLRu5JWV-h1wq1mkFbLaFRY60XxNDXKCOHcl6kAQW4Vh2rKT2CZFpdnRdMygyaZNBCPYeQt64OzJeY9VfUu8a4wpzzZn5pxnrTaDBSLC0w](https://lh3.googleusercontent.com/3Y1lNQHO3R70TzX6Dphr_9MSvSxQS19sfDfk9JWC3pLeDgqPUiAUPCTgy6kH5xj6Qw_4mJDU3JK9h6aP8VpMRw5ki8lCMaOAk_28AJGs2k14_hNFJOTU66VS_cJ6dViP0ZLdCNAMxI4CGx1vbwdjEVEjZ73pTd6I)\
+![https://lh3.googleusercontent.com/JOoH4xJ1ayo8L7GcSwATWoy-ZGTmoBo5ifvdW8HlMFXhCntHCEkYYtoovu9nbPjrMYKgZo2mjE6ZSzhRaDdF1dU0W6FwsiPtWW3MczGUKp3K8HO2Qx90dGxcTWp78A69vD45wUpwlMdnw_H7](https://lh3.googleusercontent.com/ccMy7I9WVYUTwhErHOPuSU0t32iSsGfqAIjZPe7ByltlGsh-k8aDPPp5U7777wuUMOlRW46EPJvVJym2zknnnlI68AXQKx4sJDsZ-UINBM8ii617PcTqD1_Hfx1tnK391pub1ex7bhf2isMlzJfKqOYy7MoHuNx6)
+
+5.Cầu nối sẽ tìm đường tốt nhất cho bạn có thể có tokens nhiều nhất trên chuỗi đến. Bạn có thể chọn tuyến đường với phí thấp. Trong ví dụ này, Cầu Hyphen cho chúng tôi ETH nhiều nhất trên Optimism và tốn ít phí:
+
+![https://lh6.googleusercontent.com/MhVJB9lB6FogDV_RrNJtiURe2-g4jS6LYRSqT9Xb48iiJPLzWvUnTOOPS9AUZD-PJqObwV7YeFuDE9MvwituMBf4kLelzYdCZE9F7jl2zG9QMcIdc9FdfYnn2gl-jn40s1IPnj6oZ1j6b6-v](https://lh6.googleusercontent.com/TdIyOfMeZ7ZV2W8yHLUpyrinxjbl1AU-aS-PWGL99VTSNmByHjy-iivQ3rj9dQrLAuF7HgfZ9As9lziBfK1dKA56EK9JqeNRq_JFeBM0yuMJv08YRQXraNdtjDRIJ7M_tlZ8JQrHr-uKhLb4EijrVhJ1QICuk1Tb)
+
+6\. Bạn sẽ cần chấp thuận (Approve) hợp đồng. Chọn Approve và xác nhận giao dịch trong ví của bạn:![https://lh6.googleusercontent.com/RyciSQ2fvCTHVpEUjtDm_B6S-hCSqEiLf4RtvFeqNX9qmIl0xx8dTqUNXE8pxZDp4WMfRUM4RsBKpz9XDiB0myGKwLHcpfNErRTPb9sZlHAgurhOZAlLp0cXoYF_cO1LwctLEWEZ4oSyHEql](https://lh6.googleusercontent.com/-FgkjsVZXM6_q5J2HNU_IznNWBb519jk3C9Deu3mU2F3HG1HzDA8HQMUGYXcyTLR5V5pu3HodL4bsh5YuWJqyetudFkSwKHw_cfW7G5v0ZF0iBnwkSbJoFZKwwbzW0HJe_I41g1DQ3CCA9YKgPILPSJNyVVcP61J)\
+![https://lh3.googleusercontent.com/M-QYYPUZ9Hzs3ypxS7bQtK61-SGmQ5loxQhHlRMtUVa0Ly6O0uAQwI3J4rnNYZf8RC7MJSt3cy3RRqG_Blw8OxZbnQAGkoj2rpApJnOn46TcNCNddlIZ-iXb2md5ZIzz8Aduog9TdNx6Ci-2](https://lh4.googleusercontent.com/NzqSdZeUbQLrBVb8Wfl-kUkHr5PF2BC_w-wiFEQI5lf9ObMYx33TowXtt6bkxUYYusBSE07cVaHKthXS1gh6TCnU212sJWRErJtVcFwW631CeN6eI9qg4jxd6G3dJfiPpfFvkp5aiSYv7uHdzyp21AriDvTiaER9)
+
+7\. Một khi đã chấp thuận, bạn đã sẵn sàng để bridge! chọn Bridge và xác thực giao dịch trên ví của bạn:
+
+![https://lh6.googleusercontent.com/28UxMOZF-ie_mrcV4PI43wjMb1pYkdeVOieXOOgGH0cGnoyllMcPEg8PFX0umaIoprH6sFYsbgwWHM4jChFNofmDhF8WpAL6Q7Qbhp7iPh_mIhkjCdGMLkwMCCDvvl5Rx-RbBLY60tbbVcNw](https://lh6.googleusercontent.com/Lf2qj4s6KZcWyqfJnsPj6N3hrtoS8H7mzOTktcIGsCNcJPhKWjrZDA9uJNJ5jJQiGJFL2eAnGMTCH9qiEXO_jUb0vTwLVKhw8eberMxEpmLmtgKDM5arI7ahq1U1zxE7Lf-FA7uxQnDotBW606SvHSgHSb5WcUGC)
+
+8\. Token đang trên đường đến! Nó cần thời gian khoản 10 phút để tokens xuất hiện trên ví của bạn ở chuỗi đích. Trong thời gian chờ đợi, bạn có thể khám phá những phần khác trên Rubicon App.
+
+Pool thanh khoản
+================\
+Để được với hỗ trợ giao dịch bridge, ghé thăm cơ sở kiến thức của Socket cho các câu hỏi thường gặp và trợ giúp khắc phục sự cố
+
+Kết nối ví của bạn với Rubicon
+==============================
+
+Hướng dẫn kết nối ví Di động và ví Máy tính/Trình duyệt với Ứng dụng Rubicon.\
+(Nếu bạn cần chuyển (Bridge) Eth hoặc token khác đến Optimism, Hãy xem hướng dẫn Bridge (cầu nối tài sản)\
+Ví trên Điện thoại di động/Điện thoại thông minh\
+Đây là hướng dẫn sử dụng trên ứng dụng điện thoại ví Metamask, ứng dụng đã có trên Android và iOs. Trước khi kết nối ví của bạn trên Rubicon, bạn cần thêm mạng Optimism vào ví Metamask của bạn trước.
+
+1\. Mở Metamask và chọn vào Menu icon phía trên bên trái![https://lh4.googleusercontent.com/LC-Teb2muqMgV3KBczHF38jDINXyQuaHeg1nBaQg_opZt7G--KHeKAKQsPgySFz53qTEiHrObkjjzjIIaVApdWgY-Wya_XhwjK3shO4EnWDjNoYxH0CaEPTfmhDbbzL_IlkjuH34X0vRdlV_](https://lh6.googleusercontent.com/cHKaE8dLgC7TOOJ5bXpjzMzLNh2aQkwO68OiQKsI4O5fPJyVD3nZPjhw99CHKGBfbkIqvd_AkqpKWYE1amGhG6FA0Fja8aJJ9iL9ygdRU5qm41x31EkD5kEKhLz3FEiyS7PcdfKs9LbahTZdyHd36AMr47k8iGhN)
+
+2\. Chọn Settings trong phần Menu\
+![https://lh6.googleusercontent.com/okMe_THoC22-zNfET2G-OZbX_8B16wWUQiM89E1snIPm-0dTVEnIr_fCWpY2EDi9cDgpRk4q3HiIpbj8HNk1zASHkmLoXS6VvaE-aTaVjurAeO5vnsTb0vDi8RcMLowOnLBLe_eJ5ME9zzsP](https://lh5.googleusercontent.com/W6lmtC7Kr26GZW12qLrpiY3lZdim3B7geBzz_bpHAfR1ilHKkLnALF8Y_RPuam4DZZYI-Uwy5lZedblDRI4FISbyHEOz4MHbTQnT9x3dGqKF9PZvwpT6TkEH6imi-QbNSZmp8zfc3dcqWWz2cljuYYHWcOly-2mB)
+
+3.Trong phần Settings menu, chọn Networks để thêm một mạng lưới tùy chỉnh![https://lh4.googleusercontent.com/laH3ixU9k7va68WPlkCMLSPIdfERJbEG4sZmc36YNViJUB8XpYUIFbsyLbEQh_5g26v1cXcrNg2jRr1bV2NNzoEnkVE-nBQVSulfwLzuEnf3p9QWMT0pn_vYQoYjIkw92Vu5bhPr-AYM9c6N](https://lh6.googleusercontent.com/ezLLUPXMaKKs5dYEys8MCRV2aiThU7l2eJ8VeuyWZN-QFu4IESjGDex4WWOjL6gav7c5d1emEipz3FP0jnk0yzvINGDZa74ap6tgcAlOOlKPmFDZ9LwI8_m3MlcabFyMv2Hr0cetB6cZoTzBcFZ7XOev5nlpAChm)
+
+4\. Chọn nút "Add Network"\
+![https://lh5.googleusercontent.com/GgzyBAwTMuWTqwai6z3qwy7ykUZtiIZsYw3yAbao2Yn7QzyzUxKbQ0Lrz4817KMW39Gp6XDqIsDiIpj5alBF3NcSp9JADnRqbt5N8a0BxfWr4KRm48c5PNeScroN1AXhb3QONgCO0gAr_e41](https://lh6.googleusercontent.com/tPtUQiHrS3bVgDjLH7Ep-ua_Jg9TIoxiB6dtTvOw36mLmWQzum7RQjEpE_JG-RZESGQH1l0GQlMAaHL10qtn5cA02FH9smsk0K0C_ZqvgoX3Ug3Zqb12GSztpu8kd3StogqTWRYnlSUKRTxwFWdvWNexCrOBs79U)
+
+5\. Trang sẽ hỏi bạn chi tiết về RPC network mới\
+Để thêm mạng lưới Optimism, Nhập chi tiết network như sau:\
+Network Name: Optimism
+
+RPC Url:[  https://mainnet.optimism.io](https://mainnet.optimism.io)
+
+Chain ID: 10
+
+Symbol: ETH
+
+Block Explorer URL:[  https://optimistic.etherscan.io
+
+](https://optimistic.etherscan.io)
+
+6.Một khi bạn đã thêm mạng lưới Optimism, bạn có thể thoát phần cài đặt(Settings) và chọn vào Menu icon, rồi chọn nút "Browser"\
+![https://lh3.googleusercontent.com/QGJYL2cvNCjRwHXAZCcURI4tt0N83pX8YtrWvBbTitXroJbEWsBXsoq26oie8-J0ntedw5sH_S-vv-93XiEqpHAhfD_g7viXhyo3F-cqurS4mr1bITccmjyv87tkH7eFJniD00j8aDxKgqk8](https://lh4.googleusercontent.com/bNQOmD6xxEkLl4F-dUALm6Ef4bCBMCLL4yvc2UAZpSWFoq1O4CXMNGr4bjMukp_WhNc7s1nyfNVtpj5T2eylKPZYmoiIDvFJM5Z7OpgCtjnLxGXo7oYkEVj0loX5X-C_cB20kfiIw0TTJbawBTOY51ywfJM8pdI8)\
+7.Nhập vào thanh tìm kiếm "app.rubicon.finance" và bấm tìm kiếm. Hãy đảm bảo rằng địa chỉ liên kết (URL) là "app.rubicon.finance" (Bạn có thể đánh dấu trang bằng cách nhấn vào nút 3 chấm phía dưới bên trái và thêm vào phần sở thích (Add to Favorites).
+
+8\. Rubicon sẽ hỏi bạn để kết nối ví của bạn. Bạn hãy chọn Nút Metamask (có hình con cáo).
+
+9.Ví của bạn sẽ được hỏi để kết nối đến ứng dụng Rubicon. Nhấn Connect để kết nối ví bạn vào Rubicon.![https://lh4.googleusercontent.com/kVhtK3JgYoNE1p2dw2p44YNnotYk68_GF_06a3JT3ngZyrmQSxcb_4gdpnEjLAismqIDloK3t0ZB4kc5wpSJfSRmOGGtMsdy4tm1qKKaqRlWnDPHt8tSizJYnnAfQFWKMWSJaEU8rnIwgfX5](https://lh3.googleusercontent.com/C5cnMVUsvmAk3sC2QSmgig3ptViRNXpvobPPcFVO8b65bSvi4dlAm2E65_4C0vPSbwLyiVimFuWncLlRP0QaQlCC4wx74_3ylgvxb3TmBRvDUqC1G2t28-x8ORKdskjkjgwvW2zWTbGNoZJ98cluT0MDGREIkKWm)
+
+Bạn đã kết nối vào Rubicon và sẵn sàng để giao dịch! Nhớ rằng bạn buộc phải kết nối vào mạng Optimism để kết vào ứng dụng(Rubicon) Bạn có thể chuyển đổi mạng (network) bằng cách nhấn vào nút 3 chấm phía dưới bên trái và chọn Switch Network. Cuộn đến cuối cùng của trang Networks để thấy mạng Optimism vừa được thêm vào.
+
+Ví trên Máy tính/Trính duyệt web
+
+Đây là hướng dẫn trên ví [MetaMask tiện ích mở rộng](https://metamask.io/download.html) trên web
+
+![https://lh3.googleusercontent.com/G5mppNbMMvEO_6bWHt7Dzi-IPkcOw-tE0l_sjokMppoxz-ddHPfnvUFZVw5Io8vgVBd6zBkOAfE5ZfS8wkyNjXr9GZYJvIrVQJ4aouY1zea-rP_76uJ6HHcX0NxrIrdfbJeatRhTp7XwVoUN](https://lh5.googleusercontent.com/ztWrBKk8AZUAvxPu7vjZu10zX568wvw9NKiyuXyMBMfMh-ubLzO0NWqqhvBGiUqyJoppqM9iefOX4usq6w9FasQOXC9_smPrwgzdxQH_Fe1qPKytRXzJHEj6GW_gw7Wx12Nvm_j9X7kxnGompNmC85IINPbAoK-B)
+
+Đây là trang chủ màn hình, chú ý là ví đã kết nối vào "Ethereum Mainnet". Nếu bạn đã từng sử dụng ứng dụng trên Ethereum trước đó, thì đây là giao diện bình thường! Đó là phần chính của blockchain Ethereum mà chúng ta biết và yêu quý!!!
+
+Hãy bắt đầu kết nối ví của chúng ta đến Rubicon. Khi bạn lần đầu tiên khởi chạy Rubicon, bạn sẽ thấy màn hình chào như thế này:
+
+![https://lh4.googleusercontent.com/dL5Enp2teglJnkIPYuCdCL60n9fwjDrqg_ACP-r4otBKjJ6BKIHQRnOIEqlcHY5SRfI1i0qVOn_Bu4KpozqkWC458RoARrv53VKjp6_SCVvHDWp-YJAWVDmQP-mVVJPcgH3y68zCqy9tW94i](https://lh3.googleusercontent.com/v1HiRLYLO6tRKAG9vjZ7YNojX0bWpcHAbsqAqnIUACjRmDwArbqRJLUwHcfV-CfxiOx9zaZ8xvbUDyecXCs14YluKotpZWe98Et5PZR2gABPATN9MJdNZ3-gL53enaN0jGWyQr9LSnreqGiqE6HC3v9mVcQ4jVzR)
+
+Một khi chúng ta nhấn vào nút "MetaMask", ứng dụng Rubicon sẽ hỏi quyền để kết nối vào ví của bạn. Đây là các bước ví của bạn kết nối vào Rubicon:![https://lh3.googleusercontent.com/KVTAC56IFo1Ij-FVDcetij9UUS_Ju0ggg9TQFCNnQ2PB07Mz5rNzjj6cMq2UmwWbaHyycUrN70DzlCZJqugLmnugkHrOAGvdBWvF_8nxhRt31CaqNZGsl6ILNfJcwthl_gFIx1a1YrtNbbU-](https://lh3.googleusercontent.com/uv5GJfwCVFeZkFCKy1ibJFoj3A7FnX_SkOKg9NRTcmSn78OQapRb2MyGd_6uHw_D8pqSE9OYKNq5U5qyfUyxmuo9ziiTl4KekX5A3RiE2JKKxHTwcHWKJnv3lGNM5EvsXZW6JI6qICRp42o23y_u47wWl6ZgrCpZ)![https://lh4.googleusercontent.com/QSruKoANlUhb-lq6N9nLYBqVaEwMPX5LS4E23jdk592H-GIxY55N5z-ZcOjpRu9BWv-umohAHsbsWFYr4iNzjjjOzJ0_QPcrO7HRjDyS5Fb9jN60yt8RsvKplR2Iz0Gp-hTdPGqptDUKZ8tQ](https://lh5.googleusercontent.com/7O8z6Vr1mRP3q6NSK1-lHWxir2kb8uRFR251VUFiKotcLWBKByUOeEgoKLY-iiLoF1Ismr5prNyskkAnoCuux2rTvSIPQsNYw_ET5vF5gwKBbSMAI0PRQOeimhojgwAwoz_Hd5Eostw86OaGnuDvuIwXLweu_8ez)\
+Bạn đã được kết nối và bắt đầu thôi!!!
+
+Tuyệt vời, Ví của bạn đã được kết nối với Rubicon! Đây là một bước cuối để bạn có thể bắt đầu sử dụng Rubicon, Chúng ta sẽ phải chuyển mạng lưới (Networks)
+
+Rubicon thì được xây dựng trên layer 2 (L2): Giải pháp để giúp Ethereum mới rộng giao dịch, giúp Ethereum loại bỏ việc giao dịch trên mạng lưới chính thức layer 1 (Ethereum mainnet) để chuyển sang layer 2 (L2). Đó là giải pháp quan trọng để giảm lượng phí giao dịch và tăng lượng giao dịch thông qua, trong khi vẫn tận hưởng được được độ bảo mật của Ethereum. Để biết nhiều hơn về layer 2, Xem ở [trang ](https://ethereum.org/en/developers/docs/scaling/layer-2-rollups/)topic Ethereum Foundation.
+
+Rubicon được xây dựng trên [Optimism](https://optimism.io/). Khi bạn đã kết nối vào ứng dụng Rubicon, bạn sẽ kêu gọi thêm mạng lưới Optimism network vào ví của bạn:![https://lh6.googleusercontent.com/FEOYDPSvCIM3kFdP5wfWM4V2rtF3RhNhQnRCOmq4hjggDc6qH2U7rU-kqdxwZszQi-P5Yff13yBb3wA7lsbBeAe6vMB4I__-cTr-vs3_1S9fXgayX1Sk7fj77DHIBhT0LYY0by4YgxI_E4NA](https://lh3.googleusercontent.com/8FHx9wHHvpVmwwDwvhmCTgET9iF-nv65ELeFqvrJ34Z-_Y-YkWUUIziXc4DM2Tvx26C2kDjadidJ0fpOvjDKdZJyO9Xd-LumVDNgE2b_X98U8tBKkOHL4w1BrbMNgIrnI4s9oX3z795VFSpGw6uScJJTA6V-R4oA)
+
+Một khi bạn đã chấp nhận mạng lưới Optimism, thì bạn đã kết nối và sẵn sàng để sử dụng Rubicon! Nếu bạn cần cầu nối (Bridge) token của bạn vào Optimism network, vui lòng xem hướng dẫn tại đây
+
+Nếu bạn cần giúp đỡ, tham gia [Rubicon Discord](https://discord.com/invite/E7pS24J) và chọn kênh #support
