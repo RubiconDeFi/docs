@@ -4,9 +4,9 @@ pageTitle: Rubicon v2 Subgraph Overview
 description: An overview of the RubiconV2 Subgraph
 ---
 
-# RubiconV2 Market API
+# Rubicon V2 Market API
 
-The RubiconMarket subgraph contains a collection of entities that collect and store data related to trading activity on the protocol's order books. Below are key entities that we believe user's will find most relevant to their data needs.
+The Rubicon V2 subgraph contains a collection of entities that collect and store data related to trading activity on the protocol's order books. Below are key entities that we believe user's will find most relevant to their data needs.
 
 ### _**User Entity (ID: Wallet Address)**_
 
@@ -24,5 +24,271 @@ type User @entity {
     fees_paid: [Fee!]! @derivedFrom(field: "user")
     " map to all fees the user has received "
     fees_received: [Fee!]! @derivedFrom(field: "recipient")
+}
+```
+
+### _**Offer Entity (ID: The Offer ID)**_
+
+```graphql
+type Offer @entity {
+    " the offer id "
+    id: Bytes!
+    " the transaction that the offer was created in "
+    transaction: Transaction!
+    " the timestamp of the transaction that the offer was created in "
+    timestamp: BigInt!
+    " the event log index of the offer "
+    index: BigInt!
+    " the maker of the offer "
+    maker: User!
+    " the pay token of the offer (the asset the maker is selling) "
+    pay_gem: Bytes!
+    " the buy token of the offer (the asset the maker is buying) "
+    buy_gem: Bytes!
+    " the amount of pay token the maker is selling "
+    pay_amt: BigInt!
+    " the amount of buy token the maker is buying "
+    buy_amt: BigInt!
+    " the amount of the pay token that the maker has already sold "
+    paid_amt: BigInt!
+    " the amount of the buy token that the maker has already bought "
+    bought_amt: BigInt!
+    " the price of the offer as a ratio of pay_gem / buy_gem "
+    price: BigDecimal!
+    " the status of the offer, is it live or not "
+    open: Boolean!
+    " the timestamp the offer was removed on "
+    removed_timestamp: BigInt
+    " the block the offer was removed in "
+    removed_block: BigInt
+}
+```
+
+### _**Take Entity (ID: Transaction Hash - Log Index)**_
+
+```graphql
+type Take @entity {
+    " the transaction hash and log index of the take "
+    id: Bytes!
+    " the transaction that the take was a part of "
+    transaction: Transaction!
+    " the timestamp of the transaction that the take was a part of "
+    timestamp: BigInt!
+    " the event log index of the take "
+    index: BigInt!
+    " the user that took the offer "
+    taker: User!
+    " the user that originated the transaction that the take was a part of "
+    from: User!
+    " the offer that was taken "
+    offer: Offer!
+    " the pay token of the offer (the asset the maker is selling & the asset the taker is buying) "
+    take_gem: Bytes!
+    " the buy token of the offer (the asset the maker is buying & the asset the taker is paying in) "
+    give_gem: Bytes!
+    " the amount of pay token the taker is buying "
+    take_amt: BigInt!
+    " the amount of buy token the taker is paying in "
+    give_amt: BigInt!
+}
+```
+
+### _**Swap Entity (ID: Transaction Hash - Log Index)**_
+
+```graphql
+type Swap @entity {
+    " the transaction hash and log index of the swap "
+    id: Bytes!
+    " the transaction that the swap was a part of "
+    transaction: Transaction!
+    " the timestamp of the transaction that the swap was a part of "
+    timestamp: BigInt!
+    " the event log index of the swap "
+    index: BigInt!
+    " the user that initiated the swap "
+    swapper: User!
+    " the input token of the swap "
+    input_gem: Bytes!
+    " the output token of the swap "
+    output_gem: Bytes!
+    " the amount of input token the swapper is swapping "
+    input_amt: BigInt!
+    " the amount of output token the swapper is receiving "
+    output_amt: BigInt!
+}
+```
+
+### _**Fee Entity (ID: Transaction Hash - Log Index)**_
+
+```graphql
+type Fee @entity {
+    " the transaction hash and log index of the fee "
+    id: Bytes!
+    " the transaction that the fee was a part of "
+    transaction: Transaction!
+    " the timestamp of the transaction that the fee was a part of "
+    timestamp: BigInt!
+    " the event log index of the fee "
+    index: BigInt!
+    " the user that paid the fee "
+    user: User!
+    " map to the recipient of the fee "
+    recipient: User!
+    " the offer that the fee was paid for "
+    offer: Offer!
+    " the token that the fee was paid in "
+    fee_gem: Bytes!
+    " the amount of fee token that was paid "
+    fee_amt: BigInt!
+}
+```
+
+### _**One Minute Entity (ID: Token0 - Token1 - Timestamp / 60)**_
+The order of the tokens, Token0 & Token1, are determinded by the alpha-numerical order of the underlying token addresses.
+
+```graphql
+type CandleOneMinute @entity {
+    " token0 + token1 + timestamp / 60 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+```
+
+### _**Five Minute Entity (ID: Token0 - Token1 - Timestamp / 300)**_
+The order of the tokens, Token0 & Token1, are determinded by the alpha-numerical order of the underlying token addresses.
+
+```graphql
+type CandleFiveMinute @entity {
+    " token0 + token1 + timestamp / 300 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+```
+
+### _**Fifteen Minute Entity (ID: Token0 - Token1 - Timestamp / 900)**_
+The order of the tokens, Token0 & Token1, are determinded by the alpha-numerical order of the underlying token addresses.
+
+```graphql
+type CandleFifteenMinute @entity {
+    " token0 + token1 + timestamp / 900 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+```
+
+### _**One Hour Entity (ID: Token0 - Token1 - Timestamp / 3600)**_
+The order of the tokens, Token0 & Token1, are determinded by the alpha-numerical order of the underlying token addresses.
+
+```graphql
+type CandleOneHour @entity {
+    " token0 + token1 + timestamp / 3600 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
+}
+```
+
+### _**One Day Entity (ID: Token0 - Token1 - Timestamp / 86400)**_
+The order of the tokens, Token0 & Token1, are determinded by the alpha-numerical order of the underlying token addresses.
+
+```graphql
+type CandleOneDay @entity {
+    " token0 + token1 + timestamp / 86400 "
+    id: Bytes!
+    " token0 - determined by the alphabetical order of the token addresses "
+    token0: Bytes!
+    " token1 - determined by the alphabetical order of the token addresses "
+    token1: Bytes!
+    " opening timestamp of the candle "
+    open_timestamp: BigInt!
+    " closing timestamp of the candle "
+    close_timestamp: BigInt!
+    " opening trade of the candle "
+    open: Take!
+    " closing trade of the candle "
+    high: Take!
+    " smallest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    low: Take!
+    " largest ratio of the trade amounts in the given order - token0_amount / token1_amount "
+    close: Take!
+    " the ratio of token0 to token 1 at the high "
+    high_ratio: BigDecimal!
+    " the ratio of token0 to token 1 at the low "
+    low_ratio: BigDecimal!
 }
 ```
