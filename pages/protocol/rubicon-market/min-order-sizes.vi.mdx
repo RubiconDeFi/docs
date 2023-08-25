@@ -1,0 +1,33 @@
+---
+title: Min Order Sizes
+pageTitle: Min Order Sizes
+description: Minimum Order Sizes on Rubicon
+---
+
+# Kích thước lệnh tối thiểu
+
+Để ngăn chặn các lệnh "rãi rác", `RubiconMarket.sol` thực thi các kích thước lệnh tối thiểu trên một số token ERC-20.
+
+## Bảng lệnh tối thiểu
+
+| Token | Kích thước lệnh tối thiểu| Quy mô đặt hàng tối thiểu (uint256)  |
+| ----- | ------------------------ | ------------------------------------ |
+| WETH  | 0.0022 ETH               | 2200000000000000                     |
+| WBTC  | 0.00015 WBTC             | 15000                                |
+| USDC  | 5 USDC                   | 5000000                              |
+| USDT  | 5 USDT                   | 5000000                              |
+| DAI   | 5 DAI                    | 5000000000000000000                  |
+| OP    | 3 OP                     | 3000000000000000000                  |
+| ARB   | 4 ARB                    | 4000000000000000000                  |
+
+## Truy vấn kích thước lệnh tối thiểu
+
+Sử dụng hàm xem này để truy xuất kích thước lệnh tối thiểu cho một token nhất định.
+
+```solidity copy
+    function getMinSell(
+        ERC20 pay_gem
+    ) external view returns (uint256)
+```
+
+Trả về kích thước lệnh tối thiểu cho token ERC-20 đã cho.

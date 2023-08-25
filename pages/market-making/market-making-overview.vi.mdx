@@ -1,0 +1,60 @@
+---
+title: Overview
+pageTitle: Market Making on Rubicon
+description: Overview of Market Making on Rubicon
+---
+
+# Tổng quan
+
+## Cơ hội
+
+- **Giao dịch nguồn mở 24/7**: Rubicon là một giao thức giao dịch nguồn mở và không uỷ quyền được xây dựng trên mạng Ethereum Layer 2 (L2). [Tích hợp ngay hôm nay để bắt đầu tạo lập thị trường](/protocol/deployments).
+
+- **Kiếm tiền chiết khấu**:  Các nhà tạo lập thị trường nhận được 95% phí người nhận dưới dạng chiết khấu trong thời gian thực, tương đương với khoản chiết khấu 0,038% cho mỗi lệnh được thực hiện. Tìm hiểu thêm về **[hoàn trả và phí](/protocol/rubicon-market/fees)** trên Rubicon.
+
+
+- **Lợi thế cạnh tranh**: Các nhà tạo lập thị trường tích cực có thể vượt trội so với các nhà cung cấp thanh khoản AMM thụ động bằng cách điều chỉnh các ưu đãi trên cơ sở từng khối. Trên Rubicon, các nhà tạo lập có thể cung cấp ưu đãi giá mua tốt nhất trong mạng (NBBO) cho bất kỳ tài sản nào vào bất kỳ lúc nào.
+
+- **Phần thưởng dành cho người tạo thanh khoản**: Kiếm phần thưởng bổ sung bằng cách cung cấp tính thanh khoản trên Rubicon. Trong 3-5 tháng, hơn 26.000 OP sẽ được phân phối bốn tuần một lần, tỷ lệ thuận với Khối lượng của Maker trên Optimism.
+
+- **Quản trị**: Đóng vai trò tích cực trong việc định hình cấu trúc thị trường Rubicon và thúc đẩy quá trình phân cấp tiến bộ của giao thức. Tham gia thảo luận trong **[Diễn đàn](https://forum.rubicon.finance/)**.
+
+## KÝ chính
+
+- **Chi phí cố định**: Trên Rubicon, chi phí duy nhất cho các nhà tạo lập thị trường là phí gas. Không có phí nhà tạo lập(tạo thanh khoản) biến đổi, các nhà tạo lập thị trường có thể triển khai thêm vốn trên lệnh và tận hưởng cùng mức chi phí gas thấp để quản lý chiến lược của họ. Trần chi phí cố định có nghĩa là các chiến lược giao dịch tích cực trên Rubicon có thể rẻ hơn nhiều so với trên các sàn giao dịch tập trung với phí nhà tạo lập thay đổi.
+
+- **Đặt lệnh hàng loạt**: Bằng cách gộp nhiều lệnh vào một giao dịch, nhà giao dịch có thể chia tỷ lệ phí gas trên nhiều lệnh, giảm chi phí cho mỗi lệnh. Với các hàm `batchOffer()`, `batchCancel()` và `batchRequote()`, các nhà tạo lập thị trường có thể cập nhật hơn 30 lệnh nổi bật trong một giao dịch. Tìm hiểu thêm về  **[Đặt lệnh hàng loạt](/protocol/rubicon-market/batch-orders)**.
+
+- **Mạng có độ trễ thấp**: Rubicon được xây dựng trên mạng Ethereum L2 với độ trễ thấp và xác nhận gần như tức thì. Giao thức sẽ tiếp tục ra mắt trên nhiều mạng hơn cho phép giao dịch tần số cao trên chuỗi.
+
+- **Rủi ro**: Tạo thị trường và cung cấp thanh khoản vốn đã rủi ro. Không có gì đảm bảo rằng việc cung cấp thanh khoản sẽ mang lại lợi nhuận, hãy tìm hiểu thêm về [rủi ro trên Rubicon](/protocol/risks).
+
+- **EIP-4844**:  Bản nâng cấp Ethereum tiếp theo sẽ giảm phí gas trên mạng L2 xuống 10-20 lần, khiến giờ đây là thời điểm hoàn hảo để tích hợp trước đợt hard fork! Tìm hiểu thêm về [EIP-4844](https://www.eip4844.com/).
+
+## Tài nguyên
+
+### Bots mã nguồn mở
+
+Các bot mẫu để giao dịch trên Rubicon. Những bot này là điểm khởi đầu tuyệt vời để các nhà tạo lập thị trường bắt đầu giao dịch trên Rubicon.
+
+    - [Kho lưu trữ mã nguồn Repo](https://github.com/RubiconDeFi/rubi-bots)
+
+### Viện trợ thị trường
+
+Hợp đồng trợ giúp cho giao dịch nâng cao và tạo thị trường trên Rubicon. Cho phép các nhà giao dịch thực hiện các giao dịch lớn hơn, hiệu quả hơn và phức tạp hơn.
+
+    - [Mã nguồn hợp đồng](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/utilities/MarketAid.sol)
+    - [Tài liệu Market Aid ](/protocol/rubicon-market/market-aid)
+
+### Python SDK
+
+Thư viện Python để tương tác với Rubicon, hoàn chỉnh với các ví dụ và tài liệu.
+
+  - [Quickstart](https://rubi.readthedocs.io/en/latest/quickstart.html)
+  - [View Package](https://pypi.org/project/rubi/)
+  - [Source Code Repo](https://github.com/RubiconDeFi/rubi-py)
+
+## Câu hỏi và hỗ trợ
+
+Đặt câu hỏi giới thiệu trong máy chủ **[Discord server](https://discord.com/invite/E7pS24J)**  hoặc gửi ghi chú đến **integrations@rubicon.finance**.
+
