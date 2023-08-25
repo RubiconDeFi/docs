@@ -4,41 +4,30 @@ pageTitle: Market Aid
 description: on-chain high-frequency market making contracts and functionality for Rubicon
 ---
 
-## Hỗ trợ thị trường
+## Viện trợ thị trường
 
-`MarketAid.sol` là một hợp đồng trợ giúp cho phép chủ sở hữu gửi các lô lệnh giới hạn và hủy các lệnh trên `RubiconMarket.sol` . Nó giúp các nhà giao dịch tích cực và nhà tạo lập thị trường dễ dàng đặt và hủy nhiều lệnh chưa thanh toán trong một giao dịch! Bạn có thể coi MarketAid như một hợp đồng trung gian cho phép các nhà giao dịch thực hiện các giao dịch lớn hơn, hiệu quả hơn và phức tạp hơn trên sổ lệnh Rubicon.
+`MarketAid.sol` là một hợp đồng giúp đỡ cho giao dịch nâng cao và tạo lập thị trường trên `RubiconMarket.sol` . Hãy nghĩ về nó như một hợp đồng lớp trung gian cho phép các nhà giao dịch thực hiện các giao dịch lớn hơn, hiệu quả hơn và phức tạp hơn trên sổ lệnh Rubicon.
 
-Sau khi tạo phiên bản MarketAid, nhà giao dịch có thể sử dụng các hàm lô mạnh mẽ để mở rộng các hàm 'RubiconMarket.sol' cấp thấp `offer` và `cancel` cũng như kết hợp cả hai. Gửi một loạt lớn lệnh giới hạn bằng `batchMarketMakingTrades()` , hủy một loạt lệnh đang mở và thay thế chúng bằng `batchRequoteOffers()` hoặc hủy nhiều lệnh đang mở bằng `scrubStrategistTrades()`. Tiếp tục đọc để có hướng dẫn bắt đầu nhanh và tổng quan về các chức năng của MarketAid. Nếu bạn có bất kỳ câu hỏi hoặc rắc rối nào với MarketAid, hãy tham gia [Discord server](https://discord.com/invite/E7pS24J) của chúng tôi, nhóm của chúng tôi sẵn lòng giúp bạn bắt đầu với giao dịch tự động trên Rubicon!
+Người dùng cần tạo 'MarketAid.sol',  bằng cách sử dụng phiên bản `MarketAid`. Nếu bạn có bất kỳ câu hỏi hoặc sự cố nào với `MarketAid`, hãy tham gia máy chủ Discord của chúng tôi, nhóm của chúng tôi sẵn lòng giúp bạn bắt đầu giao dịch tự động trên Rubicon!
+
 
 ### Tuyên bố miễn trừ rủi ro
 
-MarketAid đang ở giai đoạn thử nghiệm và chỉ dành cho các nhà giao dịch và nhà phát triển chuyên nghiệp. Nhóm của chúng tôi sử dụng mã này, nhưng mã này chưa được kiểm tra nên bạn tự chịu rủi ro khi sử dụng.
-
-### Triển khai
-
-Mainnet lạc quan:
-
-- |****2****|
-- |****3****|
-
-Goerli lạc quan:
-
-- |****4****|
-- |****5****|
+`MarketAid.sol` đang ở giai đoạn thử nghiệm và chỉ dành cho các nhà phát triển chuyên sâu và người dùng. Sử dụng nó dựa trên mức độ chịu rủi ro của bạn.
 
 ### Bắt đầu nhanh
 
-Bắt đầu với `MarketAid.sol` bằng cách tạo một phiên bản cá nhân, tài trợ cho hợp đồng bằng mã thông báo ERC-20 và gửi lô đơn đặt hàng đầu tiên của bạn đến `RubiconMarket.sol`! Bạn có thể sử dụng `ethers.js` để tích hợp tính năng này vào một bot hiện có và chúng tôi đang thực hiện các hướng dẫn để giúp việc này trở nên dễ dàng hơn nữa! Bắt đầu nào:
+Hãy tạo phiên bản `MarketAid.sol` của riêng bạn, tcấp tiền cho hợp đồng bằng token ERC-20 và gửi lệnh hàng loạt đầu tiên của bạn đến `RubiconMarket.sol`! Bạn có thể sử dụng `ethers.js` để tích hợp tính năng này vào một bot hiện có và chúng tôi đang thực hiện các hướng dẫn để giúp việc này trở nên dễ dàng hơn nữa! Bắt đầu nào:
 
 1. Tạo một phiên bản mới của hợp đồng `MarketAid`
    1. Triển khai phiên bản `MarketAid` bằng cách gọi `createMarketAidInstance()` trên hợp đồng `MarketAidFactory`. Thao tác này sẽ tạo ra một phiên bản mới của `MarketAid` được cấp phép cho người gọi `createMarketAidInstance()` và tự động phê duyệt họ với tư cách là nhà chiến lược có quyền truy cập vào hợp đồng.
 2. Nạp tiền cho phiên bản MarketAid của bạn bằng ERC-20 mà bạn muốn giao dịch (WETH, USDC, DAI, v.v.)
 
    1. Phiên bản MarketAid của bạn có thể được truy vấn thông qua `getUserMarketAid()` trên `MarketAidFactory` hoặc bằng cách đọc sự kiện phát ra từ lệnh gọi `createMarketAidInstance()`.
-   2. Xác minh rằng bạn kiểm soát hợp đồng trước qua Etherscan bằng cách kiểm tra biến `admin` là địa chỉ của bạn và bạn cũng là `approvedStrategist` .
+   2. Xác nhận bạn đã kiểm soát hợp đồng trước qua Etherscan bằng cách kiểm tra biến `admin` là địa chỉ của bạn và bạn cũng là `approvedStrategist` .
    3. Xác minh rằng bạn đang gửi tiền đến đúng địa chỉ!
 
-3. Gửi các lô đơn đặt hàng Rubicon từ hợp đồng MarketAid của bạn bằng cách sử dụng các chức năng được mô tả bên dưới
+3. Gửi các lệnh Rubicon từ hợp đồng MarketAid của bạn bằng cách sử dụng các chức năng được mô tả bên dưới
 
 Lưu ý: Chủ sở hữu của phiên bản `MarketAid` có thể phê duyệt các địa chỉ bổ sung để sử dụng và truy cập hợp đồng (nhiều địa chỉ có thể xóa kiểm tra `onlyApprovedStrategist`)
 
@@ -55,7 +44,7 @@ Lưu ý: Chủ sở hữu của phiên bản `MarketAid` có thể phê duyệt 
 - Bất kỳ EOA nào mà bạn đang cố gắng quản lý một cặp ERC20, thông qua MarketAid đều là _một chiến lược gia được phê duyệt_
   - Kiểm tra bảo mật chính trong hợp đồng, quản trị viên được tự động phê duyệt làm chiến lược gia
 
-## Chức năng (Đang tiến hành)
+## Chức năng (Trong tiến hành)
 
 Nói chung, mỗi đầu vào đều giống hệt như đầu vào sẽ đặt trên RubiconMarket cấp thấp: giá trị uint thô của ERC20 mà bạn muốn đặt giá thầu và/hoặc yêu cầu khi đặt ưu đãi ( `offer()` ). Để phân lô, hãy chuyển các giá trị cho tất cả các ưu đãi dưới dạng mảng, với tất cả các biến tương tự (ví dụ: tử số yêu cầu) được ghép nối với nhau. Các mảng được truyền vào phải khớp với nhau - điều này có thể hữu ích khi đặt một số phiếu mua hàng cùng một lúc với các mức giá khác nhau. Lưu ý việc sử dụng `formatUnits()` và `parseUnits()` thông qua `ethers` giúp xử lý các số và giá trị ERC-20 khi xử lý các chuyển đổi số `=` wei của con người.
 

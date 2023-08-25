@@ -1,51 +1,9 @@
 ---
-title: Rubicon | Pools
+title: Pools
 pageTitle: Pools
-description: Automated yield for users and liquidity for the Rubicon Market
+description: Native lending and borrowing for the Rubicon protocol
 ---
 
-## 🌊 Bi-a Rubicon
+# Rubicon Pools thanh khoản
 
-Rubicon Pools là một hệ thống hợp đồng thông minh cho phép người dùng thu được lợi nhuận thụ động từ hoạt động tạo thị trường đang hoạt động. Người dùng gửi tài sản vào nhóm thanh khoản, đổi lại, họ nhận được mã thông báo LP thanh khoản được biểu thị bằng tiền tố "bath" (ví dụ: bathETH, bathUSDC). Các mã thông báo tắm này biểu thị quyền sở hữu theo tỷ lệ của người dùng đối với nhóm thanh khoản cơ bản cũng như yêu cầu theo tỷ lệ của họ đối với lợi nhuận trong tương lai từ nhóm. Các tài sản trong nhóm thanh khoản được các chiến lược gia sử dụng để cung cấp tính thanh khoản trên sổ lệnh mở của Rubicon; các chiến lược gia có thể sử dụng các chiến lược tạo thị trường tùy chỉnh vượt qua tất cả các yêu cầu bảo mật từ giao thức. Cuối cùng, lợi nhuận từ việc tạo lập thị trường được phân chia giữa nhà chiến lược và người dùng cung cấp thanh khoản (LP).
-
-Giao thức sổ lệnh Rubicon có nhóm thanh khoản. Các nhà cung cấp thanh khoản (LP) gửi mã thông báo vào một nhóm tài sản duy nhất và nhận bathTokens, đại diện cho cổ phần của nhóm cơ sở. (Ví dụ: LP gửi ETH, nhận bathETH)\
-\
-BathTokens tuân theo [ERC-4626 standard](https://ethereum.org/en/developers/docs/standards/tokens/erc-4626/) cho các kho tiền mang lại lợi nhuận được mã hóa.
-
-### Ngành kiến ​​​​trúc
-
-Cấu trúc cốt lõi của sản phẩm này xoay quanh nhóm thanh khoản _một tài sản_. Người dùng muốn có lợi nhuận tạo thị trường thụ động đối với tài sản của họ có thể gửi tiền vào các nhóm thanh khoản này. Từ đó, các nhóm này sau đó được các chiến lược gia sử dụng, trên cơ sở từng cặp, để thực hiện việc tạo thị trường với tần suất cao cho một cặp nhất định (tài sản/báo giá). Vui lòng xem bên dưới để biết sơ đồ về cách các phần cốt lõi của Rubicon Pools tương tác với Thị trường Rubicon.
-
-![Hạ tầng hợp đồng thông minh Rubicon](</assets/image(83).png>)
-
-Rubicon Pools bao gồm bốn hợp đồng thông minh được trình bày chi tiết trong các tài liệu này:
-
-- **Bath House** - hợp đồng quản trị hệ thống Rubicon Pools và cho phép các cặp mới.
-- **Bath Pair** - một hợp đồng để quản lý các thông số rủi ro, tính thanh khoản, quản lý hàng tồn kho, bảo mật và chiến lược gia dành riêng cho từng cặp.
-- **Mã thông báo Bath** - mã thông báo "bath" ERC-20 (ví dụ: "bathUSDC" là mã thông báo LP cho USDC đã đóng góp) đại diện cho tính thanh khoản cụ thể của tài sản kiếm được lợi nhuận thụ động từ việc tạo thị trường.
-- **Giao dịch theo cặp** - một hợp đồng chiến lược nhận giao dịch của một cặp (yêu cầu và đặt giá thầu) từ một chiến lược gia cho một cặp nhất định và triển khai tính thanh khoản của bathToken theo chiến lược nội bộ của nó. Phiên bản đầu tiên của PairsTrade.sol đặt giao dịch theo cặp (yêu cầu và đặt giá thầu) với tính thanh khoản của người dùng theo các thông số của chiến lược gia thông qua `executeStrategy` trên BathPair.sol.
-
-### Các ràng buộc và tham số rủi ro
-
-Một tính năng bảo mật quan trọng của Rubicon Pools là thanh khoản được cung cấp phải được đưa vào sổ lệnh dưới dạng đơn đặt hàng, các chiến lược gia không thể sử dụng các tài sản này cho bất kỳ mục đích nào khác ngoài việc đặt lệnh trên Rubicon. Không giống như AMM hoặc nhà tạo lập thị trường có chức năng cố định, chiến lược này phải cho phép thời gian trôi qua giữa việc đặt lệnh, thực hiện lệnh và (đến lượt) lợi nhuận vì lợi nhuận của chúng được chuyển cho LP và nhà chiến lược. Vui lòng xem phần sau để biết tổng quan về các ràng buộc chính và thông số rủi ro do Rubicon kiểm soát:
-
-- **reserveRatio** - để đảm bảo rằng lợi nhuận tạo lập thị trường được chuyển đến người dùng một cách chính xác trong khi vẫn cho phép thời gian trôi qua giữa việc đặt (và hủy) đơn đặt hàng, tỷ lệ dự trữ tối thiểu phải được duy trì để tất cả thanh khoản của người dùng không bị mất rủi ro trong sổ lệnh tại một thời điểm nhất định.
-- **maxOutstandingPairCount** - số lượng đơn đặt hàng tối đa (không thể vượt quá giới hạn kích thước đơn đặt hàng động) mà một cặp có thể có trong sổ đặt hàng tại một thời điểm nhất định.
-- **getMaxOrderSize()** - hàm này trả về kích thước đơn đặt hàng lớn nhất có thể được Rubicon Pools cho phép đối với một nội dung nhất định và nhóm thanh khoản của nó.
-
-  - **maxOrderSizeProportion** - kích thước tính theo điểm phần trăm (0 < 100) that the maximum order for a given liquidity pool can be. This is enforced on every Pools trade.
-  - **Dynamic Sizing:** should the pair relationship of a quote and asset liquidity pool be over-weighted one of the assets, this function will reduce the size of orders on the lacking side of the liquidity pool.
-
-    - For example, assume the price of ETH is $100 and bathETH contains 5 ETH while bathUSDC contains 400 USDC. _The target asset-to-quote ratio for all pairs is the current price of the asset._ In this case, the pool is overweight ETH because (400 USDC / 5 ETH) = 80 != 100 (target ratio and price) so getMaxOrderSize() will return a value that reduces the maximum order size of ETH according to the following:
-
-    - Shape parameter = -0.005 and qt represents the delta between the target ratio and the actual asset/quote ratio that exists across the liquidity pools.
-
-![Optimal High-Frequency Market Making; Fushimi et. al 2018](</assets/image(32).png>)
-
-### Cân nhắc bảo mật chính
-
-- **onlyApprovedStrategy** - công cụ sửa đổi đảm bảo tính thanh khoản của người dùng chỉ có thể được sử dụng theo chiến lược đã được BathHouse phê duyệt.
-- **onlyPair** - một công cụ sửa đổi đảm bảo tính thanh khoản của người dùng hoặc một chức năng chỉ có thể được sử dụng bởi một BathPair đã đăng ký đã được khởi tạo bởi BathHouse.
-- **enforceReserveRatio** - đảm bảo tỷ lệ dự trữ của số dư tài sản cơ bản của nhóm thanh khoản so với số tiền gửi được tuân thủ và thực thi.
-- **enforceSpread** - đảm bảo rằng chiến lược gia kết hợp giao dịch có cả chênh lệch (giá chào bán > chênh lệch khác 0 > giá chào mua) và giá chào bán/giá thầu là giá chào bán/giá thầu thực tế (lớn hơn/nhỏ hơn giá trị giữa của giá sổ lệnh).
-- **enforceNoAutoFills** - đảm bảo rằng các cặp giao dịch được đặt bởi các nhà chiến lược thực sự là các lệnh tạo thị trường và không khớp với một lệnh dẫn đến phiếu mua hàng được tự động thực hiện dưới dạng giao dịch người nhận.
+Phiên bản tiếp theo của Rubicon Pools đang được hoàn thiện, tài liệu sẽ sớm được phát hành!

@@ -1,0 +1,294 @@
+---
+title: Rubicon v2 Subgraph Overview
+pageTitle: Rubicon v2 Subgraph Overview
+description: An overview of the RubiconV2 Subgraph
+---
+
+# API thị trường Rubicon V2
+
+Biểu đồ con Rubicon V2 chứa một tập hợp các thực thể thu thập và lưu trữ dữ liệu liên quan đến hoạt động giao dịch trên sổ lệnh của giao thức. Dưới đây là những thực thể chính mà chúng tôi tin rằng người dùng sẽ thấy phù hợp nhất với nhu cầu dữ liệu của họ.
+
+### _**Thực thể người dùng (ID: Địa chỉ ví)**_
+
+```graphql
+type User @entity {
+    " địa chỉ người dùng "
+    id: Bytes!
+    " ánh xạ tới tất cả các lệnh mà người dùng đã tạo "
+    offers: [Offer!]! @derivedFrom(field: "maker")
+    " ánh xạ tới tất cả những gì người dùng đã tạo "
+    takes: [Take!]! @derivedFrom(field: "taker")
+    " ánh xạ tới tất cả các giao dịch hoán đổi mà người dùng đã tạo "
+    swaps: [Swap!]! @derivedFrom(field: "swapper")
+    " ánh xạ tới tất cả các khoản phí mà người dùng đã trả "
+    fees_paid: [Fee!]! @derivedFrom(field: "user")
+    " ánh xạ tới tất cả các khoản phí mà người dùng đã nhận được "
+    fees_received: [Fee!]! @derivedFrom(field: "recipient")
+}
+```
+
+### _**Thực thể lệnh (ID: ID lệnh)**_
+
+```graphql
+type Offer @entity {
+    " id lệnh "
+    id: Bytes!
+    " giao dịch mà lệnh đã được tạo trong "
+    transaction: Transaction!
+    " dấu thời gian của giao dịch mà lệnh được tạo trong đó "
+    timestamp: BigInt!
+    " chỉ mục nhật ký sự kiện của lệnh "
+    index: BigInt!
+    " lệnh của người mua "
+    maker: User!
+    " mã token thanh toán của lệnh (tài sản mà người bán đang bán) "
+    pay_gem: Bytes!
+    " mã token mua của lệnh (tài sản mà người bán đang mua) "
+    buy_gem: Bytes!
+    " số lượng token thanh toán mà người bán đang bán "
+    pay_amt: BigInt!
+    " số lượng token mua mà người bán đang mua "
+    buy_amt: BigInt!
+    " số lượng token thanh toán mà người bán đã bán "
+    paid_amt: BigInt!
+    " số lượng token mua mà người bán đã mua "
+    bought_amt: BigInt!
+    " giá của lệnh theo tỷ lệ pay_gem / buy_gem "
+    price: BigDecimal!
+    " trạng thái của lệnh, nó có hoạt động hay không "
+    open: Boolean!
+    " dấu thời gian mà lệnh đã bị xóa "
+    removed_timestamp: BigInt
+    " khối mà lệnh đã bị xóa trong "
+    removed_block: BigInt
+}
+```
+
+### _**Lấy thực thể (ID: Hash giao dịch - Chỉ mục nhật ký)**_
+
+```graphql
+type Take @entity {
+    " chỉ số băm giao dịch và nhật ký của lần thực hiện "
+    id: Bytes!
+    " giao dịch mà giao dịch mua là một phần của "
+    transaction: Transaction!
+    " dấu thời gian của giao dịch mà việc thực hiện là một phần của "
+    timestamp: BigInt!
+    " chỉ mục nhật ký sự kiện của lần thực hiện "
+    index: BigInt!
+    " người dùng đã nhận lệnh "
+    taker: User!
+    " người dùng đã khởi tạo giao dịch mà giao dịch đó là một phần của "
+    from: User!
+    " lẹnh đã được thực hiện "
+    offer: Offer!
+    " mã token thanh toán của lệnh (tài sản mà người bán đang bán và tài sản mà người mua đang mua) "
+    take_gem: Bytes!
+    " mã token mua của lệnh (tài sản mà người bán đang mua và tài sản mà người mua đang thanh toán) "
+    give_gem: Bytes!
+    " số lượng token thanh toán mà người mua đang mua "
+    take_amt: BigInt!
+    " số lượng token mua mà người bán đang thanh toán "
+    give_amt: BigInt!
+}
+```
+
+### _**Thực thể hoán đổi (ID: Hash giao dịch - Chỉ mục nhật ký)**_
+
+```graphql
+type Swap @entity {
+    " chỉ số băm giao dịch và nhật ký của trao đổi "
+    id: Bytes!
+    " giao dịch mà việc hoán đổi là một phần của "
+    transaction: Transaction!
+    " dấu thời gian của giao dịch mà việc hoán đổi là một phần của "
+    timestamp: BigInt!
+    " chỉ mục nhật ký sự kiện của trao đổi "
+    index: BigInt!
+    " người dùng đã bắt đầu trao đổi "
+    swapper: User!
+    " mã token đầu vào của trao đổi "
+    input_gem: Bytes!
+    " mã token đầu ra của trao đổi "
+    output_gem: Bytes!
+    " số lượng mã token đầu vào mà người trao đổi đang trao đổi "
+    input_amt: BigInt!
+    " số lượng mã token đầu ra mà người trao đổi đang nhận "
+    output_amt: BigInt!
+}
+```
+
+### _**Thực thể phí (ID: Hash giao dịch - Chỉ mục nhật ký)**_
+
+```graphql
+type Fee @entity {
+    " chỉ số băm giao dịch và nhật ký của phí "
+    id: Bytes!
+    " giao dịch mà phí là một phần của "
+    transaction: Transaction!
+    " dấu thời gian của giao dịch mà phí là một phần của "
+    timestamp: BigInt!
+    " chỉ mục nhật ký sự kiện của phí "
+    index: BigInt!
+    " người dùng đã trả phí "
+    user: User!
+    " ánh xạ đến người nhận phí "
+    recipient: User!
+    " lệnh rằng phí đã được thanh toán "
+    offer: Offer!
+    " mã token rằng phí đã được thanh toán "
+    fee_gem: Bytes!
+    " số lượng token phí đã được thanh toán "
+    fee_amt: BigInt!
+}
+```
+
+### _**Thực thể Một Phút (ID: Token0 - Token1 - Dấu thời gian / 60)**_
+Thứ tự của các mã thông báo, Token0 & Token1, được xác định theo thứ tự chữ và số của các địa chỉ mã token cơ bản.
+
+```graphql
+type CandleOneMinute @entity {
+    " token0 + token1 + dấu thời gian / 60 "
+    id: Bytes!
+    " token0 - được xác định theo thứ tự bảng chữ cái của địa chỉ mã token "
+    token0: Bytes!
+    " token1 - được xác định theo thứ tự bảng chữ cái của địa chỉ mã token "
+    token1: Bytes!
+    " dấu thời gian mở nến "
+    open_timestamp: BigInt!
+    " dấu thời gian đóng cửa của ngọn nến "
+    close_timestamp: BigInt!
+    " mở giao dịch nến "
+    open: Take!
+    " đóng giao dịch của nến "
+    high: Take!
+    " tỷ lệ nhỏ nhất của số tiền giao dịch theo thứ tự nhất định - token0_amount / token1_amount "
+    low: Take!
+    " tỷ lệ lớn nhất của số tiền giao dịch theo đơn hàng nhất định - token0_amount / token1_amount "
+    close: Take!
+    " tỉ lệ của token0 tới token 1 ở mức cao "
+    high_ratio: BigDecimal!
+    " tỉ lệ của token0 tới token 1 ở mức thấp "
+    low_ratio: BigDecimal!
+}
+```
+
+### _**Thực thể Năm phút (ID: Token0 - Token1 - Dấu thời gian / 300)**_
+Thứ tự của các mã thông báo, Token0 & Token1, được xác định theo thứ tự chữ và số của các địa chỉ mã token cơ bản.
+
+```graphql
+type CandleFiveMinute @entity {
+    " token0 + token1 + dấu thời gian / 300 "
+    id: Bytes!
+    " token0 - được xác định theo thứ tự bảng chữ cái của địa chỉ mã token "
+    token0: Bytes!
+    " token1 - được xác định theo thứ tự bảng chữ cái của địa chỉ mã token "
+    token1: Bytes!
+    " dấu thời gian mở nến "
+    open_timestamp: BigInt!
+    " dấu thời gian đóng cửa của ngọn nến "
+    close_timestamp: BigInt!
+    " mở giao dịch nến "
+    open: Take!
+    " đóng giao dịch của nến "
+    high: Take!
+    " tỷ lệ nhỏ nhất của số tiền giao dịch theo lệnh nhất định - token0_amount / token1_amount "
+    low: Take!
+    " tỷ lệ lớn nhất của số tiền giao dịch theo lệnh nhất định - token0_amount / token1_amount "
+    close: Take!
+    " tỷ lệ token0 đến token 1 ở mức cao "
+    high_ratio: BigDecimal!
+    " tỷ lệ token0 đến token 1 ở mức thấp "
+    low_ratio: BigDecimal!
+}
+```
+
+### _**Thực thể mười lăm phút (ID: Token0 - Token1 - Dấu thời gian / 900)**_
+Thứ tự của các mã thông báo, Token0 & Token1, được xác định theo thứ tự chữ và số của các địa chỉ mã token cơ bản.
+
+```graphql
+type CandleFifteenMinute @entity {
+    " token0 + token1 + Dấu thời gian / 900 "
+    id: Bytes!
+    " token0 - được xác định theo thứ tự bảng chữ cái của địa chỉ mã token "
+    token0: Bytes!
+    " token1 - được xác định theo thứ tự bảng chữ cái của địa chỉ mã token "
+    token1: Bytes!
+    " dấu thời gian mở nến "
+    open_timestamp: BigInt!
+    " dấu thời gian đóng cửa của ngọn nến "
+    close_timestamp: BigInt!
+    " mở giao dịch nến "
+    open: Take!
+    " đóng giao dịch của nến "
+    high: Take!
+    " tỷ lệ nhỏ nhất của số tiền giao dịch theo lệnh nhất định - token0_amount / token1_amount "
+    low: Take!
+    " tỷ lệ lớn nhất của số tiền giao dịch theo lệnh nhất định - token0_amount / token1_amount "
+    close: Take!
+    " tỷ lệ token0 tới token 1 ở mức cao "
+    high_ratio: BigDecimal!
+    " tỷ lệ token0 tới token 1 ở mức thấp "
+    low_ratio: BigDecimal!
+}
+```
+
+### _**Thực thể một giờ (ID: Token0 - Token1 - Dấu thời gian / 3600)**_
+Thứ tự của các mã thông báo, Token0 & Token1, được xác định theo thứ tự chữ và số của các địa chỉ mã token cơ bản.
+
+```graphql
+type CandleOneHour @entity {
+    " token0 + token1 + Dấu thời gian / 3600 "
+    id: Bytes!
+    " token0 - được xác định theo thứ tự bảng chữ cái của địa chỉ mã token "
+    token0: Bytes!
+    " token1 - được xác định theo thứ tự bảng chữ cái của địa chỉ mã token "
+    token1: Bytes!
+    " dấu thời gian mở nến "
+    open_timestamp: BigInt!
+    " dấu thời gian đóng cửa của ngọn nến "
+    close_timestamp: BigInt!
+    " mở giao dịch nến "
+    open: Take!
+    " đóng giao dịch của nến "
+    high: Take!
+    " tỷ lệ nhỏ nhất của số tiền giao dịch theo lệnh nhất định - token0_amount / token1_amount "
+    low: Take!
+    " tỷ lệ lớn nhất của số tiền giao dịch theo lệnh nhất định - token0_amount / token1_amount "
+    close: Take!
+    " tỷ lệ token0 đến token 1 ở mức cao "
+    high_ratio: BigDecimal!
+    " tỷ lệ token0 đến token 1 ở mức thấp "
+    low_ratio: BigDecimal!
+}
+```
+
+### _**Thực thể Một ngày (ID: Token0 - Token1 - Dấu thời gian / 86400)**_
+Thứ tự của các mã thông báo, Token0 & Token1, được xác định theo thứ tự chữ và số của các địa chỉ mã token cơ bản.
+
+```graphql
+type CandleOneDay @entity {
+    " token0 + token1 + Dấu thời gian / 86400 "
+    id: Bytes!
+    " token0 - được xác định theo thứ tự bảng chữ cái của địa chỉ mã token "
+    token0: Bytes!
+    " token1 - được xác định theo thứ tự bảng chữ cái của địa chỉ mã token "
+    token1: Bytes!
+    " dấu thời gian mở nến "
+    open_timestamp: BigInt!
+    " dấu thời gian đóng cửa của ngọn nến "
+    close_timestamp: BigInt!
+    " mở giao dịch nến "
+    open: Take!
+    " đóng giao dịch của nến "
+    high: Take!
+    " tỷ lệ nhỏ nhất của số tiền giao dịch theo lệnh nhất định - token0_amount / token1_amount "
+    low: Take!
+    " tỷ lệ lớn nhất của số tiền giao dịch theo lệnh nhất định - token0_amount / token1_amount "
+    close: Take!
+    " tỷ lệ token0 đến token 1 ở mức cao "
+    high_ratio: BigDecimal!
+    " tỷ lệ token0 đến token 1 ở mức thấp "
+    low_ratio: BigDecimal!
+}
+```

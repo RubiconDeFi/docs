@@ -1,0 +1,294 @@
+---
+title: Contract Overview
+pageTitle: Contract Overview
+description: Overview and docs for the Rubicon Router contract
+---
+
+# Tổng quan
+
+**RubiconRouter.sol** là một hợp đồng cấp cao bổ sung chức năng thuận tiện để tương tác với các hợp đồng thông minh cấp thấp của Rubicon.
+
+Nó chủ yếu hoạt động như một bộ định tuyến cho các giao dịch hoán đổi token ERC-20/ERC-20 trên **RubiconMarket.sol** và cho phép các giao dịch hoán đổi nhiều chặng nếu hai mã token không có trong sổ lệnh.
+
+Hợp đồng có các hàm bao bọc để xử lý ETH gốc trong toàn bộ giao thức. Điều này bao gồm các chức năng mua và hoán đổi ETH với/lấy mã token ERC-20 và để gửi/rút ETH trong Rubicon Pools.
+
+Nó cũng có các chức năng xem hữu ích để đọc dữ liệu sổ lệnh từ hợp đồng **RubiconMarket.sol** cấp thấp.
+
+# Chức năng
+
+### swap()
+
+```solidity copy
+function swap(
+        uint256 pay_amt,
+        uint256 buy_amt_min,
+        address[] memory route,
+        address to
+    ) public returns (uint256)
+```
+
+| Tên thông số    | Kiểu/ Loại| Mô tả                                                                             |
+| --------------- | --------- | --------------------------------------------------------------------------------- |
+| pay_amt         | uint256   | Lượng token mà người mua đang bán                                                 |
+| buy_amt_min     | uint256   | Số lượng tối thiểu nhận được của địa chỉ token cuối cùng trong `route`            |
+| route           | addresses | Địa chỉ token đầu tiên là token `pay_amt`, địa chỉ cuối cùng là token `buy_amt`   |
+| to              | address   | Địa chỉ là token `pay_amt`, địa chỉ cuối cùng là token `buy_amt` token            |
+
+Hoán đổi số lượng token `pay_amt` lấy ít nhất số lượng `buy_amt_min` của token cuối cùng trong route đã chỉ định.
+
+### multiswap()
+
+```solidity copy
+    function multiswap(
+        address[][] memory routes,
+        uint256[] memory pay_amts,
+        uint256[] memory buy_amts_min,
+        address to
+    ) public
+```
+
+| Tên thông số    | Kiểu/ Loại| Mô tả                                                                           |
+| --------------- | --------- | ------------------------------------------------------------------------------- |
+| routes          | addresses | Địa chỉ token đầu tiên là token `pay_amt`, địa chỉ cuối cùng là token `buy_amt` |
+| pay_amts        | uint256   | Lượng token mà người mua đang bán cho `buy_gem` token                           |
+| buy_amts_min    | uint256   | Lượng token nhận tối thiểu của địa chỉ token cuối cùng trong `route`            |
+| to              | address   | Địa chỉ là token `pay_amt`, địa chỉ cuối cùng là token `buy_amt`                |
+
+Hoán đổi token trên nhiều `routes` địa chỉ token với số lượng nhận được tối thiểu. Nó cho phép hoán đổi token trên nhiều sổ lệnh RubiconMarket, trong trường hợp các token không có sổ lệnh hiện có.
+
+### swapWithETH()
+
+```solidity copy
+    function swapWithETH(
+        uint256 pay_amt,
+        uint256 buy_amt_min,
+        address[] calldata route,
+        address to
+    ) external payable returns (uint256)
+```
+
+| Tên thông số    | Kiểu/ Loại| Mô tả                                                               |
+| --------------- | --------- | ------------------------------------------------------------------- |
+| pay_amt         | uint256   | Lượng token mà người mua đang bán                                   |
+| buy_amt_min     | uint256   | Lượng nhỏ nhất nhận được của địa chỉ token cuối cùng trong `route`  |
+| route           | addresses | Địa chỉ token đầu tiên nên là WETH, địa chỉ cuối là `buy_amt` token |
+| to              | address   | Địa chỉ là token `pay_amt`, địa chỉ cuối cùng là token `buy_amt`    |
+
+Hoán đổi số lượng `pay_amt` của ETH lấy ít nhất số lượng `buy_amt_min` token cuối cùng trong route đã chỉ định.
+
+### swapForETH()
+
+```solidity copy
+    function swapForETH(
+        uint256 pay_amt,
+        uint256 buy_amt_min,
+        address[] calldata route
+    ) external beGoneReentrantScum returns (uint256 fill)
+```
+
+| Tên thông số    | Kiểu/ Loại| Mô tả                                                              |
+| --------------- | --------- | ------------------------------------------------------------------ |
+| pay_amt         | uint256   | Lượng token mà người mua đang bán                                  | 
+| buy_amt_min     | uint256   | Lượng nhỏ nhất nhận được của địa chỉ token cuối cùng trong `route` |
+| route           | addresses | Địa chỉ token đầu tiên là `pay_amt`, địa chỉ cuối cùng nên là WETH |
+
+Hoán đổi số lượng `pay_amt` token đầu tiên trong route lấy ít nhất số lượng `buy_amt_min` của ETH.
+
+### buyAllAmountWithETH()
+
+```solidity copy
+ function buyAllAmountWithETH(
+        IERC20 buy_gem,
+        uint256 buy_amt,
+        uint256 max_fill_amount
+    ) external payable beGoneReentrantScum returns (uint256 fill)
+```
+
+| Tên thông số    | Kiểu/ Loại| Mô tả                          |
+| --------------- | --------- | ------------------------------ |
+| buy_gem         | address   | Token ERC-20 người mua đang mua|
+| buy_amt         | uint256   | Lượng token người mua đang mua |
+| max_fill_amount | uint256   | Lượng ETH bán nhiều nhất       |
+
+Nỗ lực mua token `buy_amt` của `buy_gem` token với số lượng tối đa `max_fill_amount` của ETH. Giao dịch sẽ hoàn nguyên nếu người mua chi tiêu nhiều hơn số tiền tối đa đã định.
+
+### buyAllAmountForETH()
+
+```solidity copy
+function buyAllAmountForETH(
+        uint256 buy_amt,
+        IERC20 pay_gem,
+        uint256 max_fill_amount
+    ) external beGoneReentrantScum returns (uint256 fill)
+```
+
+| Tên thông số    | Kiểu/ Loại| Mô tả                                   |
+| --------------- | --------- | --------------------------------------- |
+| buy_amt         | uint256   | Lượng ETH người mua đang mua            |
+| pay_gem         | address   | ERC-20 token người mua đang bán         |
+| max_fill_amount | unit256   | Lượng pay_gem token nhiều nhất bán được |
+
+Nỗ lực mua `buy_amt` ETH với số lượng tối đa `max_fill_amount` token `pay_gem`. Giao dịch sẽ hoàn nguyên nếu người mua chi tiêu nhiều hơn số tiền tối đa được chỉ định.
+
+### sellAllAmountWithETH()
+
+```solidity copy
+function sellAllAmountWithETH(
+        uint256 pay_amt,
+        IERC20 buy_gem,
+        uint256 min_fill_amount
+    ) external payable beGoneReentrantScum returns (uint256 fill)
+```
+
+| Tên thông số    | Kiểu/ Loại| Mô tả                                 |
+| --------------- | --------- | ------------------------------------- |
+| pay_amt         | uint256   | Lượng ETH người mua đang mua          |
+| buy_gem         | address   | ERC-20 token người mua đang mua       |
+| min_fill_amount | uint256   | Lượng pay_gem token ít nhất nhận được |
+
+Nỗ lực bán token `pay_amt` token `pay_gem` với số lượng tối thiểu `min_fill_amount` ETH. Giao dịch sẽ hoàn nguyên nếu người mua sẽ nhận được ít hơn số tiền tối thiểu được chỉ định.
+
+### sellAllAmountForETH()
+
+```solidity copy
+    function sellAllAmountForETH(
+        IERC20 pay_gem,
+        uint256 pay_amt,
+        // buy_gem = ETH,
+        uint256 min_fill_amount
+    ) external beGoneReentrantScum returns (uint256 fill)
+```
+
+| Tên thông số    | Kiểu/ Loại| Mô tả                                    |
+| --------------- | --------- | ---------------------------------------- |
+| pay_gem         | address   | ERC-20 token the caller is selling       |
+| pay_amt         | uint256   | Quantity of tokens the caller is selling |
+| min_fill_amount | uint256   | Minimum amount of ETH received           |
+
+Nỗ lực bán token pay_amt token pay_gem với số lượng tối thiểu min_fill_amount ETH. Giao dịch sẽ hoàn nguyên nếu người mua sẽ nhận được ít hơn số tiền tối thiểu được chỉ định.
+
+## Xem chức năng
+
+### getExpectedSwapFill()
+
+```solidity copy
+ function getExpectedSwapFill(
+        uint256 pay_amt,
+        uint256 buy_amt_min,
+        address[] calldata route
+    ) public view returns (uint256 currentAmount)
+```
+
+| Tên thông số    | Kiểu/ Loại| Mô tả                                                                     |
+| --------------- | --------- | ------------------------------------------------------------------------- |
+| pay_amt         | uint256   | Lượng token người mua đang bán                                            |
+| buy_amt_min     | uint256   | Lượng nhận tối thiểu của địa chỉ token cuối cùng trong `route`            |
+| route           | addresses | Địa chỉ token đầu tiên là `pay_amt`, địa chỉ cuối cùng là `buy_amt` token |
+
+Sử dụng các tham số giống như `swap()` và trả về số tiền dự kiến nhận được.
+
+### getExpectedMultiswapFill()
+
+```solidity copy
+    function getExpectedMultiswapFill(
+        uint256[] memory pay_amts,
+        uint256[] memory buy_amt_mins,
+        address[][] memory routes
+    ) public view returns (uint256 outputAmount)
+``` 
+
+| Tên thông số    | Kiểu/ Loại| Mô tả                                                                     |
+| --------------- | --------- | ------------------------------------------------------------------------- |
+| pay_amts        | uint256   | Lượng token mà người mua đang bán cho `buy_gem` token                     |
+| buy_amt_mins    | uint256   | Lượng ít nhất nhận được của địa chỉ token cuối cùng trong  `route`        |
+| routes          | addresses | Địa chỉ token đầu tiên là `pay_amt`, địa chỉ cuối cùng là `buy_amt` token |
+
+Sử dụng các tham số giống như `multiswap()` và trả về số tiền dự kiến nhận được.
+
+### getBookFromPair()
+
+```solidity copy
+    function getBookFromPair(
+        IERC20 asset,
+        IERC20 quote
+    ) public view returns (uint256[3][] memory asks, uint256[3][] memory bids)
+```
+
+| Tên thông số    | Kiểu/ Loại| Mô tả                                      |
+| --------------- | ------- | -------------------------------------------- |
+| asset           | address | Token ERC-20 ở phía bán của sổ lệnh mục tiêu |
+| quote           | address | Token ERC-20 ở phía mua của sổ lệnh mục tiêu |
+
+Trả về tất cả các lệnh nổi bật trên sổ lệnh cho một cặp token nhất định. Thứ tự cặp `asset`/`quote` sẽ được sắp xếp theo giá trị trả về - tài sản phải ở trên cùng của cặp: ví dụ: (ETH, USDC) sẽ trả lại (ETH bán, mua USDC)
+
+### getOffersFromPair()
+
+```solidity copy
+    function getOffersFromPair(
+        IERC20 tokenIn,
+        IERC20 tokenOut
+    ) public view returns (uint256[3][] memory offers)
+```
+| Tên thông số    | Kiểu/ Loại| Mô tả                                        |
+| --------------- | --------- | -------------------------------------------- |
+| tokenIn         | address   | Token ERC-20 ở phía bán của sổ lệnh mục tiêu |
+| tokenOut        | address   | Token ERC-20 ở phía mua của sổ lệnh mục tiêu |
+
+Trả lại các lệnh từ một phía của sổ lệnh được chỉ định.
+
+### getBookDepth()
+
+```solidity copy
+    function getBookDepth(
+        IERC20 tokenIn,
+        IERC20 tokenOut
+    ) public view returns (uint256 depth, uint256 bestOfferID)
+```
+
+Trả về độ sâu của một mặt của sổ lệnh và ID của offer() tốt nhất.
+
+### getOfferIDsFromPair()
+
+```solidity copy
+    function getOfferIDsFromPair(
+        IERC20 tokenIn,
+        IERC20 tokenOut
+    ) public view returns (uint256[] memory IDs)
+```
+
+Trả về tất cả ID offer() từ cặp `tokenIn`/`tokenOut`.
+
+### getBestOfferAndInfo()
+
+```solidity copy
+    function getBestOfferAndInfo(
+        address asset,
+        address quote
+    )
+        public
+        view
+        returns (
+            uint256,
+            uint256,
+            IERC20,
+            uint256,
+            IERC20
+        )
+```
+
+Trả về ID và thông tin cho `offer()` tốt nhất trên một cặp lệnh asset/quote nhất định.
+
+## Events
+
+```solidity copy
+    event emitSwap(
+        address indexed recipient,
+        address indexed inputERC20,
+        address indexed targetERC20,
+        bytes32 pair,
+        uint256 inputAmount,
+        uint256 realizedFill,
+        uint256 hurdleBuyAmtMin
+    );
+```
+

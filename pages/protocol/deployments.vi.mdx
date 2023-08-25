@@ -1,50 +1,98 @@
 ---
-title: Rubicon | v1 Deployments
-pageTitle: v1 Deployments
-description: Active Rubicon Smart Contract Deployments
+title: Deployments
+pageTitle: Deployments
+description: List of Rubicon contract addresses across various networks
 ---
 
-## Mainnet lạc quan (Rubicon v1.3)
+Các bảng bên dưới có địa chỉ hợp đồng thông minh cho Rubicon trên tất cả các mạng.
 
-Dưới đây là danh sách triển khai Rubicon trên |**** 2****|. Xin lưu ý rằng chúng tôi sử dụng [transparent upgradeable proxy standard](https://docs.openzeppelin.com/upgrades-plugins/1.x/proxies); địa chỉ hợp đồng của tất cả các triển khai được tìm thấy bên dưới và triển khai cơ bản của mỗi proxy có thể xem được qua [Etherscan](https://optimistic.etherscan.io/).
+Xin lưu ý rằng Rubicon sử dụng [tiêu chuẩn proxy có thể nâng cấp minh bạch](https://docs.openzeppelin.com/upgrades-plugins/1.x/proxies). Bạn có thể xem triển khai cơ bản của từng hợp đồng proxy trên trình khám phá khối.
 
-|****5****| 0x7a512d3609211e719737E82c7bb7271eC05Da70d\
-|****6****| 0x7Af14ADc8Aea70f063c7eA3B2C1AD0D7A59C4bFf\
-|****7****| 0x203328C161D23dCEee3E439DeEB25cA19e2c4984\
-|****8****| 0xF8780E00Ce8ed2e79aeC10908a169900eD1D4AFe\
-|****9****| 0x267D94C6e67e4436EFfE092b08d040cFF36B2DA7
+# Triển khai trực tiếp
 
-|****10****| 0xB0bE5d911E3BD4Ee2A8706cF1fAc8d767A550497\
-|****11****| 0x7571CC9895D8E997853B1e0A1521eBd8481aa186\
-|****12****| 0xe0e112e8f33d3f437D1F895cbb1A456836125952\
-|****13****| 0x60daEC2Fc9d2e0de0577A5C708BcaDBA1458A833\
-|****14****| 0xfFBD695bf246c514110f5DAe3Fa88B8c2f42c411\
-|****15****| 0xeb5F29AfaaA3f44eca8559c3e8173003060e919f\
-|****16****| 0x574a21fE5ea9666DbCA804C9d69d8Caf21d5322b
+### Optimism 
 
-_Bạn có thể tìm thấy vị trí của tất cả các nhóm thanh khoản và hợp đồng BathToken bằng cách truy vấn `getBathTokenFromAsset` trên_ [_BathHouse_](https://optimistic.etherscan.io/address/0x203328C161D23dCEee3E439DeEB25cA19e2c4984#readProxyContract) _với địa chỉ của mã thông báo ERC-20 cơ bản. Mã thông báo tắm là duy nhất cho mỗi ERC-20._
+| Tên hợp đồng    | Địa chỉ                                      |
+| --------------- | -------------------------------------------- |
+| RubiconMarket   | [0x7a512d3609211e719737E82c7bb7271eC05Da70d](https://optimistic.etherscan.io/address/0x7a512d3609211e719737E82c7bb7271eC05Da70d) |
+| RubiconRouter   | [0x7Af14ADc8Aea70f063c7eA3B2C1AD0D7A59C4bFf](https://optimistic.etherscan.io/address/0x7Af14ADc8Aea70f063c7eA3B2C1AD0D7A59C4bFf) |
+| MarketAidFactory| [0x267D94C6e67e4436EFfE092b08d040cFF36B2DA7](https://optimistic.etherscan.io/address/0x267D94C6e67e4436EFfE092b08d040cFF36B2DA7) |
 
-|****18****| được gắn thẻ & dán nhãn trên Etherscan
+### Arbitrum 
 
-## Lạc quan Goerli
+| Tên hợp đồng    | Địa chỉ                                      |
+| --------------- | -------------------------------------------- |
+| RubiconMarket   | [0xc715a30fde987637a082cf5f19c74648b67f2db8](https://arbiscan.io/address/0xc715a30fde987637a082cf5f19c74648b67f2db8) |
+| RubiconRouter   | [0x7b24e6f4dd84674696c2a5809c24154ec6ac7f03](https://arbiscan.io/address/0x7b24e6f4dd84674696c2a5809c24154ec6ac7f03) |
+| MarketAidFactory| [0x6CB24A263732579EfD56f3E071851e989d78cE75](https://arbiscan.io/address/0x6cb24a263732579efd56f3e071851e989d78ce75) |
 
-Vui lòng xem bên dưới để biết các triển khai v1 trực tiếp. Hợp đồng chưa được xác minh trên Etherscan do thiếu hỗ trợ cho `chainId` `420` nhưng điều này sẽ sớm được giải quyết. Xin lưu ý rằng những địa chỉ này có thể thay đổi nếu có gì đó bị tắt nhưng sẽ được duy trì ở đây.\
-\
-**Xin lưu ý rằng bên dưới là các hợp đồng proxy có triển khai trực tiếp có thể được tìm thấy qua Etherscan** (thông qua Hợp đồng > Đọc dưới dạng Proxy \* ngay khi xác minh hoạt động nhưng chưa có)
+### Base
 
-|****19****| 0x6cD8666aBB003073e45D69E5b3aa0b0Fe9CDBF91\
-|****20****| 0x6aaEd1985a0e011ca82BB5Df8ebd92063134fd7c\
-|****21****| 0x1229036F63679B61910CB1463e5BB57f68D19bb2\
-|****22****| 0x9dBf17d518f722B5Aae5573D808B94024b635529\
-|****23****| 0x1215007738491710913359b5A733c8A87624f8d3
+| Tên hợp đồng    | Địa chỉ                                      |
+| --------------- | -------------------------------------------- |
+| RubiconMarket   | [0x9A5215E96E1185d4e6002C95C3Cc0aB6eEaD354F](https://basescan.org/address/0x9A5215E96E1185d4e6002C95C3Cc0aB6eEaD354F) |
+| RubiconRouter   | [0x929675f6a6aC12D7cC3463BE1df7221ca35b8a00](https://basescan.org/address/0x929675f6a6aC12D7cC3463BE1df7221ca35b8a00) |
+| MarketAidFactory| [0xc2b33a7601f3f0ecFF2eE4b5b7c647770069A836](https://basescan.org/address/0xc2b33a7601f3f0ecFF2eE4b5b7c647770069A836) |
 
-Lưu ý: mọi BathToken hiện có đều được truy vấn thông qua tokenToBathToken() trên BathHouse. Đây là phần đọc với các triển khai:
+## Triển khai Testnet
 
-|****1****|
+Danh sách các địa chỉ hợp đồng trên các mạng thử nghiệm khác nhau. Bao gồm các địa chỉ cho token thử nghiệm(nhận token testnet), bạn có thể có các token này bằng cách sử dụng faucet trên hợp đồng hoặc bằng cách sử dụng faucet trong ứng dụng.
 
-**Kiểm tra ERC-20 với bathTokens khởi tạo và vòi tích hợp để kiểm tra** (không bao gồm WETH)**:**
+### Arbitrum Goerli
 
-[Test OP Coin](https://goerli-optimism.etherscan.io/address/0xCeE7148028Ff1B08163343794E85883174a61393)\
-|****25****|
+| Tên hợp đồng    | Địa chỉ                                                                        |
+| --------------- | ------------------------------------------------------------------------------ |
+| RubiconMarket   | [0xD07A15483EedF002eE1F16D0CA62b6488CF1fd0D](https://goerli.arbiscan.io/address/0xD07A15483EedF002eE1F16D0CA62b6488CF1fd0D) |
+| RubiconRouter   | [0x237e9c663b7b61bcead9503dd5770e8e07465471](https://goerli.arbiscan.io/address/0x237e9c663b7b61bcead9503dd5770e8e07465471) |
+| MarketAidFactory| [0x746750031Cc56Ccb386D9a6a0fcAb34C0A138BbD](https://goerli.arbiscan.io/address/0x746750031Cc56Ccb386D9a6a0fcAb34C0A138BbD) |
+|                 |                                                                                |
+| WETH            | [0x175A6D830579CAcf1086ECC718fAB2A86b12e0D3](https://goerli.arbiscan.io/address/0x175A6D830579CAcf1086ECC718fAB2A86b12e0D3) |
+| USDC            | [0x34cB584d2E4f3Cd37e93A46A4C754044085439b4](https://goerli.arbiscan.io/address/0x34cB584d2E4f3Cd37e93A46A4C754044085439b4) |
+| TEST            | [0x83250b2783554D4D401c45c39fF8A161dE44BC15](https://goerli.arbiscan.io/address/0x83250b2783554D4D401c45c39fF8A161dE44BC15) |
+| USDT            | [0x6ABc1231d85D422c9Fe25b5974B4C0D4AB85d9b5](https://goerli.arbiscan.io/address/0x6ABc1231d85D422c9Fe25b5974B4C0D4AB85d9b5) |
+| DAI             | [0xb37b4399880AfEF7025755d65C193363966b8b89](https://goerli.arbiscan.io/address/0xb37b4399880AfEF7025755d65C193363966b8b89) |
+| WBTC            | [0x710c1A969cbC8ab5644571697824c655ffBDE926](https://goerli.arbiscan.io/address/0x710c1A969cbC8ab5644571697824c655ffBDE926) |
 
-**Xin lưu ý, để nhận bất kỳ mã thông báo nào ở trên miễn phí để thử nghiệm, chỉ cần gọi vòi().** Điều này có thể được thực hiện bằng cách truy cập mã thông báo trong Etherscan > Viết hợp đồng > Kết nối ví (Xác minh trên OP Kovan) > gọi vòi (). Điều này sẽ đúc cho bạn 1000 mã thông báo cứ sau 5 ngày. Ngoài ra, mỗi mã thông báo ở trên sẽ có ít nhất 1000 mã thông báo thanh khoản trong bathToken tương ứng của chúng từ quản trị viên được gửi cho mục đích thử nghiệm.
+### Optimism Goerli
+
+| Tên hợp đồng    | Địa chỉ                                                                        |
+| --------------- | ------------------------------------------------------------------------------ |
+| RubiconMarket   | [0x9d0D6c259566d8161a1b2c513af0463992db38bc](https://goerli-optimism.etherscan.io/address/0x9d0D6c259566d8161a1b2c513af0463992db38bc) |
+| RubiconRouter   | [0x0a0795d7015aB52BcDd987975474bD73062B5494](https://goerli-optimism.etherscan.io/address/0x0a0795d7015aB52BcDd987975474bD73062B5494) |
+| MarketAidFactory| [0x267D94C6e67e4436EFfE092b08d040cFF36B2DA7](https://goerli-optimism.etherscan.io/address/0x2D77E00EfE8375903eaD1135BD1eb31cBcf1bA69) |
+|                 |                                                                                |
+| WETH            | [0x4200000000000000000000000000000000000006](https://goerli-optimism.etherscan.io/address/0x4200000000000000000000000000000000000006) |
+| OP              | [0xCeE7148028Ff1B08163343794E85883174a61393](https://goerli-optimism.etherscan.io/address/0xCeE7148028Ff1B08163343794E85883174a61393) |
+| USDC            | [0xe432f229521eE954f80C83257485405E3d848d17](https://goerli-optimism.etherscan.io/address/0xe432f229521eE954f80C83257485405E3d848d17) |
+| testWETH        | [0x54e63385c13ECbE3B859991eEdad539d9fDa1167](https://goerli-optimism.etherscan.io/address/0x54e63385c13ECbE3B859991eEdad539d9fDa1167) |
+
+### Polygon Mumbai
+
+| Tên hợp đồng    | Địa chỉ                                                                        |
+| --------------- | ------------------------------------------------------------------------------ |
+| RubiconMarket   | [0x10418D9e730fa659b0Baf0b640ee41FcF4EA2aaE](https://mumbai.polygonscan.com/address/0x10418D9e730fa659b0Baf0b640ee41FcF4EA2aaE) |
+| RubiconRouter   | [0xbA81dF0251A017C2fB687e5469a897529442f008](https://mumbai.polygonscan.com/address/0xbA81dF0251A017C2fB687e5469a897529442f008) |
+| MarketAidFactory| [0x4841DcC66F6CfC600382ec98f34d43332c535B9B](https://mumbai.polygonscan.com/address/0x4841DcC66F6CfC600382ec98f34d43332c535B9B) |
+|                 |                                                                                |
+| WETH            | [0xE412a307764cCBE02E055e926516ebD74230cfE0](https://mumbai.polygonscan.com/address/0xE412a307764cCBE02E055e926516ebD74230cfE0) |
+| USDC            | [0xcC5f8571D858DAD7fA2238FB9df4Ad384493013C](https://mumbai.polygonscan.com/address/0xcC5f8571D858DAD7fA2238FB9df4Ad384493013C) |
+| TEST            | [0x6aeda41c98ab5399044fc36162B57d39c13b658a](https://mumbai.polygonscan.com/address/0x6aeda41c98ab5399044fc36162B57d39c13b658a) |
+| USDT            | [0x97fcdaA045F4a3Bc8Fc7ad721EFf38d66B234C7F](https://mumbai.polygonscan.com/address/0x97fcdaA045F4a3Bc8Fc7ad721EFf38d66B234C7F) |
+| DAI             | [0xAb647DF8262580c1caB61Eb165B22616365d3C67](https://mumbai.polygonscan.com/address/0xAb647DF8262580c1caB61Eb165B22616365d3C67) |
+| WBTC            | [0x639C6472C45037F7aA868729dFfF69eB3843f1A0](https://mumbai.polygonscan.com/address/0x639C6472C45037F7aA868729dFfF69eB3843f1A0) |
+
+# Triển khai không còn dùng
+
+Danh sách các địa chỉ hợp đồng không còn được sử dụng. Tương tác với các hợp đồng này không được khuyến khích. Nếu bạn có token trong nhóm V1, bạn có thể rút tiền trên [ứng dụng](https://app.rubicon.finance/pools) hoặc bằng cách gọi chức năng withdraw() trên hợp đồng bathToken có liên quan.
+
+| Tên hợp đồng    | Địa chỉ                                      |
+| --------------- | -------------------------------------------- |
+| BathHouse V1    | [0x203328C161D23dCEee3E439DeEB25cA19e2c4984](https://optimistic.etherscan.io/address/0x203328C161D23dCEee3E439DeEB25cA19e2c4984) |
+| BathPair        | [0xF8780E00Ce8ed2e79aeC10908a169900eD1D4AFe](https://optimistic.etherscan.io/address/0xF8780E00Ce8ed2e79aeC10908a169900eD1D4AFe) |
+| bathETH         | [0xB0bE5d911E3BD4Ee2A8706cF1fAc8d767A550497](https://optimistic.etherscan.io/address/0xB0bE5d911E3BD4Ee2A8706cF1fAc8d767A550497) |
+| bathWBTC        | [0x7571CC9895D8E997853B1e0A1521eBd8481aa186](https://optimistic.etherscan.io/address/0x7571CC9895D8E997853B1e0A1521eBd8481aa186) |
+| bathUSDC        | [0xe0e112e8f33d3f437D1F895cbb1A456836125952](https://optimistic.etherscan.io/address/0xe0e112e8f33d3f437D1F895cbb1A456836125952) |
+| bathUSDT        | [0xfFBD695bf246c514110f5DAe3Fa88B8c2f42c411](https://optimistic.etherscan.io/address/0xfFBD695bf246c514110f5DAe3Fa88B8c2f42c411) |
+| bathDAI         | [0x60daEC2Fc9d2e0de0577A5C708BcaDBA1458A833](https://optimistic.etherscan.io/address/0x60daEC2Fc9d2e0de0577A5C708BcaDBA1458A833) |
+| bathSNX         | [0xeb5F29AfaaA3f44eca8559c3e8173003060e919f](https://optimistic.etherscan.io/address/0xeb5F29AfaaA3f44eca8559c3e8173003060e919f) |
+| bathOP          | [0x574a21fE5ea9666DbCA804C9d69d8Caf21d5322b](https://optimistic.etherscan.io/address/0x574a21fE5ea9666DbCA804C9d69d8Caf21d5322b) |

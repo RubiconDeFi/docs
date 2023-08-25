@@ -6,57 +6,48 @@ description: Các câu hỏi thường gặp về Giao Thức Rubicon
 
 ## Rubicon là gì?
 
-Rubicon là một giao thức đặt hàng cho Ethereum. Bạn có thể sử dụng nó để giao dịch [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) mã thông báo với lệnh giới hạn, lệnh thị trường, lệnh hoán đổi và lệnh hàng loạt!
+Rubicon là giao thức sổ lệnh để trao đổi token [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) , xây dựng trên mạng lưới(L2) Ethereum.
 
-Bạn có thể hoán đổi, giao dịch và cung cấp thanh khoản bằng cách sử dụng [Rubicon App](https://app.rubicon.finance/).
+Để bắt đầu giao dịch, truy cập [**app.rubicon.finance**](https://app.rubicon.finance/).
 
-### Nó nằm trên chuỗi/mạng nào?
+### Chuỗi/mạng nào được hỗ trợ?
 
-Rubicon được xây dựng trên mạng Ethereum L2 có phí thấp và xác nhận gần như ngay lập tức. Hiện tại, Rubicon đang hoạt động trên [Optimism](https://www.optimism.io/). Giao thức sẽ được triển khai trên nhiều mạng Ethereum L2 hơn trong tương lai!
+Rubicon đang hoạt động trên [**Optimism**](https://www.optimism.io/), và sẽ có trên nhiều mạng L2 hơn trong tương lai gần!
 
-### Làm cách nào để chuyển mã thông báo sang Chủ nghĩa lạc quan?
+### Token nào được hỗ trợ?
 
-Sử dụng [Bridge](https://app.rubicon.finance/bridge) trong Ứng dụng để tìm tuyến đường bắc cầu tốt nhất đến Sự lạc quan từ các chuỗi khối khác. Hãy nhớ rằng để thanh toán phí mạng (gas), bạn sẽ cần ETH trên [Optimism](https://www.optimism.io/) cho tất cả các giao dịch.
+Giao thức Rubicon hỗ trợ giao dịch bất kỳ token nào tuân thủ [ERC-20 standard](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/).
 
-Bạn có thể mua ETH (hoặc mã thông báo khác) trực tiếp vào ví trên Optimism bằng cách sử dụng **Mua tiền điện tử** trên thanh bên. Fiat on-ramp này từ [Ramp](https://ramp.network/) hỗ trợ thẻ tín dụng/thẻ ghi nợ, ApplePay và một số chuyển khoản ngân hàng.
+Ứng dụng sử dụng danh sách mặc định các token phổ biến của mỗi mạng. Thực hiện theo [**hướng dẫn**]() để thêm token mới vào danh sách token của bạn. Hãy nhớ rằng thanh khoản có thể thấp đối với token mới, bạn có thể là người đầu tiên đặt lệnh giới hạn trên sổ lệnh.
 
-### Những mã thông báo nào có sẵn để giao dịch?
+### Nơi nào tôi có thể đọc code?
 
-Giao thức Rubicon không được phép: hợp đồng sổ lệnh cho phép giao dịch bất kỳ mã thông báo ERC-20 nào!
+Xem code trên Github [**ở đây**](https://github.com/RubiconDeFi/rubi-protocol-v2).  Giao thức là mã nguồn mở và tất cả hợp đồng thông minh đều đã được xác minh.
 
-Làm theo cái này [guide](/docs/guides/trade/adding-a-trading-pair) để thêm mã thông báo/cặp giao dịch mới **cục bộ** trên Ứng dụng, hãy lưu ý rằng tính thanh khoản có thể thấp đối với các cặp giao dịch mới.
+### Nơi nào tôi có thể tìm địa chỉ hợp đồng?
 
-### Ví nào được hỗ trợ?
+[**Triển khai**](protocol/deployments)
 
-Ứng dụng Rubicon hỗ trợ [Metamask](https://metamask.io/), [Coinbase Wallet](https://www.coinbase.com/wallet), và [WalletConnect](https://walletconnect.com/) ví như [Rainbow](https://rainbow.me/).
+### Các khoản phí là gì?
 
-Nếu bạn chưa quen với Ethereum và cần một chiếc ví, hãy sử dụng [this tool](https://ethereum.org/en/wallets/find-wallet/) để tìm một cái phù hợp với bạn!
+[**Phí**](/protocol/rubicon-market/fees)
 
-### Lệ phí là gì?
+### Rubicon đã được kiểm tra chưa?
 
-[Fees](/guides/trade/fees)
+Có, truy cập [**Kiểm toán**](/protocol/audits) để xem các lần kiểm tra bảo mật trước đó trên hợp đồng thông minh.
 
-### Liquidity Pools hoạt động như thế nào?
+### Ở đây có chương trình thưởng khi phát hiện lỗi không?
 
-Giao thức sổ lệnh Rubicon có nhóm thanh khoản. Các nhà cung cấp thanh khoản (LP) gửi tài sản tiền điện tử vào một nhóm và nhận bathTokens, đại diện cho phần chia theo tỷ lệ của họ đối với tài sản nhóm cơ bản.
-(Ví dụ: LP gửi ETH, nhận bathETH)
+Có, hãy truy cập [**Chương trình Bug Bounty **](https://immunefi.com/bounty/rubicon/) trang trên Immunefi để biết chi tiết.
 
-Nhóm thanh khoản được sử dụng bởi các nhà tạo lập thị trường tích cực (nhà chiến lược) để cung cấp thanh khoản trên sổ đặt hàng. Lợi nhuận từ việc tạo thị trường được chuyển đến LP (người nắm giữ bathToken) và các chiến lược gia kiếm được phí hiệu suất.
+### Nơi nào tôi có thể tìm các phân tích?
 
-Xem các khoản nắm giữ bathTokens (Vị trí LP nhóm) trên [Portfolio](https://app.rubicon.finance/portfolio) trong ứng dụng.
+Ở trên Rubicon [**Bảng điều khiển Dune**](https://dune.com/rubicondefi/rubicon) có các chỉ số sử dụng và khối lượng lịch sử cho giao thức.
 
-### Tôi có thể nhận hỗ trợ ở đâu?
+### Nơi nào tôi có thể được hỗ trợ?
 
-Để được hỗ trợ, hãy tham gia [Discord](https://discord.com/invite/E7pS24J) của chúng tôi máy chủ và gửi tin nhắn trong kênh **#support**. Nhóm của chúng tôi sẽ không bao giờ nhắn tin cho bạn trước hoặc yêu cầu cụm từ hạt giống hoặc khóa riêng tư của bạn!
+Để được hỗ trợ, hãy tham gia [Discord](https://discord.com/invite/E7pS24J) nhắn một tin nhắn trên kênh **#support** .  Hãy cẩn thận lừa đảo và kẻ mạo danh, nhóm của chúng tôi sẽ không bao giờ nhắn tin với bạn trước hay hỏi cụm từ khoá bị mật hoặc khoá riêng tư của bạn!
 
-### Rubicon có whitepaper không?
+### Rubicon có mã token không?
 
-Rubicon v1 [whitepaper](https://github.com/RubiconDeFi/rubicon-protocol-v1/blob/master/Rubicon%20v1%20Whitepaper.pdf) phác thảo các thông số kỹ thuật của giao thức và tầm nhìn của chúng tôi đối với sổ đặt hàng.
-
-### Ai trong đội?
-
-[https://www.rubicon.finance/team](https://www.rubicon.finance/team)
-
-### Rubicon có mã thông báo không?
-
-Rubicon hiện không có mã thông báo, chúng tôi đang tập trung vào việc xây dựng và tìm kiếm sản phẩm phù hợp với thị trường. Mọi thông báo sẽ đến từ nhóm Rubicon trên các kênh chính thức của chúng tôi.
+Rubicon hiện không có token, nhóm đang tập trung vào việc xây dựng và tìm kiếm sản phẩm phù hợp với thị trường. Mọi thông báo sẽ đến từ nhóm Rubicon trên các kênh chính thức.

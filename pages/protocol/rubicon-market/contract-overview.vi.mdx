@@ -1,0 +1,329 @@
+---
+title: Contract Overview
+pageTitle: Contract Overview
+description: Overview and docs for the Rubicon order book contract
+---
+
+# Rubicon Market
+[Contract Source Code](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/RubiconMarket.sol)
+==================
+
+## Tổng quan về hợp đồng
+---------------------
+
+## Tổng quan
+
+RubiconMarket.sol triển khai sổ lệnh và công cụ khớp lệnh để giao dịch ngang hàng token [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/).
+
+Một sổ lệnh là một danh sách các lệnh mua và bán cho một loại tài sản, sắp xếp theo mức giá. Hợp đồng này lưu trữ mọi sổ lệnh ERC20/ERC20 dưới dạng hai danh sách được sắp xếp liên kết đôi, mỗi danh sách dành cho một bên của thị trường nhất định.
+
+Hợp đồng sử dụng như một mô hình ký quỹ cho thanh khoản; khi offer() được gọi, tokens được gửi đến hợp đồng. Nếu/khi ấy một lệnh được lấp đầy, hợp đồng sẽ khớp với những nhà giao dịch trực tiếp và tokens được gửi đến cho mỗi bên. Khi cancel() được gọi, hợp đồng sẽ loại bỏ offer() và trả lại tokens cho người sở hữu.
+
+Hợp đồng là một cách hoạt động phái sinh của MakerDAO's mã nguồn mở [OasisDEX](https://oasisdex.com/) và kế thừa giấy phép của  AGPL-3.0.
+## Hàm
+
+### offer()
+
+```
+    function offer(
+        uint256 pay_amt,
+        ERC20 pay_gem,
+        uint256 buy_amt,
+        ERC20 buy_gem,
+    ) public returns (uint256)
+```
+
+| Thông số                      | Loại/ Kiểu | Mô tả                                                                                                                                 |
+| ----------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| pay\_amt                      | uint256    | Lượng tokens ERC-20 được gọi để bán                                                                                                   |
+| pay\_gem                      | address    | Token ERC-20 được gọi để bán                                                                                                          |
+| buy\_amt                      | uint256    | Lượng tokens ERC-20 được gọi để mua                                                                                                   |
+| buy\_gem                      | address    | Token ERC-20 được gọi để mua                                                                                                          |
+| \[Optional] pos               | uint256    | Tuỳ chọn: Vị trí trong danh sách được sắp xếp để đặt lệnh mua. Sử dụng 0 trừ khi bạn biết vị trí chính xác (ID gần nhất) để chèn lệnh |
+| \[Optional] recipient         | address    | Tuỳ chọn: tuỳ chọn địa chỉ người nhận cho lệnh mua đã hoàn thành                                                                      |
+
+Gọi hàm `offer()` là đặt một lệnh giới hạn trên Rubicon. `pay_amt` là lượng `pay_gem` token sẽ được gửi vào hợp đồng, ký quỹ cho đến khi lệnh được lấp đầy hoặc được huỷ. Hàm nâng cao `offer()` thứ mà có những thông số cho vị trí cụ thể trong sổ lệnh hoặc tuỳ chỉnh địa chỉ người nhận cho lệnh đã được lấp đầy.
+
+### cancel()
+
+```
+    function cancel(uint id)
+        public
+        can_cancel(id)
+        returns (bool success)
+```
+
+| Thông số       | Loại/ Kiểu    | Mô tả                                  |
+| -------------- | ------------- | -------------------------------------- |
+| id             | uint256       | Id của lệnh mà người dùng muốn huỷ     |
+
+Huỷ một `offer()` trên sổ lệnh và hoàn trả lại tokens cho người sở hữu. Công cụ sửa đổi `can_cancel` kiểm tra xem lệnh đang nhắm đến có đang hoạt động và thuộc sở hữu của người gọi hay không.
+
+### batchOffer()
+
+```
+    function batchOffer(
+        uint[] calldata payAmts,
+        address[] calldata payGems,
+        uint[] calldata buyAmts,
+        address[] calldata buyGems
+    ) external {
+        require(
+            payAmts.length == payGems.length &&
+                payAmts.length == buyAmts.length &&
+                payAmts.length == buyGems.length,
+            "Array lengths do not match"
+        );
+        for (uint i = 0; i < payAmts.length; i++) {
+            this.offer(
+                payAmts[i],
+                ERC20(payGems[i]),
+                buyAmts[i],
+                ERC20(buyGems[i])
+            );
+        }
+    }
+```
+
+Sử dụng `batchOffer()` để đặt nhiều lệnh trong 1 giao dịch. Hàm lấy bốn mảng làm tham số: `payAmts`, `payGems`, `buyAmts`, và `buyGems`. Các mảng phải cùng độ dài và và thứ tự của các phần tử phải khớp nhau. Hàm sẽ lặp qua từng phần tử trong mảng và đặt một lệnh với các tham số tương ứng.
+
+### batchCancel()
+
+```
+    function batchCancel(uint[] calldata ids) external {
+        for (uint i = 0; i < ids.length; i++) {
+            this.cancel(ids[i]);
+        }
+    }
+```
+Sử dụng `batchCancel()` để huỷ nhiều lệnh trong một giao dịch. Hàm lấy một mảng `offer()` ids làm tham số. Hàm sẽ lặp qua từng phần tử trong mảng và hủy lệnh tương ứng.
+
+### batchRequote()
+
+```
+    function batchRequote(
+        uint[] calldata ids,
+        uint[] calldata payAmts,
+        address[] calldata payGems,
+        uint[] calldata buyAmts,
+        address[] calldata buyGems
+    ) external {
+        for (uint i = 0; i < ids.length; i++) {
+            cancel(ids[i]);
+            this.offer(
+                payAmts[i],
+                ERC20(payGems[i]),
+                buyAmts[i],
+                ERC20(buyGems[i])
+            );
+        }
+    }
+```
+
+Sử dụng `batchRequote()` để hủy và thay thế nhiều lệnh mua trong một giao dịch. Hàm lấy năm mảng làm tham số: `ids`, `payAmts`, `payGems`, `buyAmts` và `buyGems`. Các mảng phải có cùng độ dài và thứ tự của các phần tử phải khớp nhau. Hàm sẽ lặp qua từng phần trong mảng và hủy lệnh tương ứng. Sau đó, nó sẽ đặt các lệnh mới với các thông số tương ứng.
+
+### buyAllAmount()
+
+```
+     function buyAllAmount(
+        ERC20 buy_gem,
+        uint256 buy_amt,
+        ERC20 pay_gem,
+        uint256 max_fill_amount
+    ) external returns (uint256 fill_amt)
+```
+
+| Thông số        | Loại/ Kiểu | Mô tả                               |
+| --------------- | ---------- | ----------------------------------- |
+| buy_gem         | address    | Token ERC-20 mà người mua đang mua  |
+| buy_amt         | uint256    | Lượng token mà người mua đang mua   |
+| pay_gem         | address    | Token ERC-20 mà người bán đang bán  |
+| max_fill_amount | uint256    | Lượng token tối đa được bán         |
+
+Giao dịch `buy_amt` lượng token `buy_gem` để lấy tối đa số lượng token `max_fill_amount` của token `pay_gem`. Giao dịch sẽ hoàn nguyên nếu nhà giao dịch chi tiêu nhiều hơn số tiền tối đa được chỉ định. Đây là lệnh mua "Fill-or-Kill".
+
+### sellAllAmount()
+
+```
+     function sellAllAmount(
+        ERC20 pay_gem,
+        uint256 pay_amt,
+        ERC20 buy_gem,
+        uint256 min_fill_amount
+    ) external returns (uint256 fill_amt)
+```
+
+| Thông số        | Loại/ Kiểu | Mô tả                              |
+| --------------- | ---------- | ---------------------------------- |
+| pay_gem         | address    | Token ERC-20 mà người mua đang bán |
+| pay_amt         | uint256    | Lượng token mà người mua đang bán  |
+| buy_gem         | address    | Token ERC-20 mà người mua đang mua |
+| min_fill_amount | uint256    | Lượng token tối thiểu nhận được    |
+
+Giao dịch `pay_amt` token `pay_gem` lấy ít nhất số lượng `min_fill_amount` của token `buy_gem`. Giao dịch sẽ hoàn nguyên nếu nhà giao dịch nhận được ít hơn số tiền tối thiểu được chỉ định. Đây là lệnh bán "Fill-or-Kill".
+
+## Xem chức năng
+
+Sử dụng xem chức năng để đọc tình trạng của hợp đồng sổ lệnh. RubiconRouter.sol cũng có  [nhiều chức năng hữu ích](https://docs.rubicon.finance/protocol/rubicon-router/rubicon-router#view-functions) để đọc tình trạng của RubiconMarket.sol.
+
+### getBuyAmountWithFee()
+
+```
+    function getBuyAmountWithFee(
+        IERC20 buy_gem,
+        IERC20 pay_gem,
+        uint256 pay_amt
+    ) external view returns (uint256 buy_amt, uint256 approvalAmount) {
+        uint modifiedAmount = calculateFees(pay_amt, false);
+        buy_amt = (getBuyAmount(buy_gem, pay_gem, modifiedAmount));
+
+        approvalAmount = pay_amt;
+        return (buy_amt, approvalAmount);
+    }
+```
+
+Trả về `buy_amt`, số lượng token `buy_gem` gửi đến hợp đồng để nhận số tiền `pay_amt` của token `pay_gem`. Cũng trả về `approvalAmount`, số lượng token `pay_gem` để phê duyệt cho tương tác, tính phí.
+
+### getPayAmountWithFee
+
+```
+    function getPayAmountWithFee(
+        IERC20 pay_gem,
+        IERC20 buy_gem,
+        uint256 buy_amt
+    ) public view returns (uint256 pay_amt, uint256 approvalAmount) {
+        pay_amt = (getPayAmount(pay_gem, buy_gem, buy_amt));
+        uint modifiedAmount = calculateFees(pay_amt, true);
+
+        approvalAmount = modifiedAmount;
+        return (pay_amt, approvalAmount);
+    }
+```
+Trả về `pay_amt`, số lượng token `pay_gem` gửi đến hợp đồng để nhận số lượng `buy_amt` token `buy_gem`. Đồng thời trả về `approvalAmount`, số lượng token `buy_gem` để phê duyệt cho tương tác, tính phí.
+
+### getBuyAmount()
+
+```
+    function getBuyAmount(
+        ERC20 buy_gem,
+        ERC20 pay_gem,
+        uint256 pay_amt
+    ) external view returns (uint256 fill_amt)
+```
+Trả về số lượng token `buy_gem` nhận được nếu một lượng token `pay_gem` cụ thể được chi tiêu.
+
+### getBestOffer()
+
+```
+function getBestOffer(ERC20 pay_gem, ERC20 buy_gem)
+    public
+    view
+    returns (uint256)
+```
+
+Trả về ID của lệnh đặt trên cùng sổ lệnh
+
+Ví dụ: Gọi hàm này với WETH là `pay_gem` và USDC là `buy_gem` sẽ trả  về giá bán tốt nhất cho WETH/USDC. Chuyển đổi token sẽ trả lại giá mua tốt nhất.
+
+### getWorseOffer()
+
+```
+function getWorseOffer(uint256 id)
+    public
+    view
+    returns (uint256)
+```
+
+Trả về lệnh tệ hơn tiếp theo trong danh sách đã sắp xếp. Lệnh tệ hơn là lệnh cao hơn nếu lệnh mục tiêu là là lệnh bán và thấp hơn khi nó là lệnh mua. Trong cả hai trường hợp, nó sẽ trả về một cái mới hơn nếu chúng bằng nhau.
+
+### getOfferCount()
+
+```
+function getOfferCount(ERC20 sell_gem, ERC20 buy_gem)
+        public
+        view
+        returns (uint256)
+```
+
+Trả về số lượng lệnh trên sổ lệnh cho một cặp cụ thể
+
+### protocolFee()
+
+```solidity copy
+    function protocolFee() 
+        public
+        view 
+        returns (uint256)
+```
+
+Trả về phí giao thức hiện tại. Giá trị trả về là một số nguyên ở độ chính xác này (1/100.000 hoặc 0,001%).
+
+### makerFee()
+
+```solidity copy
+function makerFee() 
+    public 
+    view 
+    returns (uint256)
+```
+
+Trả về phí maker hiện tại. Giá trị trả về là một số nguyên ở độ chính xác này (1/100.000 hoặc 0,001%).
+
+## Key Events
+
+```
+event emitOffer(
+        bytes32 indexed id,
+        bytes32 indexed pair,
+        address indexed maker,
+        ERC20 pay_gem,
+        ERC20 buy_gem,
+        uint128 pay_amt,
+        uint128 buy_amt
+
+    );
+```
+
+```
+    event emitCancel(
+        bytes32 indexed id,
+        bytes32 indexed pair,
+        address indexed maker,
+        ERC20 pay_gem,
+        ERC20 buy_gem,
+        uint128 pay_amt,
+        uint128 buy_amt
+    );
+```
+
+```
+    event emitTake(
+        bytes32 indexed id,
+        bytes32 indexed pair,
+        address indexed taker,
+        address maker,
+        ERC20 pay_gem,
+        ERC20 buy_gem,
+        uint128 take_amt,
+        uint128 give_amt
+    );
+```
+
+```
+    event emitFee(
+        bytes32 indexed id,
+        address indexed taker,
+        address indexed feeTo,
+        bytes32 pair,
+        ERC20 asset,
+        uint256 feeAmt
+    );
+```
+
+```
+    event emitDelete(
+        bytes32 indexed id,
+        bytes32 indexed pair,
+        address indexed maker
+    );
+```

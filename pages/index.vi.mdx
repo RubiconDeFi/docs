@@ -4,61 +4,56 @@ pageTitle: Tổng Quan
 description: Chào mừng bạn đến Với Hướng Dẫn Rubicon và tài liệu dành cho nhà phát triển
 ---
 
-Chào mừng bạn đến với hướng dẫn Rubicon và tài liệu dành cho nhà phát triển
+# Tài liệu Rubicon
 
+import { Callout } from "/components/Callout";
 import { QuickLinks, QuickLink } from "/components/QuickLinks.jsx";
 
 <QuickLinks>
-	<QuickLink
-		title="CÂU HỎI THƯỜNG GẶP"
-		icon="installation"
-		href="/faq"
-		description="Mới Đến Rubicon? Ghé Thăm Các Câu Hỏi thường Gặp của chúng tôi"
-	></QuickLink>
+	<QuickLink 
+		title="Câu hỏi thường gặp" 
+		icon="installation" 
+		href="/Câu hỏi thường gặp" 
+		description="Bạn là người mới tới Rubicon? Hãy ghé xem các câu hỏi thường gặp"></QuickLink>
 	<QuickLink
 		title="Hướng dẫn"
-		icon="presets"
+		icon="openBook"
 		href="/guides/trade/trade"
-		description="Tìm Hiểu Cách Giao dịch, Trao Đổi, Cầu Nối và cung cấp tính thanh khoản trên Ứng dụng Rubicon!"
+		description="Cách Swap, Trade, và Kiếm tiền trên Rubicon!"
 	></QuickLink>
-	<QuickLink title="Thị Trường Rubicon" icon="plugins" href="/api-guides/subgraphs/rubiconmarket-api" description="Tài liệu cho hợp đồng sổ lệnh."></QuickLink>
+	<QuickLink
+		title="RubiconMarket"
+		icon="plugins"
+		href="/protocol/rubicon-market/contract-overview"
+		description="Tổng quan về hợp đồng sổ lệnh"
+	></QuickLink>
 	<QuickLink
 		title="APIs"
-		icon="theming"
+		icon="layers"
 		href="/api-guides/subgraphs/subgraphs"
-		description="Truy vấn dữ liệu thị trường với Các Biểu Đồ Con hoặc tương tác Với Rubicon bằng Python Và Rust Sdk"
+		description="SDKs and Subgraphs"
 	></QuickLink>
 </QuickLinks>
 
 ## Rubicon là gì?
 
-[Rubicon](https://rubicon.finance/) là một giao thức đặt lệnh cho [Ethereum](https://ethereum.org/en/). Sử dụng nó để giao dịch [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) mã thông báo với Swap, Lệnh giới hạn và Lệnh thị trường hoặc cung cấp tính thanh khoản trong Nhóm.
+Rubicon là một sổ lệnh để giao dịch token [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) . Được xây dựng trên Ethereum [layer 2](https://ethereum.org/en/layer-2/) (L2) các mạng như Arbitrum và Optimism, để các nhà giao dịch có xác nhận ngay lập tức và phí giao dịch thấp.
 
-Rubicon được xây dựng trên [Optimism](https://www.optimism.io/), một Ethereum nhanh như chớp và chi phí thấp [L2](<https://ethereum.org/en/layer-2/#:~:text=Layer%202%20(L2)%20is%20a,the%20security%20guarantees%20of%20Ethereum>) xích.
+Giao dịch tokens trên [Rubicon App](https://app.rubicon.finance/) với các lệnh hoán đổi, lệnh giới hạn và lệnh thị trường.
 
 ## Tổng quan về giao thức
 
-RubiconMarket.sol là một [limit order book](https://en.wikipedia.org/wiki/Central_limit_order_book) hợp đồng thông minh. Nó triển khai một công cụ khớp lệnh và sổ đặt hàng để giao dịch ngang hàng các mã thông báo ERC-20.
+[**RubiconMarket.sol**](/protocol/rubicon-market/contract-overview) là hợp đồng đặt hàng cốt lõi. Nó triển khai các sổ đặt hàng và một công cụ khớp lệnh để giao dịch ngang hàng các mã thông báo ERC-20.
 
-Rubicon Pools là một hệ thống hợp đồng thông minh cho phép các nhà cung cấp thanh khoản thụ động (LP) gửi mã thông báo vào một nhóm, nơi các nhà tạo lập thị trường (chiến lược gia) đang hoạt động sử dụng tài sản nhóm trên sổ đặt hàng. Lợi nhuận từ việc tạo lập thị trường được chuyển thành LP và các chiến lược gia kiếm được phí hiệu suất.
+[**RubiconRouter.sol**](/protocol/rubicon-router/rubicon-router) định tuyến hoán đổi mã thông báo và cho phép hoán đổi nhiều bước nếu hai mã thông báo không có sổ đặt hàng cơ bản. Nó cũng có các hàm xem hữu ích để đọc dữ liệu từ **RubiconMarket.sol** và chứa các hàm bao bọc để xử lý ETH gốc trong toàn bộ giao thức.
+## What is an Order Book?
 
-![Rubicon v1 Architecture](/assets/Rubicon_v1_RubiconMarket.png)
+Một [sổ lệnh](https://en.wikipedia.org/wiki/Order_book) là danh sách các lệnh mua và bán cho một tài sản, được sắp xếp theo mức giá. Đó là cách tốt nhất để phản ánh cung và cầu giữa hai tài sản.
 
-## Nhà phát triển: Bắt đầu Giao thức Rubicon cục bộ
+Để tìm hiểu thêm về sổ lệnh của Rubicon, hãy truy cập [RubiconMarket docs](/protocol/rubicon-market/contract-overview).
 
-```bash
-$ git clone https://www.github.com/RubiconDeFi/rubicon_protocol.git
-$ cd rubicon_protocol && npm i
-$ npm i --save-dev openzeppelin-solidity@2.5.1
-$ truffle init
-$ 'n' for overwriting contracts
-$ 'n' for overwriting migrations
-$ (in separate terminal) ganache-cli
-```
+## Sao nó lại quan trọng?
 
-Ngoài ra, hãy đảm bảo rằng bạn nhận xét các dòng trong truffle-config.js có nội dung `Development:` và bao gồm localhost trong các mạng để bạn có thể kết nối với Ganache.
+Một trong nhiều hứa hẹn của tiền điện tử là một hệ thống tài chính phi tập trung, nhưng ngày nay phần lớn khối lượng giao dịch tiền điện tử là trên các sàn giao dịch tập trung (CEX). Các sàn giao dịch này có quyền giám sát tiền của người dùng, tính phí săn mồi và các ưu đãi của họ không phù hợp với người dùng của họ.
 
-```bash
-$ truffle migrate -- deploys contracts to development network, i.e. localhost
-$ truffle test -- run the set of tests provided in the test folder of repo
-```
+Rubicon là một giao thức sổ đặt hàng được xây dựng để mang lại khả năng khám phá giá trên chuỗi. Để không gian này thực hiện lời hứa của mình, giao dịch cần phải dựa trên các giao thức mở, không phải hộp đen tập trung.

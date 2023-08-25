@@ -1,8 +1,9 @@
 {
-	"rubicon-market": "Rubicon Market",
-	"rubicon-pools": "Rubicon Pools",
-	"mainnet_deployments": "Mainnet Deployments",
-	"testnet_deployments": "Testnet Deployments",
-	"deployments": "v1 Deployments",
-	"audits": "Audits"
+	"rubicon-market": "Thị trường Rubicon",
+	"rubicon-router": "Bộ định tuyến Rubicon",
+	"rubicon-pools": "Rubicon Pools thanh khoản",
+	"deployments": "Triển khai",
+	"audits": "Kiểm toán",
+	"risks": "Rủi ro"
 }
+
