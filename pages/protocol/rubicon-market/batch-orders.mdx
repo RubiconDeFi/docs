@@ -1,9 +1,51 @@
 ---
 title: Batch Orders
 pageTitle: Batch Orders
-description: Batch Functionality for Interacting with the Rubicon Market
+description: Overview of Batch Orders
 ---
 
 # Batch Orders
 
-The next version of Rubicon Market is being finalized, documentation will be released soon!
+## Overview
+ 
+With Batch Orders, traders can place, cancel, or update multiple limit orders on Rubicon in a single transaction, limited only by the network's block/transaction gas limit. 
+
+By batching multiple orders into one transaction, traders can prorate gas fees across multiple orders, reducing the **cost per order**. This is especially useful for market makers, who frequently update their orders and are sensitive to trading costs.
+
+Additionally, Batch Orders are not restricted to one token pair. One could place, cancel, or update orders on WETH/USDC, WETH/DAI, and WETH/USDT in the same transaction.
+
+Traders can use Batch Orders through low-level functions on [**RubiconMarket.sol**](/protocol/rubicon-market/contract-overview) or by trading through a [**MarketAid.sol**](/protocol/rubicon-market/market-aid) contract.
+
+## Functions
+
+`batchOffer()` extends the functionality of `offer()`, taking four arrays as parameters:  `payAmts`, `payGems`, `buyAmts`, and `buyGems`. The arrays must be the same length and the order of the elements must match. The function will loop through each element in the arrays and place an offer with the corresponding parameters:
+
+```solidity copy
+    function batchOffer(
+        uint[] calldata payAmts,
+        address[] calldata payGems,
+        uint[] calldata buyAmts,
+        address[] calldata buyGems
+    ) external
+```
+
+`batchCancel()` extends the functionality of `cancel()`, taking an array of `offer()` ids as a parameter. The function will loop through each element in the array and cancel the corresponding offer:
+
+
+```solidity copy
+    function batchCancel(uint[] calldata ids) external
+```
+
+
+`batchRequote()` combines `offer()` and `cancel()`, allowing traders to cancel and replace or "requote" their offers in one transaction. The function takes five arrays as parameters: `ids`, `payAmts`, `payGems`, `buyAmts`, and `buyGems`. The arrays must be the same length and the order of the elements must match. The function will loop through each element in the arrays and cancel the corresponding offer. Then, it will place new offers with the corresponding parameters:
+
+
+```solidity copy
+    function batchRequote(
+        uint[] calldata ids,
+        uint[] calldata payAmts,
+        address[] calldata payGems,
+        uint[] calldata buyAmts,
+        address[] calldata buyGems
+    ) external
+```
