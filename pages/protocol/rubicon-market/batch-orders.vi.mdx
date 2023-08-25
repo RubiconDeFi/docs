@@ -1,0 +1,49 @@
+---
+title: Batch Orders
+pageTitle: Batch Orders
+description: Batch Functionality for Interacting with the Rubicon Market
+---
+
+# Đặt hàng loạt
+
+## Tổng quan
+
+Với đặt hàng loạt, nhà giao dịch có thể đặt, hủy, hoặc cập nhật nhiều lệnh giới hạn trên Rubicon trên một giao dịch, chỉ giới hạn bởi khối/giao dịch phí gas của mạng lưới
+
+Đặt hàng loạt lệnh vào một lệnh, nhà giao dịch có thể chia theo tỷ lệ phí gas thông qua nhiều lệnh, giảm chi phí từng lệnh. Điều này đặc biệt hữu ích cho người bán, người mà thường xuyên cập nhật lệnh của họ và người nhạy cảm với chi phí giao dịch.
+
+Ngoài ra, lệnh hàng loạt thì không giới hạn cho một cặp token. Bạn có thể đặt, hủy, hoặc cập nhật lệnh trên WETH/USDC, WETH/DAI và WETH/USDT trong cùng một giao dịch.
+
+Nhà giao dịch có thể dùng đặt lệnh hàng loạt thông qua các hàm mức độ cao thấp trong [RubiconMarket.sol](https://docs.rubicon.finance/protocol/rubicon-market/contract-overview) hoặc giao dịch thông qua hợp đồng [MarketAid.sol](https://docs.rubicon.finance/protocol/rubicon-market/market-aid)
+
+## Hàm
+
+`batchOffer()` mở rộng chức năng của `offer()`, lấy bốn mảng làm tham số: `payAmts`, `payGems`, `buyAmts` và `buyGems`. Các mảng phải có cùng độ dài và thứ tự của các phần tử phải khớp nhau. Hàm sẽ lặp qua từng phần tử trong mảng và đặt lệnh với các tham số tương ứng:
+
+```solidity copy
+    function batchOffer(
+        uint[] calldata payAmts,
+        address[] calldata payGems,
+        uint[] calldata buyAmts,
+        address[] calldata buyGems
+    ) external
+```
+
+`batchCancel()` mở rộng chức năng của `cancel()`, lấy một mảng id của `offer()` làm tham số. Hàm sẽ lặp qua từng phần tử trong mảng và hủy lệnh tương ứng:
+
+```solidity copy
+    function batchCancel(uint[] calldata ids) external
+```
+
+`batchRequote()` kết hợp `offer()` và `cancel()`, cho phép các nhà giao dịch hủy và thay thế hoặc "báo giá lại" các lệnh của họ trong một giao dịch. Hàm lấy năm mảng làm tham số: `ids`, `payAmts`, `payGems`, `buyAmts` và `buyGems`. Các mảng phải có cùng độ dài và thứ tự của các phần tử phải khớp nhau. Hàm sẽ lặp qua từng phần tử trong mảng và hủy lệnh tương ứng. Sau đó, nó sẽ đặt các lệnh mới với các tham số tương ứng:
+
+
+```solidity copy
+    function batchRequote(
+        uint[] calldata ids,
+        uint[] calldata payAmts,
+        address[] calldata payGems,
+        uint[] calldata buyAmts,
+        address[] calldata buyGems
+    ) external
+```

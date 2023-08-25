@@ -1,0 +1,88 @@
+---
+title: Fees
+pageTitle: Fees
+description: Fees on Rubicon
+---
+
+# Rubicon Market
+
+## Fees
+
+import { Callout} from "../../../components/Callout";
+
+<Callout type="fees" title="Protocol Fee: 0.002%">
+	Trả bởi người mua cho giao thức. Trả bằng token từ người mua đến hợp đồng.
+</Callout>
+
+<Callout type="fees" title="Maker Rebate: 0.008%">
+	Trả bởi người mua cho người bán, địa chỉ sở hữu đã mua.
+</Callout>
+
+The **Total Taker Fee** bằng tổng của **Protocol Fee** và **Maker Rebate**. Tất cả phí thị trường (hoàn trả) đều được trả bằng token người mua đang đặt lệnh.
+
+<Callout type="fees" title="Total Taker Fee: 0.01%">
+	Tổng phí trả khi giao dịch “mua” lấy thanh khoản từ sổ lệnh. Trả bằng token được gửi đến hợp đồng từ người mua.
+</Callout>
+
+
+### Truy vấn các khoản phí
+
+Sử dụng các hàm xem này để truy vấn số phí
+
+```solidity copy
+    function protocolFee() 
+        public
+        view 
+        returns (uint256)
+```
+Trả về phí giao thức hiện tại. Giá trị trả về là một số nguyên ở độ chính xác này (1/100.000 hoặc 0,001%).
+
+```solidity copy
+function makerFee() 
+    public 
+    view 
+    returns (uint256)
+```
+
+Trả về phí maker hiện tại. Giá trị trả về là một số nguyên ở độ chính xác này (1/100.000 hoặc 0,001%).
+
+### Tính Phí cho một giao dịch
+
+Sử dụng `getBuyAmountWithFee()` hoặc `getPayAmountWithFee()` để tính tổng số tiền gửi đến hợp đồng cho một giao dịch nhất định, bao gồm cả phí.
+
+
+```solidity copy
+    function getBuyAmountWithFee(
+        IERC20 buy_gem,
+        IERC20 pay_gem,
+        uint256 pay_amt
+    ) external view returns (uint256 buy_amt, uint256 approvalAmount) {
+        uint modifiedAmount = calculateFees(pay_amt, false);
+        buy_amt = (getBuyAmount(buy_gem, pay_gem, modifiedAmount));
+
+        approvalAmount = pay_amt;
+        return (buy_amt, approvalAmount);
+    }
+```
+
+Hoàn trả `buy_amt`, lượng token `buy_gem` gửi vào hợp đồng để nhận lượng `pay_amt` lượng `pay_amt`   token. Cũng hoàn trả `approvalAmount` lượng `pay_gem` token để chấp thuận tương tác, dựa theo phí.
+
+```solidity copy
+    function getPayAmountWithFee(
+        IERC20 pay_gem,
+        IERC20 buy_gem,
+        uint256 buy_amt
+    ) public view returns (uint256 pay_amt, uint256 approvalAmount) {
+        pay_amt = (getPayAmount(pay_gem, buy_gem, buy_amt));
+        uint modifiedAmount = calculateFees(pay_amt, true);
+
+        approvalAmount = modifiedAmount;
+        return (pay_amt, approvalAmount);
+    }
+```
+
+Hoàn trả `pay_amt` lượng `pay_gem` token gửi vào hợp đồng để nhận `buy_amt` lượng `buy_gem` token. Cũng hoàn trả `approvalAmount` lượng `buy_gem` token để chấp thuận tương tác, dựa theo phí.
+
+## Phí mạng lưới
+
+Sổ lệnh Rubicon nằm trên mạng lưới Blockchain, tất cả giao dịch phải trả phí mạng lưới (gas) bằng ETH. Giao dịch trên mạng lưới L2 như Arbitrum và Optimism thì rẻ hơn gấp 50-100 lần so với giao dịch tương đương trên Ethereum Mainnet.
