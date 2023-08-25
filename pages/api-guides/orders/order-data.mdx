@@ -1,0 +1,410 @@
+---
+title: Order Data
+pageTitle: Order Data
+description: Retrieve data regarding orders on the protocol. 
+---
+
+import { Tab, Tabs } from 'nextra-theme-docs'
+import { Callout } from "/components/Callout";
+import { DynamicEndpoint, MakerAddress, AssetAddress, QuoteAddress } from "/components/DynamicEndpoint.jsx";
+
+<Callout>
+    The maximum number of values returned in a single call is 1000.
+</Callout>
+
+<Callout type="warning" emoji="⚠️">
+  Any parameter filter must be lowercased, including addresses (`0xDeAd` -> `0xdead`)
+</Callout>
+
+## List Open Orders by Maker
+
+<Tabs items={['GraphQL', 'Python', 'Rust', 'Typescript']}>
+  <Tab>
+    <MakerAddress>
+    ```graphql copy
+    {
+    offers( where: { open : true, maker: "0xinput_address" } , first: 1000) {
+        # the asset the offer is selling 
+        pay_gem
+        # the amount of the pay_gem that is being sold (not converted)
+        pay_amt
+        # the amount of the offer that has been paid out (not converted)
+        paid_amt
+        # the asset the offer is buying 
+        buy_gem
+        # the amount of the buy_gem that is being sold (not converted)
+        buy_amt
+        # the amount of the offer that has been bought (not converted)
+        bought_amt
+        # the offer owner (the address that controls the offer)
+        maker { id }
+      }
+    }
+    ```
+    </MakerAddress>
+  </Tab>
+  <Tab>
+    <MakerAddress>
+    <DynamicEndpoint>
+    ```python copy
+    import requests
+    import json
+
+    url = "select network endpoint below"
+    headers = {'Content-Type': 'application/json'}
+
+    maker_address = "0xinput_address"  
+
+    query = f"""
+    {{
+    offers(where: {{ open: true, maker: "{maker_address}" }}, first: 1000) {{
+        pay_gem
+        pay_amt
+        paid_amt
+        buy_gem
+        buy_amt
+        bought_amt
+        maker {{ id }}
+      }}
+    }}
+    """
+
+    response = requests.post(url, headers=headers, data=json.dumps({'query': query}))
+
+    data = response.json()
+
+    print(data)
+    ```
+    </DynamicEndpoint>
+    </MakerAddress>
+  </Tab>
+
+  <Tab>
+    <MakerAddress>
+    <DynamicEndpoint>
+    ```rust copy
+    use reqwest::Error;
+    use serde_json::{json, Value};
+
+    #[tokio::main]
+    async fn main() -> Result<(), Error> {
+        let client = reqwest::Client::new();
+        let maker_address = "0xinput_address"; 
+
+        let query = format!(
+            r#"
+            {{
+                offers(where: {{ open: true, maker: "{}" }}, first: 1000) {{
+                    pay_gem
+                    pay_amt
+                    paid_amt
+                    buy_gem
+                    buy_amt
+                    bought_amt
+                    maker {{ id }}
+                }}
+            }}
+            "#,
+            maker_address
+        );
+
+        let url = "select network endpoint below";
+        let res: Value = client.post(url)
+            .json(&payload)
+            .send()
+            .await?
+            .json()
+            .await?;
+
+        println!("{:#?}", res);
+
+        Ok(())
+    }
+    ```
+    </DynamicEndpoint>
+    </MakerAddress>
+  </Tab>
+  <Tab>
+    <MakerAddress>
+    <DynamicEndpoint>
+    ```typescript copy
+    import axios, { AxiosResponse } from 'axios';
+
+    const url = "select network endpoint below";
+    const makerAddress = "0xinput_address"; 
+
+    const query = `
+    {
+    offers(where: { open: true, maker: "${makerAddress}" }, first: 1000) {
+        pay_gem
+        pay_amt
+        paid_amt
+        buy_gem
+        buy_amt
+        bought_amt
+        maker { id }
+      }
+    }
+    `;
+
+    axios.post(url, { query })
+    .then((response: AxiosResponse<any>) => {
+        console.log(response.data);
+    })
+    .catch((error) => {
+        console.error(error);
+    });
+    ```
+    </DynamicEndpoint>
+    </MakerAddress>
+  </Tab>
+</Tabs>
+
+## List Open Orders by Pair
+
+<Tabs items={['GraphQL', 'Python', 'Rust', 'Typescript']}>
+  <Tab>
+    <AssetAddress>
+    <QuoteAddress>
+    ```graphql copy
+    {
+    asks: offers(
+        first: 1000
+        orderBy: price
+        orderDirection: desc
+        where: {pay_gem: "0xasset", buy_gem: "0xquote", open: true}
+    ) {
+        # the id of the offer
+        id
+        # the asset the offer is selling
+        pay_gem
+        # the asset the offer is buying 
+        buy_gem
+        # the amount of the asset being sold (not converted)
+        pay_amt
+        # the amount of the asset being bought (not converted)
+        buy_amt
+        # the amount of the asset sold (not converted)
+        paid_amt
+        # the amount of the asset bought (not converted)
+        bought_amt
+      }
+    bids: offers(
+        first: 1000
+        orderBy: price
+        orderDirection: desc
+        where: {pay_gem: "0xquote", buy_gem: "0xasset", open: true}
+    ) {
+        # the id of the offer
+        id
+        # the asset the offer is selling
+        pay_gem
+        # the asset the offer is buying 
+        buy_gem
+        # the amount of the asset being sold (not converted)
+        pay_amt
+        # the amount of the asset being bought (not converted)
+        buy_amt
+        # the amount of the asset sold (not converted)
+        paid_amt
+        # the amount of the asset bought (not converted)
+        bought_amt
+      } 
+    }
+    ```
+    </QuoteAddress>
+    </AssetAddress>
+  </Tab>
+  <Tab>
+    <AssetAddress>
+    <QuoteAddress>
+    <DynamicEndpoint>
+    ```python copy
+    import requests
+    import json
+
+    url = "select network endpoint below"
+
+    headers = {'Content-Type': 'application/json'}
+    asset = "0xasset"
+    quote = "0xquote"
+
+    query = f"""
+    {{
+    asks: offers(
+        first: 1000
+        orderBy: price
+        orderDirection: desc
+        where: {{pay_gem: "{asset}", buy_gem: "{quote}", open: true}}
+    ) {{
+        id
+        pay_gem
+        buy_gem
+        pay_amt
+        buy_amt
+        paid_amt
+        bought_amt
+        price
+    }}
+    bids: offers(
+        first: 1000
+        orderBy: price
+        orderDirection: desc
+        where: {{pay_gem: "{quote}", buy_gem: "{asset}", open: true}}
+    ) {{
+        id
+        pay_gem
+        buy_gem
+        pay_amt
+        buy_amt
+        paid_amt
+        bought_amt
+        price
+      }}
+    }}
+    """
+
+    response = requests.post(url, headers=headers, data=json.dumps({'query': query}))
+
+    data = response.json()
+
+    print(data)
+    ```
+    </DynamicEndpoint>
+    </QuoteAddress>
+    </AssetAddress>
+  </Tab>
+
+  <Tab>
+    <AssetAddress>
+    <QuoteAddress>
+    <DynamicEndpoint>
+    ```rust copy
+    use reqwest::Error;
+    use serde_json::{json, Value};
+
+    #[tokio::main]
+    async fn main() -> Result<(), Error> {
+        let client = reqwest::Client::new();
+        let asset = "0xasset";
+        let quote = "0xquote";
+
+        let query = format!(
+            r#"
+            {
+            asks: offers(
+                first: 1000
+                orderBy: price
+                orderDirection: desc
+                where: {pay_gem: "{}", buy_gem: "{}", open: true}
+            ) {
+                id
+                pay_gem
+                buy_gem
+                pay_amt
+                buy_amt
+                paid_amt
+                bought_amt
+                price
+              }
+            bids: offers(
+                first: 1000
+                orderBy: price
+                orderDirection: desc
+                where: {pay_gem: "{}", buy_gem: "{}", open: true}
+            ) {
+                id
+                pay_gem
+                buy_gem
+                pay_amt
+                buy_amt
+                paid_amt
+                bought_amt
+                price
+              }
+            }
+        "#,
+            asset, quote, quote, asset
+        );
+
+        let payload = json!({
+            "query": query
+        });
+
+        let url = "select network endpoint below";
+        let res: Value = client.post(url)
+            .json(&payload)
+            .send()
+            .await?
+            .json()
+            .await?;
+
+        println!("{:#?}", res);
+
+        Ok(())
+    }
+    ```
+    </DynamicEndpoint>
+    </QuoteAddress>
+    </AssetAddress>
+  </Tab>
+  <Tab>
+    <AssetAddress>
+    <QuoteAddress>
+    <DynamicEndpoint>
+    ```typescript copy
+    import axios, { AxiosResponse } from 'axios';
+
+    const url = "select network endpoint below"
+    const asset = "0xasset";
+    const quote = "0xquote";
+
+    const query = `
+        {
+        asks: offers(
+            first: 1000
+            orderBy: price
+            orderDirection: desc
+            where: {pay_gem: "${asset}", buy_gem: "${quote}", open: true}
+        ) {
+            id
+            pay_gem
+            buy_gem
+            pay_amt
+            buy_amt
+            paid_amt
+            bought_amt
+            price
+          }
+        bids: offers(
+            first: 1000
+            orderBy: price
+            orderDirection: desc
+            where: {pay_gem: "${quote}", buy_gem: "${asset}", open: true}
+        ) {
+            id
+            pay_gem
+            buy_gem
+            pay_amt
+            buy_amt
+            paid_amt
+            bought_amt
+            price
+          }
+        }
+    `;
+
+    axios.post(url, { query })
+    .then((response: AxiosResponse<any>) => {
+        console.log(response.data);
+    })
+    .catch((error) => {
+        console.error(error);
+    });
+    ```
+    </DynamicEndpoint>
+    </QuoteAddress>
+    </AssetAddress>
+  </Tab>
+</Tabs>
+

@@ -1,0 +1,302 @@
+---
+title: Contract Overview
+pageTitle: Contract Overview
+description: Overview and docs for the Rubicon order book contract
+---
+
+# Rubicon Market
+
+## [Contract Source Code](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/RubiconMarket.sol)
+
+## Overview
+
+**RubiconMarket.sol** implements order books and a matching engine for peer-to-peer trading of [ERC-20 tokens](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/).
+
+An order book is a list of buy and sell orders for an asset, sorted by price level. This contract stores every ERC20/ERC20 order book as two double-linked sorted lists, one for each side of the given market.
+
+The contract uses an escrow model for liquidity; when `offer()` is called, tokens are sent to the contract. If/when an order is filled, the contract matches the traders directly and the tokens are sent to each party. When `cancel()` is called, the contract removes the target `offer()` and returns the tokens to the owner.
+
+This contract is a derivative work of MakerDAO's open-source [OasisDEX](https://oasisdex.com/) and inherits the AGPL-3.0 license.
+
+## Functions
+
+### offer()
+
+```solidity copy
+    function offer(
+        uint256 pay_amt,
+        IERC20 pay_gem,
+        uint256 buy_amt,
+        IERC20 buy_gem,
+    ) public returns (uint256)
+```
+
+| Parameter              | Type        | Description                                                                                                                       |
+| ---------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| pay\_amt               | uint256     | Quantity of ERC-20 tokens the caller is selling                                                                                   |
+| pay\_gem               | address     | ERC-20 token the caller is selling                                                                                                |
+| buy\_amt               | uint256     | Quantity of ERC-20 tokens the caller is buying                                                                                    |
+| buy\_gem               | address     | ERC-20 token the caller is buying                                                                                                 |
+| \[Optional] pos        | uint256     | Optional: Position in the sorted list to place the offer. Use `0` unless you know the exact pos (closest ID) to insert the order  |
+| \[Optional] recipient  | address     | Optional: Custom recipient address for the filled offer                                                                           |
+
+
+Calling the `offer()` function places a limit order on Rubicon. The `pay_amt` quantity of the `pay_gem` token will be sent to the contract, sitting in escrow until the offer is filled or canceled. There are more advanced `offer()` functions that have parameters for specifying the position in the order book or a custom recipient address for the filled offer.
+
+### cancel()
+
+```solidity copy
+    function cancel(uint id)
+        public
+        can_cancel(id)
+        returns (bool success)
+```
+
+| Parameter Name | Type    | Description                                  |
+| -------------- | ------- | -------------------------------------------- |
+| id             | uint256 | The id of the order the user wants to cancel |
+
+Cancels an `offer()` on the order book and returns the tokens to the owner. The `can_cancel` modifier checks that the target order is active and is owned by the caller.
+
+### batchOffer()
+
+```solidity copy
+    function batchOffer(
+        uint[] calldata payAmts,
+        address[] calldata payGems,
+        uint[] calldata buyAmts,
+        address[] calldata buyGems
+    ) external
+```
+
+Use `batchOffer()` to place multiple offers in a single transaction. The function takes four arrays as parameters: `payAmts`, `payGems`, `buyAmts`, and `buyGems`. The arrays must be the same length and the order of the elements must match. The function will loop through each element in the arrays and place an offer with the corresponding parameters.
+
+### batchCancel()
+
+```solidity copy
+    function batchCancel(uint[] calldata ids) external
+```
+
+Use `batchCancel()` to cancel multiple offers in a single transaction. The function takes an array of `offer()` ids as a parameter. The function will loop through each element in the array and cancel the corresponding offer.
+
+### batchRequote()
+
+```solidity copy
+    function batchRequote(
+        uint[] calldata ids,
+        uint[] calldata payAmts,
+        address[] calldata payGems,
+        uint[] calldata buyAmts,
+        address[] calldata buyGems
+    ) external
+```
+
+Use `batchRequote()` to cancel and replace multiple offers in a single transaction. The function takes five arrays as parameters: `ids`, `payAmts`, `payGems`, `buyAmts`, and `buyGems`. The arrays must be the same length and the order of the elements must match. The function will loop through each element in the arrays and cancel the corresponding offer. Then, it will place new offers with the corresponding parameters.
+
+### buyAllAmount()
+
+```solidity copy
+     function buyAllAmount(
+        ERC20 buy_gem,
+        uint256 buy_amt,
+        ERC20 pay_gem,
+        uint256 max_fill_amount
+    ) external returns (uint256 fill_amt)
+```
+
+| Parameter Name  | Type    | Description                            |
+| --------------- | ------- | -------------------------------------- |
+| buy_gem         | address | ERC-20 token the taker is buying       |
+| buy_amt         | uint256 | Quantity of tokens the taker is buying |
+| pay_gem         | address | ERC-20 token the taker is selling      |
+| max_fill_amount | uint256 | Maximum amount of pay tokens sold      |
+
+Attempts to trade `buy_amt` quantity of `buy_gem` tokens for at most the `max_fill_amount` quantity of `pay_gem` tokens. Transaction will revert if the trader would spend more than the specified maximum amount. This is a "Fill-or-Kill" buy order.
+
+### sellAllAmount()
+
+```solidity copy
+     function sellAllAmount(
+        ERC20 pay_gem,
+        uint256 pay_amt,
+        ERC20 buy_gem,
+        uint256 min_fill_amount
+    ) external returns (uint256 fill_amt)
+```
+
+| Parameter Name  | Type    | Description                             |
+| --------------- | ------- | --------------------------------------- |
+| pay_gem         | address | ERC-20 token the taker is selling       |
+| pay_amt         | uint256 | Quantity of tokens the taker is selling |
+| buy_gem         | address | ERC-20 token the taker is buying        |
+| min_fill_amount | uint256 | Minimum amount of buy tokens received   |
+
+Attempts to trade `pay_amt` quantity of `pay_gem` tokens for at least the `min_fill_amount` quantity of `buy_gem` tokens. Transaction will revert if the trader would receive less than the specified minimum amount. This is a "Fill-or-Kill" sell order.
+
+## View Functions
+
+Use these view functions to read the state of the order book contract. **RubiconRouter.sol** also has [many helpful view functions](/protocol/rubicon-router/rubicon-router#view-functions) for reading the state of **RubiconMarket.sol**.
+
+### getBuyAmountWithFee()
+
+```solidity copy
+    function getBuyAmountWithFee(
+        IERC20 buy_gem,
+        IERC20 pay_gem,
+        uint256 pay_amt
+    ) external view returns (uint256 buy_amt, uint256 approvalAmount)
+```
+
+Returns `buy_amt`, amount of `buy_gem` tokens to send to the contract to receive the `pay_amt` amount of the `pay_gem` token. Also returns `approvalAmount`, the amount of `pay_gem` tokens to approve for the interaction, accounting for fees.
+
+### getPayAmountWithFee()
+
+```solidity copy
+    function getPayAmountWithFee(
+        IERC20 pay_gem,
+        IERC20 buy_gem,
+        uint256 buy_amt
+    ) public view returns (uint256 pay_amt, uint256 approvalAmount)
+```
+
+Returns `pay_amt`, the amount of `pay_gem` tokens to send to the contract to receive the `buy_amt` amount of the `buy_gem` token. Also returns `approvalAmount`, the amount of `buy_gem` tokens to approve for the interaction, accounting for fees.
+
+### getBuyAmount()
+
+```solidity copy
+    function getBuyAmount(
+        ERC20 buy_gem,
+        ERC20 pay_gem,
+        uint256 pay_amt
+    ) external view returns (uint256 fill_amt)
+```
+
+Returns the amount of `buy_gem` tokens received if a specified amount of `pay_gem` tokens are spent.
+
+### getPayAmount()
+
+```solidity copy
+function getPayAmount(
+        ERC20 pay_gem,
+        ERC20 buy_gem,
+        uint256 buy_amt
+    ) external view returns (uint256 fill_amt)
+```
+
+Returns the amount of `pay_gem` tokens needed to buy a specified amount of `buy_gem` tokens.
+
+### getBestOffer()
+
+```solidity copy
+function getBestOffer(ERC20 pay_gem, ERC20 buy_gem)
+    public
+    view
+    returns (uint256)
+```
+
+Returns the ID of the offer at the top of the order book.
+
+Ex. Calling this function with WETH as `pay_gem` and USDC as `buy_gem` will return the best ask on WETH/USDC. Switching the tokens will return the best bid.
+
+### getWorseOffer()
+
+```solidity copy
+function getWorseOffer(uint256 id)
+    public
+    view
+    returns (uint256)
+```
+
+Returns the next worse offer in the sorted list. The worse offer is the higher one if the target order is an ask, and a lower one if it's a bid. In both cases, it will return a newer one if they are equal.
+
+### getOfferCount()
+
+```solidity copy
+function getOfferCount(ERC20 sell_gem, ERC20 buy_gem)
+        public
+        view
+        returns (uint256)
+```
+
+Returns the number of offers in the order book for a specified pair.
+
+### protocolFee()
+
+```solidity copy
+    function protocolFee() 
+        public
+        view 
+        returns (uint256)
+```
+
+Returns the current protocol fee. Return value is an integer at this precision (1 / 100,000 or 0.001%).
+
+### makerFee()
+
+```solidity copy
+function makerFee() 
+    public 
+    view 
+    returns (uint256)
+```
+
+Returns the current maker fee. Return value is an integer at this precision (1 / 100,000 or 0.001%).
+
+## Events
+
+```solidity copy
+event emitOffer(
+        bytes32 indexed id,
+        bytes32 indexed pair,
+        address indexed maker,
+        ERC20 pay_gem,
+        ERC20 buy_gem,
+        uint128 pay_amt,
+        uint128 buy_amt
+
+    );
+```
+
+```solidity copy
+    event emitCancel(
+        bytes32 indexed id,
+        bytes32 indexed pair,
+        address indexed maker,
+        ERC20 pay_gem,
+        ERC20 buy_gem,
+        uint128 pay_amt,
+        uint128 buy_amt
+    );
+```
+
+```solidity copy
+    event emitTake(
+        bytes32 indexed id,
+        bytes32 indexed pair,
+        address indexed taker,
+        address maker,
+        ERC20 pay_gem,
+        ERC20 buy_gem,
+        uint128 take_amt,
+        uint128 give_amt
+    );
+```
+
+```solidity copy
+    event emitFee(
+        bytes32 indexed id,
+        address indexed taker,
+        address indexed feeTo,
+        bytes32 pair,
+        ERC20 asset,
+        uint256 feeAmt
+    );
+```
+
+```solidity copy
+    event emitDelete(
+        bytes32 indexed id,
+        bytes32 indexed pair,
+        address indexed maker
+    );
+```

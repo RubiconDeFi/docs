@@ -1,0 +1,58 @@
+---
+title: Overview
+pageTitle: Market Making on Rubicon
+description: Overview of Market Making on Rubicon
+---
+
+# Market Making Overview
+
+## Opportunities
+
+- **24/7 Open-Source Trading**: Rubicon is an open-source and non-custodial trading protocol built on Ethereum Layer 2 (L2) networks. Integrate today to begin market making (link to Deployments page (hyperlink should highlight this whole sentence)).
+
+- **Earn Rebates**: Market makers receive *80%* of taker fees as rebates in real-time, amounting to a 0.008% rebate for each filled order. Learn more about **[fees and rebates](/protocol/rubicon-market/fees)** on Rubicon.
+
+- **Competitive Edge**: Active market makers can outperform passive AMM liquidity providers by adjusting offers on a block-by-block basis. On Rubicon, makers can profitably provide the Network Best Bid Offer (NBBO) for any asset at any time.
+
+- **Maker Rewards**: Earn additional rewards by providing liquidity on Rubicon. For 3-5 months, 26,000+ OP will distributed every four weeks, proportional to Maker Volume on Optimism. Learn more about Rubicon's Maker Rewards Program.
+
+- **Governance**: Play an active role in shaping Rubicon market structure and foster progressive decentralization of the protocol. Join the discussion in the **[Forum](https://forum.rubicon.finance/)**.
+
+## Key Concepts
+
+- **Fixed Costs**: On Rubicon, *the only cost to market makers are gas fees*. With no variable maker fees, market makers can deploy more capital on the order books and enjoy the same low gas costs for managing their strategies. The fixed cost ceiling means active trading strategies can be much cheaper on Rubicon than on centralized exchanges with variable maker fees.
+
+- **Batch Orders**: By batching multiple orders into one transaction, traders can prorate gas fees across multiple orders, reducing their cost per order. With the `batchOffer()`, `batchCancel()`, and `batchRequote()` functions, market makers can update 30+ outstanding offers in a single transaction. Learn more about **[Batch Orders](/protocol/rubicon-market/batch-orders)**.
+
+- **Low Latency Networks**: Rubicon is built on Ethereum L2 networks with low latencies and near-instant confirmations. The protocol will continue to launch on more networks that enable on-chain high-frequency trading.
+
+- **Risks**: Market making and providing liquidity is inherently risky. There is no guarantee providing liquidity is profitable, learn more about [risks on Rubicon](/protocol/risks).
+
+- **EIP-4844**: The next Ethereum upgrade will reduce gas fees on L2 networks by 10-20x, making now the perfect time to integrate before the hard fork! Learn more about [EIP-4844](https://www.eip4844.com/).
+
+## Resources
+
+### Open-Source Bots
+
+Example bots for trading on Rubicon. These bots are a great starting point for market makers to begin trading on Rubicon.
+
+    - [Source Code Repo](https://github.com/RubiconDeFi/rubi-bots)
+
+### Market Aid
+
+Helper contract for advanced trading and market making on Rubicon. Enables traders to make larger, more efficient, and more complex transactions.
+
+    - [Contract Source Code](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/utilities/MarketAid.sol)
+    - [Market Aid Docs](/protocol/rubicon-market/market-aid)
+
+### Python SDK
+
+Python library for interacting with Rubicon, complete with examples and documentation.
+
+  - [Quickstart](https://rubi.readthedocs.io/en/latest/quickstart.html)
+  - [View Package](https://pypi.org/project/rubi/)
+  - [Source Code Repo](https://github.com/RubiconDeFi/rubi-py)
+
+## Questions and Support
+
+Ask onboarding questions in the Rubicon **[Discord server](https://discord.com/invite/E7pS24J)** or send a note to **integrations@rubicon.finance**.

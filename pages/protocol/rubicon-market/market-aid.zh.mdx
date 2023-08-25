@@ -1,0 +1,85 @@
+---
+title: Rubicon/市场援助
+pageTitle: 市场援助
+description: Rubicon的链上高频市场制作合同和功能
+---
+
+## 市场援助
+
+`MarketAid.sol` 是一个辅助合约，允许所有者在 `RubiconMarket.sol` 上批量发送限价订单和取消订单。它使活跃的交易者和做市商可以轻松地在单笔交易中下达和取消许多未完成的订单！您可以将 MarketAid 视为一个中间层合约，允许交易者在 Rubicon 订单簿上进行更大、更高效、更复杂的交易。
+
+创建 MarketAid 实例后，交易者可以使用强大的批处理函数，扩展低级“RubiconMarket.sol”函数“offer”和“cancel”以及两者的组合。使用 `batchMarketMakingTrades()` 发送大量限价订单，取消一批未结订单并使用 `batchRequoteOffers()` 替换它们，或者使用 `scrubStrategistTrades()` 取消大量未结订单。继续阅读快速入门教程和 MarketAid 功能概述。如果您对 MarketAid 有任何疑问或问题，请加入我们的 [Discord server](https://discord.com/invite/E7pS24J)，我们的团队很乐意帮助您开始在 Rubicon 上进行自动交易！
+
+### 风险免责声明
+
+MarketAid 处于测试阶段，仅供经验丰富的交易者和开发人员使用。我们的团队使用此代码，但未经审核，因此使用风险自负。
+
+### 部署
+
+乐观主网：
+
+- [Factory](https://optimistic.etherscan.io/address/0x267D94C6e67e4436EFfE092b08d040cFF36B2DA7)
+- [MarketAid Instance Example](https://optimistic.etherscan.io/address/0x40e20121f46237Ae5d6822fd75847CedD17c449F)
+
+乐观戈尔利：
+
+- [Factory](https://goerli-optimism.etherscan.io/address/0x6838dd21aa01Bde8E600d499A95f9AE02f2bB376)
+- [MarketAid Instance](https://goerli-optimism.etherscan.io/address/0xd3757c79df77cfac54501b5dadf7ec47a38e1a65)
+
+＃＃＃ 快速开始
+
+通过创建个人实例、使用 ERC-20 代币为合同提供资金并将您的第一批订单发送到 `RubiconMarket.sol`，开始使用 `MarketAid.sol`！您可以使用 `ethers.js` 将其集成到现有的机器人中，我们正在编写教程以使其更容易！让我们开始吧：
+
+1. 创建 `MarketAid` 合约的新实例
+   1. 通过在 MarketAidFactory 合约上调用 createMarketAidInstance() 来部署一个 MarketAid 实例。这将生成一个新的 MarketAid 实例，该实例已获得 createMarketAidInstance() 调用者的许可，并自动将其批准为有权访问合约的策略师。
+2. 使用您要交易的 ERC-20（WETH、USDC、DAI 等）为您的 MarketAid 实例提供资金
+
+   1. 您的 MarketAid 实例可以通过 `MarketAidFactory` 上的 `getUserMarketAid()` 查询，或者通过读取 `createMarketAidInstance()` 调用发出的事件来查询。
+   2. 通过检查 `admin` 变量是否是您的地址以及您是否也是 `approvedStrategist` 来验证您首先通过 Etherscan 控制合约。
+   3. 确认您将资金发送到正确的地址！
+
+3. 使用下述功能从您的 MarketAid 合约发送批量 Rubicon 订单
+
+注意：“MarketAid”实例的所有者可以批准其他地址使用和访问合约（多个地址可以清除“onlyApprovedStrategist”检查）
+
+＃＃ 故障排除
+
+确保检查以下内容：
+
+- 我的 MarketAid 实例在哪里？
+  - 使用 `getUserMarketAid()` 查询 -> 返回您创建的所有实例的数组
+- 您的 MarketAid 实例已批准您要与之交互的合约
+  - 否则，交易将。使用 placeMarketMakingTrades() 将自动批准 RubiconMarket 合约
+- 你是你的市场援助实例的管理员
+  - 在您的实例上使用 `admin()` 查询 -> 返回拥有该实例的 EOA
+- 您试图通过 MarketAid 管理 ERC20 对的任何 EOA 都是_经批准的策略师_
+  - 合约中的主要安全检查，管理员被自动批准为策略师
+
+## 函数（进行中）
+
+通常，每个输入都与放置在低级 RubiconMarket 上的输入完全相同：您在发出报价时要出价和/或要求的 ERC20 的原始单位值（`offer()`）。为了进行批处理，将所有商品的值作为数组传递，并将所有类似变量（例如询问分子）配对在一起。传入的数组长度必须匹配 - 这在一次放置多个不同价格的报价时很有用。请注意，在处理人类数字“=”wei 转换时，通过“ethers”使用“formatUnits()”和“parseUnits()”有助于处理数字和 ERC-20 值。
+
+一个重要的概念是，通过 MarketAid（通过 `placeMarketMakingTrades` ）下的每个订单都会创建一个唯一的 ID，该 ID 可以识别做市商的未完成订单。可以随时通过 getOutstandingStrategistTrades() 查询任何给定 EOA 的优秀账簿 - 这有助于管理优秀账簿并获取给定用户控制的唯一 ID 或 strategistTrades 列表。做市商可以查询他们的账簿，然后根据需要重新报价 (`batchRequoteOffers`) 或取消 (`scrubStrategistTrades`)。请注意，填充会自动累积到用户控制的“MarketAid”实例。
+
+- 进行做市交易
+  - 在单个独特的“strategistTrade”中放置 BID 和/或 ASK
+- 批量做市交易
+  - 可选地以批量方式放置多个 placeMarketMakingTrades 调用以部署整个流动性曲线（例如，根据市场条件以不同的价格和大小进行 10 次出价和 10 次询问）
+- getOutstandingStrategistTrades_view_
+  - 返回用户未完成（批量）报价的唯一 ID
+- getStrategistTotalLiquidity_view_
+  - 返回用户在整个市场上控制的 ERC-20 账面价值总额以及 MarketAid 实例上的价值
+- 重新报价
+  - 将 strategistTrade（出价和/或要价对）单次重新报价为生成新的唯一 ID 的新对
+- 批量重新报价
+  - 批量调用 requote() 一次更新整个流动性曲线。这将取消所有已识别的 ID，并将它们替换为指定的新报价有效负载
+- batchRequoteAllOffers
+  - 通过 `getOutstandingStrategistTrades()` 获取用户的优秀图书 ID，然后通过 `batchRequoteOffers()` 更新它们
+- scrubStrategistTrade
+  - 取消 `strategistTrade` 并返回尚未填充/用于市场援助的资金
+- scrubStrategistTrades
+  - 在单笔交易中取消多个 `strategistTrade`
+- adminPullAllFunds
+  - 帮助管理员通过指定他们想要的 ERC-20 取回所有资金的有用功能
+- 策略师RebalanceFunds
+  - 使用外部流动性场所套利或重新平衡资金的可选功能

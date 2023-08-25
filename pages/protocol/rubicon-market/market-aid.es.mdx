@@ -1,0 +1,85 @@
+---
+title: Market Aid
+pageTitle: Market Aid
+description: Helper contract for advanced trading on Rubicon
+---
+
+## Ayuda al mercado
+
+`MarketAid.sol` es un contrato auxiliar que permite al propietario enviar lotes de órdenes limitadas y cancelar órdenes en `RubiconMarket.sol`. ¡Facilita a los comerciantes activos y creadores de mercado colocar y cancelar muchas órdenes pendientes en una sola transacción! Puede pensar en MarketAid como un contrato de capa intermedia que permite a los comerciantes realizar transacciones más grandes, más eficientes y más complejas en los libros de pedidos de Rubicon.
+
+Después de crear una instancia de MarketAid, un comerciante puede usar potentes funciones por lotes que amplían las funciones de "oferta" y "cancelar" de 'RubiconMarket.sol' de bajo nivel, así como combinaciones de las dos. Envíe un gran lote de órdenes limitadas con `batchMarketMakingTrades()`, cancele un lote de órdenes abiertas y reemplácelas con `batchRequoteOffers()`, o cancele muchas órdenes abiertas con `scrubStrategistTrades()`. Siga leyendo para obtener un tutorial de inicio rápido y una descripción general de las funciones de MarketAid. Si tiene alguna pregunta o problema con MarketAid, únase a nuestro [Discord server](https://discord.com/invite/E7pS24J), ¡nuestro equipo estará feliz de ayudarlo a comenzar con el comercio automatizado en Rubicon!
+
+### Descargo de responsabilidad de riesgo
+
+MarketAid está en versión beta y solo para comerciantes y desarrolladores sofisticados. Nuestro equipo usa este código, pero no está auditado, así que utilícelo bajo su propio riesgo.
+
+### Despliegues
+
+Red principal de optimismo:
+
+- [Factory](https://optimistic.etherscan.io/address/0x267D94C6e67e4436EFfE092b08d040cFF36B2DA7)
+- [MarketAid Instance Example](https://optimistic.etherscan.io/address/0x40e20121f46237Ae5d6822fd75847CedD17c449F)
+
+Optimismo Goerli:
+
+- [Factory](https://goerli-optimism.etherscan.io/address/0x6838dd21aa01Bde8E600d499A95f9AE02f2bB376)
+- [MarketAid Instance](https://goerli-optimism.etherscan.io/address/0xd3757c79df77cfac54501b5dadf7ec47a38e1a65)
+
+### Inicio rápido
+
+¡Comience con `MarketAid.sol` creando una instancia personal, financiando el contrato con tokens ERC-20 y enviando su primer lote de pedidos a `RubiconMarket.sol`! Puede usar `ethers.js` para integrar esto en un bot existente, ¡y estamos trabajando en tutoriales para hacerlo aún más fácil! Empecemos:
+
+1. Cree una nueva instancia del contrato `MarketAid`
+   1. Implemente una instancia de `MarketAid` llamando a `createMarketAidInstance()` en el contrato `MarketAidFactory`. Esto generará una nueva instancia de `MarketAid` que tiene permiso para la persona que llama de `createMarketAidInstance()` y lo aprobará automáticamente como estratega con acceso al contrato.
+2. Financie su instancia de MarketAid con los ERC-20 que desea intercambiar (WETH, USDC, DAI, etc.)
+
+   1. Su instancia de MarketAid se puede consultar a través de `getUserMarketAid()` en `MarketAidFactory` o leyendo el evento emitido por la llamada `createMarketAidInstance()`.
+   2. Verifique que controla el contrato primero a través de Etherscan al verificar que la variable `admin` es su dirección y que también es un `approvedStrategist`.
+   3. ¡Verifique que está enviando fondos a la dirección correcta!
+
+3. Envíe lotes de pedidos de Rubicon desde su contrato de MarketAid utilizando las funciones que se describen a continuación.
+
+Nota: El propietario de una instancia de `MarketAid` puede aprobar direcciones adicionales para usar y acceder al contrato (varias direcciones pueden borrar la marca `onlyApprovedStrategist`)
+
+## Solución de problemas
+
+Asegúrese de verificar lo siguiente:
+
+- ¿Dónde está mi instancia de MarketAid?
+  - Consulta con `getUserMarketAid()` -> devuelve una matriz de todas las instancias que ha creado
+- Su instancia de MarketAid ha aprobado los contratos con los que desea interactuar
+  - De lo contrario, las transacciones se. El uso de `placeMarketMakingTrades()` aprobará automáticamente el contrato `RubiconMarket`
+- Usted es el administrador de su instancia de Market Aid
+  - Consulta con `admin()` en tu instancia -> devuelve el EOA que posee la instancia
+- Cualquier EOA con el que intente administrar un par ERC20, a través de MarketAid, es _un estratega aprobado_
+  - Comprobación de seguridad principal en el contrato, el administrador se aprueba automáticamente como estratega
+
+## Funciones (En Progreso)
+
+En general, cada una de las entradas es exactamente igual a la que se colocaría en el RubiconMarket de bajo nivel: los valores de uint sin procesar de los ERC20 que desea ofertar y/o solicitar al realizar ofertas ( `offer()`). Para agrupar por lotes, pase los valores de todas las ofertas como matrices, con todas las variables similares (p. ej., numeradores de demanda) emparejadas. Las matrices pasadas deben coincidir en longitud; esto puede ser útil cuando se colocan varias ofertas a la vez con diferentes precios. Tenga en cuenta que el uso de `formatUnits()` y `parseUnits()` hasta `ethers` ayuda con los números y los valores ERC-20 cuando se trata de conversiones `=` wei de números humanos.
+
+Un concepto importante es que cada pedido realizado a través de MarketAid (a través de `placeMarketMakingTrades`) crea una identificación única que puede identificar los pedidos pendientes de un creador de mercado. El libro pendiente se puede consultar en cualquier momento para cualquier EOA determinado a través de `getOutstandingStrategistTrades()`; esto es útil para administrar un libro pendiente y obtener la lista de ID únicos o `strategistTrades` que controla un usuario determinado. Un creador de mercado puede consultar su libro, luego volver a cotizar (`batchRequoteOffers`) o cancelar (`scrubStrategistTrades`) según sea necesario. Tenga en cuenta que el relleno se acumula automáticamente en la instancia de `MarketAid` que controla un usuario.
+
+- placeMarketMakingTrades
+  - Coloque una BID y/o una ASK en un solo "strategistTrade" único
+- loteMarketMakingTrades
+  - Opcionalmente, realice muchas llamadas placeMarketMakingTrades por lotes para implementar una curva de liquidez completa (por ejemplo, 10 ofertas y 10 solicitudes a diferentes precios y tamaños según las condiciones del mercado)
+- getOutstandingStrategistTrades _view_
+  - Devuelve los ID únicos de las ofertas pendientes (por lotes) de un usuario
+- getStrategistTotalLiquidity _view_
+  - Devuelve el monto total del valor contable ERC-20 que un usuario controla en todo el mercado Y el valor que se encuentra en la instancia de MarketAid
+- recotizar
+  - Recotización única de un StrategistTrade (par de oferta y/o demanda) a un nuevo par que genera una nueva identificación única
+- lotesRecotizarOfertas
+  - Llame a requote() por lotes para actualizar una curva de liquidez completa de una sola vez. Esto cancela todos los ID identificados y los reemplaza con las nuevas cargas útiles de oferta especificadas
+- loteRecotizarTodasLasOfertas
+  - Toma los ID de libros pendientes del usuario a través de `getOutstandingStrategistTrades()` y luego los actualiza a través de `batchRequoteOffers()`
+- ScrategistTrade
+  - Cancela un `strategistTrade` y devuelve los fondos que no se han completado/llevado a Market Aid
+- ScrategistTrades
+  - Cancelar múltiples `strategistTrade`s en una sola transacción
+- adminPullAllFunds
+  - Función útil para que el administrador recupere todos sus fondos especificando los ERC-20 que desea
+- estrategaRebalanceFunds
+  - Función opcional para utilizar un lugar de liquidez externo para arbitrar o reequilibrar fondos a través de

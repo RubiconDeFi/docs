@@ -1,0 +1,87 @@
+---
+title: Fees
+pageTitle: Fees
+description: Fees on Rubicon
+---
+
+# Rubicon Market
+
+## Fees
+
+import { Callout } from "/components/Callout";
+
+<Callout type="fees" title="Protocol Fee: 0.002%">
+	Paid by takers (buyers) to the protocol. Paid in the token sent from the taker to the contract.
+</Callout>
+
+<Callout type="fees" title="Maker Rebate: 0.001%">
+	Paid by the taker to the maker (seller), the address that owns the filled offer during a buy.
+</Callout>
+
+The **Total Taker Fee** is equal to the sum of the **Protocol Fee** and the **Maker Rebate**. All market fees (rebates) are paid in the token the buyer is paying to fill an offer.
+
+<Callout type="fees" title="Total Taker Fee: 0.01%">
+	Total fee paid by trades that "take" liquidity from the order book (a buy). Paid in the token sent to the contract from the taker.
+</Callout>
+
+### Querying the Fees
+
+Use these view functions to query the fee values.
+
+```solidity copy
+    function protocolFee() 
+        public
+        view 
+        returns (uint256)
+```
+
+Returns the current protocol fee. Return value is an integer at this precision (1 / 100,000 or 0.001%).
+
+```solidity copy
+function makerFee() 
+    public 
+    view 
+    returns (uint256)
+```
+
+Returns the current maker fee. Return value is an integer at this precision (1 / 100,000 or 0.001%).
+
+### Calculating Fees for a Trade
+
+Use `getBuyAmountWithFee()` or `getPayAmountWithFee()` to calculate the total amount to send to the contract for a given trade, including fees.
+
+```solidity copy
+    function getBuyAmountWithFee(
+        IERC20 buy_gem,
+        IERC20 pay_gem,
+        uint256 pay_amt
+    ) external view returns (uint256 buy_amt, uint256 approvalAmount) {
+        uint modifiedAmount = calculateFees(pay_amt, false);
+        buy_amt = (getBuyAmount(buy_gem, pay_gem, modifiedAmount));
+
+        approvalAmount = pay_amt;
+        return (buy_amt, approvalAmount);
+    }
+```
+
+Returns `buy_amt`, the amount of `buy_gem` tokens to send to the contract to receive the `pay_amt` amount of the `pay_gem` token. Also returns `approvalAmount`, the amount of `pay_gem` tokens to approve for the interaction, accounting for fees.
+
+```solidity copy
+    function getPayAmountWithFee(
+        IERC20 pay_gem,
+        IERC20 buy_gem,
+        uint256 buy_amt
+    ) public view returns (uint256 pay_amt, uint256 approvalAmount) {
+        pay_amt = (getPayAmount(pay_gem, buy_gem, buy_amt));
+        uint modifiedAmount = calculateFees(pay_amt, true);
+
+        approvalAmount = modifiedAmount;
+        return (pay_amt, approvalAmount);
+    }
+```
+
+Returns `pay_amt`, the amount of `pay_gem` tokens to send to the contract to receive the `buy_amt` amount of the `buy_gem` token. Also returns `approvalAmount`, the amount of `buy_gem` tokens to approve for the interaction, accounting for fees.
+
+## Network Fees
+
+Rubicon order books are on-chain, all transactions must pay network fees (gas) in ETH. Transactions on L2 networks like [Arbitrum](https://arbitrum.io/) and [Optimism](https://www.optimism.io/) are 50-100x cheaper than equivalent ones on Ethereum Mainnet.
