@@ -37,21 +37,35 @@ import { QuickLinks, QuickLink } from "/components/QuickLinks.jsx";
 
 ## What is Rubicon?
 
-Rubicon is an order book protocol for trading [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) tokens. It's built on leading Ethereum [layer 2](https://ethereum.org/en/layer-2/) (L2) networks like Arbitrum and Optimism, so traders have instant confirmations and low transaction fees.
+Rubicon is an open trading platform for [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) tokens. It's built on Ethereum networks like L1, Arbitrum, and Optimism. We believe that all of the world's financial assets will be tokenized; Rubicon is the central hub where they will trade in an efficient, transparent, and trustless fashion. The platform is designed to offer the most efficient ERC20 trading venue: traders get the best price possible and market makers get a low-risk, high-opportunity experience.
 
 Trade tokens on the [Rubicon App](https://app.rubicon.finance/) with Swaps, Limit Orders, and Market Orders.
 
 ## Protocol Overview
 
+### Rubicon (v4)
+
+Rubicon pairs offchain efficiency with onchain settlement, decentralization, and transparency. There are no special permissions - everyone enjoys equal root access.
+
+Version 4 is also known as Gladius. The core of the protocol is the GladiusReactor (TODO) smart contract. This smart contract facilitates the encoding and settlement of trades. Order intents are encoded and matched off chain and settled onchain. This enables an efficient, gasless, and totally non-custodial experience of all traders and market makers.
+
+Offchain efficiency derives from our API (TODO) - an open order pool for traders and market makers. Users submit orders as encoded intents where they await execution and settlement by ecosystem actors.
+
+### Rubicon Classic
+
+Rubicon Classic is an older version of Rubicon, included in the protocol, that is a standalone, onchain order book protocol. All action takes place directly on the smart contracts.
+
 [**RubiconMarket.sol**](/protocol/rubicon-market/contract-overview) is the core order book contract. It implements order books and a matching engine for peer-to-peer trading of ERC-20 tokens.
 
 [**RubiconRouter.sol**](/protocol/rubicon-router/rubicon-router) routes token swaps and enables multi-hop swaps if two tokens do not have an underlying order book. It also has helpful view functions for reading data from **RubiconMarket.sol** and contains wrapper functions for handling native ETH throughout the protocol.
 
-## What is an Order Book?
+## Order Book Architecture
 
-An [order book](https://en.wikipedia.org/wiki/Order_book) is a list of buy and sell orders for an asset, sorted by price level. It's the best way to reflect supply and demand between two assets. 
+An [order book](https://en.wikipedia.org/wiki/Order_book) is a list of buy and sell orders for an asset, sorted by price level. It's the best way to reflect supply and demand between two assets. Rubicon provides an efficient order book for high-throughput trading of any ERC20 token pair.
 
-To learn more about Rubicon's order book, visit the [RubiconMarket docs](/protocol/rubicon-market/contract-overview).
+To learn more about Rubicon's market structure and efficiency, visit our docs (TODOD COMING!)
+
+To learn more about Rubicon Classic's order book, visit the [RubiconMarket docs](/protocol/rubicon-market/contract-overview).
 
 ## Why is this important?
 
