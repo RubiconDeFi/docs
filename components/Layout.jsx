@@ -174,37 +174,43 @@ const navigation = [
     title: "API",
     links: [
       {
-        title: "Orders",
-        href: "/docs/api/orders",
-        sublinks: [
+        title: "Rubicon Classic",
+        links: [
           {
-            title: "Order Data",
-            href: "/docs/api/orders/order-data",
+            title: "Orders",
+            href: "/docs/api/orders",
+            sublinks: [
+              {
+                title: "Order Data",
+                href: "/docs/api/orders/order-data",
+              },
+              {
+                title: "Trade Data",
+                href: "/docs/api/orders/trade-data",
+              },
+              {
+                title: "Fee Data",
+                href: "/docs/api/orders/fee-data",
+              },
+            ],
           },
           {
-            title: "Trade Data",
-            href: "/docs/api/orders/trade-data",
+            title: "Subgraphs",
+            href: "/docs/api/subgraphs/subgraphs",
+            sublinks: [
+              {
+                title: "Rubicon V2",
+                href: "/docs/api/subgraphs/rubicon-v2-subgraph",
+              },
+            ],
           },
           {
-            title: "Fee Data",
-            href: "/docs/api/orders/fee-data",
+            title: "Python SDK",
+            href: "/docs/api/python-sdk",
           },
         ],
       },
-      {
-        title: "Subgraphs",
-        href: "/docs/api/subgraphs/subgraphs",
-        sublinks: [
-          {
-            title: "Rubicon V2",
-            href: "/docs/api/subgraphs/rubicon-v2-subgraph",
-          },
-        ],
-      },
-      {
-        title: "Python SDK",
-        href: "/docs/api/python-sdk",
-      },
+
     ],
   },
 ];

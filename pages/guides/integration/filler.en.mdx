@@ -4,29 +4,16 @@ pageTitle: Filler Guide
 description: Integrating as a for-profit filler on Rubicon
 ---
 
-# TODO HOW TO BE A FILLER FAM
+# Integrating as an Order Filler
 
-On the **[Trade](https://app.rubicon.finance/trade)** page, trade ERC-20 token pairs with Limit Orders and Market Orders on the Rubicon App!
+Order fillers play an essential role in the efficiency of Rubicon. They operate as for-profit actors that match Rubicon encoded orders against other orders, other liquidity venues, or their own inventory to settle trades. From a game theory perspective, the game these fillers are playing is one in which they settle trades whenever the ERC20 revenue generated to them from pairing together an order with its desired liquidity (through one of the three aforementioned means) exceeds the gas cost to settle the trade onchain.
 
-TradingView charts show historical Rubicon trading data for each token pair.
+The general approach for order fillers is straight forward: watch the order pool for orders, determine if any orders can be settled profitably, and settle any trades onchain through the `GladiusReactor` if it is economical to do so.
 
+Most fillers are running automated bots to execute trades at high speeds. This is the recommended approach - we will release open-source examples in the future.
 
-## Order Types
+## Querying Fillable Orders
 
-Market Orders specify a quantity and execute at the best available price. Market Orders pay the [Taker Fee](/protocol/rubicon-market/fees).
+The first step in operating as a filler is to query the outstanding orders that can be filled this is done by GET-ing orders from the API.
 
-Limit Orders specify a price and a quantity and are filled if the market price crosses the limit price. Limit Orders earn the [Maker Fee](/protocol/rubicon-market/fees) when they are filled.
-
-![](</assets/MarketOrder.png>)
-
-## Open Orders
-
-Manage and cancel outstanding orders and view transaction details on the block explorer.
-
-![](</assets/OpenOrders.png>)
-
-## Order Book
-
-View the current status of the Rubicon order book. Data is live through the latest block displayed.
-
-![](</assets/OrderBook.png>)
+[Learn more about the Gladius API here.](/api-guides/rubicon-v4/gladius-api)
