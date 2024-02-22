@@ -8,7 +8,7 @@ description: Integrating as a for-profit filler on Rubicon
 
 Order fillers play an essential role in the efficiency of Rubicon. They operate as for-profit actors that match Rubicon encoded orders against other orders, other liquidity venues, or their own inventory to settle trades. From a game theory perspective, the game these fillers are playing is one in which they settle trades whenever the ERC20 revenue generated to them from pairing together an order with its desired liquidity (through one of the three aforementioned means) exceeds the gas cost to settle the trade onchain.
 
-The general approach for order fillers is straight forward: watch the order pool for orders, determine if any orders can be settled profitably, and settle any trades onchain through the `GladiusReactor` if it is economical to do so.
+The general approach for order fillers is straight forward: watch the order pool for orders, determine if any orders can be settled profitably, and settle any trades onchain through the [`GladiusReactor`](/protocol/rubicon-v4/gladius-reactor) if it is economical to do so.
 
 Most fillers are running automated bots to execute trades at high speeds. This is the recommended approach - we will release open-source examples in the future.
 
