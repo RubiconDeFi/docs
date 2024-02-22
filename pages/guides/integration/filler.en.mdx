@@ -1,0 +1,27 @@
+---
+title: Filler Guide
+pageTitle: Filler Guide
+description: Integrating as a for-profit filler on Rubicon
+---
+
+# Integrating as an Order Filler
+
+Order fillers play an essential role in the efficiency of Rubicon. They operate as for-profit actors that match Rubicon encoded orders against other orders, other liquidity venues, or their own inventory to settle trades. From a game theory perspective, the game these fillers are playing is one in which they settle trades whenever the ERC20 revenue generated to them from pairing together an order with its desired liquidity (through one of the three aforementioned means) exceeds the gas cost to settle the trade onchain.
+
+The general approach for order fillers is straight forward: watch the order pool for orders, determine if any orders can be settled profitably, and settle any trades onchain through the [`GladiusReactor`](/protocol/rubicon-v4/gladius-reactor) if it is economical to do so.
+
+Most fillers are running automated bots to execute trades at high speeds. This is the recommended approach - we will release open-source examples in the future.
+
+[Use of the Rubicon Gladius API is required to access the order pool.](/api-guides/rubicon-v4/gladius-api) Using the [Rubicon Gladius SDK](/api-guides/rubicon-v4/gladius-sdk) is highly recommended as well.
+
+See some dated, but helpful while this docs site is being iterated and refined, [Beta documentation here](https://rubicondefi.notion.site/Rubicon-Gladius-Integration-Guide-ee55cbe3ccdf4b88a6780d8ef090599f#Get-Open-Orders).
+
+## Querying Fillable Orders
+
+The first step in operating as a filler is to query the outstanding orders that can be filled this is done by GET-ing orders from the API.
+
+[Learn more about the Gladius API here.](/api-guides/rubicon-v4/gladius-api)
+
+## Transitioning from UniswapX
+
+There are a few key differences if one is already an order filler on UniswapX. Firstly, it is important to utilize the GladiusOrder type when dealing with encoded orders. Moreover, it is important to be cognizant of the additional parameter availble in Rubicon Gladius (v4): `fillThreshold`. This parameter represents the **minimum amount of input amount the filler must at least consume in the transaction when serving the trader output amount**. If anything is provided to the trader less than the required output amount implied by `fillThreshold` will revert.

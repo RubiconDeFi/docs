@@ -1,0 +1,43 @@
+---
+title: Fees
+pageTitle: Fees
+description: Fees on Rubicon
+---
+
+# Rubicon Market
+
+## Fees
+
+import { Callout } from "/components/Callout";
+
+<Callout type="fees" title="Protocol Fee: 0.01%">
+  Paid by fillers (buyers) to the protocol. Paid in the output token from the
+  encoded order - added on top of every order when settled.
+</Callout>
+
+<Callout type="fees" title="Possible Pair Specific Fees">
+  It is possible for the protocol to set pair specific fees. While this
+  unlikely, it can be queried onchain if active
+</Callout>
+
+### Querying the Fees
+
+Use these view functions to query the fee values from the RubiconFeeController on any given network.
+
+```solidity copy
+    function baseFee()
+        public
+        view
+        returns (uint256)
+```
+
+Returns the current protocol fee. The base fee is the fee applied to all trades, unless there is a pair specific fee set. Return value is an integer at this precision (1 / 100,000 = 0.001%). Default value is 10.
+
+```solidity copy
+function fees(bytes pairHash)
+    public
+    view
+    returns (uint256)
+```
+
+Returns the current pair-specific fee if any for a given pair hash. Return value is an integer at this precision (1 / 100,000 = 0.001%). Must be set by admin.

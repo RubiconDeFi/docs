@@ -4,7 +4,7 @@ pageTitle: Overview
 description: Welcome to the Rubicon docs
 ---
 
-# Rubicon Docs
+# Rubicon Docs - updates for v4: work in progress!
 
 import { Callout } from "/components/Callout";
 import { QuickLinks, QuickLink } from "/components/QuickLinks.jsx";
@@ -18,43 +18,57 @@ import { QuickLinks, QuickLink } from "/components/QuickLinks.jsx";
 	<QuickLink
 		title="Guides"
 		icon="openBook"
-		href="/guides/trade/trade"
-		description="Learn to Swap, Trade, and Earn on Rubicon!"
+		href="/guides/integration/filler"
+		description="Learn to Trade, Integrate Programatically, and Earn!"
 	></QuickLink>
 	<QuickLink
-		title="RubiconMarket"
-		icon="plugins"
-		href="/protocol/rubicon-market/contract-overview"
-		description="Overview of the order book contract"
+		title="Code Base"
+		icon="github"
+		href="https://github.com/RubiconDeFi"
+		description="Our open-source code base"
 	></QuickLink>
 	<QuickLink
 		title="APIs"
 		icon="layers"
-		href="/api-guides/subgraphs/subgraphs"
-		description="SDKs and Subgraphs"
+		href="/api-guides/rubicon-v4/gladius-api"
+		description="Order API, SDKs, and Subgraphs"
 	></QuickLink>
 </QuickLinks>
 
 ## What is Rubicon?
 
-Rubicon is an order book protocol for trading [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) tokens. It's built on leading Ethereum [layer 2](https://ethereum.org/en/layer-2/) (L2) networks like Arbitrum and Optimism, so traders have instant confirmations and low transaction fees.
+Rubicon is an open trading platform for [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) tokens. It's built on Ethereum networks like L1, Arbitrum, and Optimism. We believe that all of the world's financial assets will be tokenized; Rubicon is the central hub where they will trade in an efficient, transparent, and trustless fashion. The platform is designed to offer the most efficient ERC20 trading venue: traders get the best price possible and market makers get a low-risk, high-opportunity experience.
 
 Trade tokens on the [Rubicon App](https://app.rubicon.finance/) with Swaps, Limit Orders, and Market Orders.
 
 ## Protocol Overview
 
+### Rubicon (v4)
+
+Rubicon pairs offchain efficiency with onchain settlement, decentralization, and transparency. There are no special permissions - everyone enjoys equal root access.
+
+Version 4 is also known as Gladius. The core of the protocol is the [`GladiusReactor`](/protocol/rubicon-v4/gladius-reactor) smart contract. This smart contract facilitates the encoding and settlement of trades. Order intents are encoded and matched off chain and settled onchain. This enables an efficient, gasless, and totally non-custodial experience of all traders and market makers.
+
+Offchain efficiency derives from our [API](/api-guides/rubicon-v4/gladius-api) - an open order pool for traders and market makers. Users submit orders as encoded intents where they await execution and settlement by ecosystem actors.
+
+### Rubicon Classic
+
+Rubicon Classic is an older version of Rubicon, included in the protocol, that is a standalone, onchain order book protocol. All action takes place directly on the smart contracts.
+
 [**RubiconMarket.sol**](/protocol/rubicon-market/contract-overview) is the core order book contract. It implements order books and a matching engine for peer-to-peer trading of ERC-20 tokens.
 
 [**RubiconRouter.sol**](/protocol/rubicon-router/rubicon-router) routes token swaps and enables multi-hop swaps if two tokens do not have an underlying order book. It also has helpful view functions for reading data from **RubiconMarket.sol** and contains wrapper functions for handling native ETH throughout the protocol.
 
-## What is an Order Book?
+## Order Book Architecture
 
-An [order book](https://en.wikipedia.org/wiki/Order_book) is a list of buy and sell orders for an asset, sorted by price level. It's the best way to reflect supply and demand between two assets. 
+An [order book](https://en.wikipedia.org/wiki/Order_book) is a list of buy and sell orders for an asset, sorted by price level. It's the best way to reflect supply and demand between two assets. Rubicon provides an efficient order book for high-throughput trading of any ERC20 token pair.
 
-To learn more about Rubicon's order book, visit the [RubiconMarket docs](/protocol/rubicon-market/contract-overview).
+To learn more about Rubicon's market structure and efficiency, visit our docs (TODOD COMING!)
+
+To learn more about Rubicon Classic's order book, visit the [RubiconMarket docs](/protocol/rubicon-market/contract-overview).
 
 ## Why is this important?
 
 One of crypto's many promises is a decentralized financial system, but today the majority of crypto trading volumes are on centralized exchanges (CEXs). These exchanges have custody of user funds, charge predatory fees, and their incentives are not aligned with their users.
 
-Rubicon is an order book protocol built to bring price discovery on-chain. For this space to fulfill its promise, trading needs to be on open protocols, not centralized blackboxes.
+Rubicon is an order book protocol built to bring price discovery onchain. For this space to fulfill its promise, trading needs to be on open protocols, not centralized blackboxes.

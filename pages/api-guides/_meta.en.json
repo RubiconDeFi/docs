@@ -1,5 +1,4 @@
 {
-	"orders": "Orders",
-	"subgraphs": "Subgraphs",
-	"rubi-py": "Python SDK"
+    "rubicon-v4": "Rubicon v4",
+    "rubicon-classic": "Rubicon Classic"
 }

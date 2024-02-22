@@ -1,0 +1,20 @@
+---
+description: Interact with the Rubicon Order Pool
+---
+
+## 💻 Gladius API
+
+The Gladius API is interacted with through this REST endpoint: `https://gladius.rubicon.finance`.
+
+For a preliminary overview of how this is done, check out [our Beta documentation](https://rubicondefi.notion.site/Rubicon-Gladius-Integration-Guide-ee55cbe3ccdf4b88a6780d8ef090599f). More to come here.
+
+For submitting, parsing, and querying orders it is recommended to use the [Gladius SDK](/api-guides/rubicon-v4/gladius-sdk) and `GladiusOrder` order type.
+
+### Endpoints 
+
+| Goal  | Endpoint                                      |
+| --------------- | -------------------------------------------- |
+| GET Open Orders (All networks)   | `https://gladius.rubicon.finance/dutch-auction/order/dutch-auction/orders` |
+| GET Open Orders (Specific Pair [Directional], Order Status, and Network)   | `https://gladius.rubicon.finance/dutch-auction/order/dutch-auction/orders?chainId=${chainId}&orderStatus=open&buyToken=${quote.address}&sellToken=${token.address}` |
+| GET Filled Orders | `https://gladius.rubicon.finance/dutch-auction/orders?orderStatus=filled&chainId=${chainId}` |
+| POST New Order (GladiusOrder)   | `https://gladius.rubicon.finance/dutch-auction/order` |
