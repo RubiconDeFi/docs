@@ -14,7 +14,7 @@ For submitting, parsing, and querying orders it is recommended to use the [Gladi
 
 | Goal  | Endpoint                                      |
 | --------------- | -------------------------------------------- |
-| GET Open Orders (All networks)   | `https://gladius.rubicon.finance/dutch-auction/order/dutch-auction/orders` |
-| GET Open Orders (Specific Pair [Directional], Order Status, and Network)   | `https://gladius.rubicon.finance/dutch-auction/order/dutch-auction/orders?chainId=${chainId}&orderStatus=open&buyToken=${quote.address}&sellToken=${token.address}` |
+| GET Open Orders (All networks)   | `https://gladius.rubicon.finance/dutch-auction/orders?orderStatus=open` |
+| GET Open Orders (Specific Pair [Directional], Order Status, and Network)   | `https://gladius.rubicon.finance/dutch-auction/orders?chainId=${chainId}&orderStatus=open&buyToken=${quote.address}&sellToken=${token.address}` |
 | GET Filled Orders | `https://gladius.rubicon.finance/dutch-auction/orders?orderStatus=filled&chainId=${chainId}` |
 | POST New Order (GladiusOrder)   | `https://gladius.rubicon.finance/dutch-auction/order` |
