@@ -25,16 +25,16 @@ import { Callout } from "/components/Callout";
 Use these view functions to query the fee values from the RubiconFeeController on any given network.
 
 ```solidity copy
-    function baseFee()
-        public
-        view
-        returns (uint256)
+function baseFee()
+    public
+    view
+    returns (uint256)
 ```
 
 Returns the current protocol fee. The base fee is the fee applied to all trades, unless there is a pair specific fee set. Return value is an integer at this precision (1 / 100,000 = 0.001%). Default value is 10.
 
 ```solidity copy
-function fees(bytes pairHash)
+function fees(bytes32 pairHash)
     public
     view
     returns (uint256)
