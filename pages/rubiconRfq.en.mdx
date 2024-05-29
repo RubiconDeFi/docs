@@ -1,0 +1,136 @@
+---
+title: Rubicon RFQ System
+pageTitle: Rubicon RFQ System
+description: Documentation for the Rubicon RFQ System
+---
+
+## Rubicon RFQ System
+
+import { Callout } from "/components/Callout";
+
+<Callout type="fees" title="Subject to Change">
+  NOTICE: The details of the Rubicon RFQ System are subject to change. Please check back regularly for updates.
+</Callout>
+
+The Rubicon RFQ System exists to make our market maker's liquidity more accessible for price discovery. This system is designed to facilitate aggregators and traders seeking the best price by providing real-time quotes and streamlined execution. The RFQ System will evolve over time, adapting to the needs of the market and feedback from users.
+
+### 1. Authentication
+To obtain an API key for authentication, clients need to create a nickname, which will be used in the `tag` field. Then, contact Rubicon to obtain an API key. The API key will be assigned to the `tag` to authenticate requests.
+
+With a valid API key, all RFQ queries should be sent to the base URL of `https://hydrus-serverus-e805ae31d1b4.herokuapp.com` while targetting the relevant endpoint, as described below. **Please note, that in the authentication process we also approve a specific address that is permitted to transact with `RubiconRFQ`; please coordinate with the team to arrange this.**
+
+### 2. Querying Price Levels
+To query price levels, use the following endpoint:
+
+```
+GET https://hydrus-serverus-e805ae31d1b4.herokuapp.com/price-levels
+  ?chainId=<int>
+  &tag=<string> # "nickname" of a client
+  &sellToken=<string>
+  &buyToken=<string>
+  &deadline=<string> # unix timestamp - a deadline of a quote, used to return orders that will be valid until it 
+  --header "X-API-KEY: obtained_key"
+```
+
+The response will have the following structure:
+
+
+```json
+{
+  "status": "success|fail",
+  "chainId": "8453",
+  "pair": {
+    "base": "0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA",
+    "quote": "0x4200000000000000000000000000000000000006"
+  },
+  "levels": [
+    {
+      "qMin": "69922392073631",
+      "q": "69922392073631406",
+      "p": "215798400"
+    }
+  ]
+}
+```
+**Please note, quantity (q) and price (p) are in base amounts represented as a float and directional based on buyToken and sellToken. The user should be aware of the decimals associated with each token to convert these quantity and price values into uint values as needed. Please also note, that qMin must be taken from each order for that leg to be included in your trade - qMin is a mandatory constraint for any given order and represents the minimum quantity required to take for that leg of the trade to be valid.**
+
+### 3. Sending a Quote for a Match
+To match a quote with the off-chain book, use the following endpoint:
+
+
+```
+GET https://hydrus-serverus-e805ae31d1b4.herokuapp.com/match
+  ?chainId=<int>
+  &tag=<string> # "nickname" of a client
+  &sellToken=<string>
+  &buyToken=<string>
+  &sellAmt=<string>
+  &buyAmt=<string>
+  &deadline=<string> # unix timestamp - a deadline of a quote, used to return orders that will be valid until it
+  --header "X-API-KEY: obtained_key"
+```
+
+### 4. Getting Match Response
+The server response will have the following structure:
+
+
+```json
+{
+  "orders": [{
+    "encodedOrder": "0x...",
+    "signature": "0x..."
+  }],
+  "quantities": ["0", "...", "n"]
+}
+```
+
+### 5. Executing Response Data On-Chain
+**To execute the response data on-chain, first, approve sell tokens to the `RubiconRFQ` contract. This is a very important step and approvals must be in place or else the trade will fail.**
+
+Then, call the fill function on the contract for the relevant network you are targetting. Please see below for the deployments on each chain.
+
+The fill function signature:
+
+```solidity
+function fill(Quote calldata q, Response calldata r) external {}
+```
+
+Where Quote is:
+
+```solidity
+struct Quote {
+    address sellToken;
+    address buyToken;
+    uint256 sellAmt;
+    uint256 buyAmt;
+}
+```
+And Response is:
+
+```solidity
+struct Response {
+    SignedOrder[] orders;
+    uint256[] quantities;
+}
+```
+
+### RFQ Contract Addresses
+Below are the RFQ contract addresses per network:
+
+| Network | Contract Address |
+| ---- | -------------- |
+| OP    | 0xf8C8308a7C89315B8395A945C32E879a1295cD20          | 
+| Base    | 0x6b6B6aA808423FBeCc9cCeb4fDefFb76a550bAe7          | 
+| ARB    | 0x9B848639D3Bed6db856b3A69e3C33FBEbD672e6b          | 
+
+### Contact Information
+For any questions or additional information, feel free to reach out:
+
+- Email: contact@rubicon.finance
+- Discord: Rubicon Finance Discord
+
+### Important Notes
+The details of the system are subject to change at any time.
+The Rubicon Team can exclude addresses at will for any reason. This would likely be due to perceived malicious behavior.
+Updates and changes to the system will be communicated through our official channels and reflected on this page.
+This page will be updated regularly to reflect any changes to the Rubicon RFQ System. Please ensure you are referring to the latest version.
