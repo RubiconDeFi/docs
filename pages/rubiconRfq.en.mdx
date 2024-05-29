@@ -15,14 +15,14 @@ import { Callout } from "/components/Callout";
 The Rubicon RFQ System exists to make our market maker's liquidity more accessible for price discovery. This system is designed to facilitate aggregators and traders seeking the best price by providing real-time quotes and streamlined execution. The RFQ System will evolve over time, adapting to the needs of the market and feedback from users.
 
 ### 1. Authentication
-To obtain an API key for authentication, clients need to create a nickname, which will be used in the tag field. Then, contact Rubicon to obtain an API key. The API key will be assigned to the tag to authenticate requests.
+To obtain an API key for authentication, clients need to create a nickname, which will be used in the `tag` field. Then, contact Rubicon to obtain an API key. The API key will be assigned to the `tag` to authenticate requests.
 
 With a valid API key, all RFQ queries should be sent to the base URL of `https://hydrus-serverus-e805ae31d1b4.herokuapp.com` while targetting the relevant endpoint, as described below.
 
 ### 2. Querying Price Levels
 To query price levels, use the following endpoint:
 
-```js
+```
 GET https://hydrus-serverus-e805ae31d1b4.herokuapp.com/price-levels
   ?chainId=<int>
   &tag=<string> # "nickname" of a client
@@ -52,13 +52,13 @@ The response will have the following structure:
   ]
 }
 ```
-**Please note, quantity (q) and price (p) are in base uint amounts. The user should be aware of the decimals associated with each token to convert these quantity and price values into human-readable values as needed. Please also note, that qMin must be taken from each order for that leg to be included in your trade.**
+**Please note, quantity (q) and price (p) are in base amounts represented as a float and directional based on buyToken and sellToken. The user should be aware of the decimals associated with each token to convert these quantity and price values into uint values as needed. Please also note, that qMin must be taken from each order for that leg to be included in your trade - qMin is a mandatory constraint for any given order and represents the minimum quantity required to take for that leg of the trade to be valid.**
 
 ### 3. Sending a Quote for a Match
 To match a quote with the off-chain book, use the following endpoint:
 
 
-```js
+```
 GET https://hydrus-serverus-e805ae31d1b4.herokuapp.com/match
   ?chainId=<int>
   &tag=<string> # "nickname" of a client
@@ -119,7 +119,9 @@ Below are the RFQ contract addresses per network:
 
 | Network | Contract Address |
 | ---- | -------------- |
-| 10    | TODO          | 
+| OP    | 0xf8C8308a7C89315B8395A945C32E879a1295cD20          | 
+| Base    | 0x6b6B6aA808423FBeCc9cCeb4fDefFb76a550bAe7          | 
+| ARB    | 0x9B848639D3Bed6db856b3A69e3C33FBEbD672e6b          | 
 
 ### Contact Information
 For any questions or additional information, feel free to reach out:
