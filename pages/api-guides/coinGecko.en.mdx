@@ -1,0 +1,120 @@
+---
+title: Coin Gecko API
+pageTitle: Rubicon Coin Gecko API
+description: Receive Historical Data from Rubicon Markets
+---
+
+## 💻 CoinGecko Integration API
+
+The CoinGecko Integration API is interacted with through this REST endpoint: `https://coingecko.rubicon.finance`.
+
+### Endpoints
+
+| Goal  | Endpoint                                      |
+| --------------- | -------------------------------------------- |
+| GET Market Info for All Markets (24 Hours)   | `https://coingecko.rubicon.finance/tickers` |
+| GET Current Order Book Depth for a Pair   | `https://coingecko.rubicon.finance/orderbook?ticker_id=${tickerId}&depth=${depth}` |
+| GET Historical Trade Data for a Pair   | `https://coingecko.rubicon.finance/historical_trades?ticker_id=${tickerId}&limit=${limit}&start_time=${startTime}&end_time=${endTime}&type=${type}` |
+
+### Endpoint 1 - /tickers
+
+The `/tickers` endpoint provides 24-hour pricing and volume information on each market pair available and active in this time period on the exchange.
+
+#### Request
+
+`GET /tickers`
+
+#### Response
+
+| Name            | Data Type | Description                                                                               |
+|-----------------|-----------|-------------------------------------------------------------------------------------------|
+| `chain`     | string    | Identifier for the blockchain this pair trades on             |
+| `ticker_id`     | string    | Identifier of a ticker with delimiter to separate base/target, always using contract addresses, eg. `0x..._0x...`.             |
+| `base_currency` | string    | Contract address of the base cryptoasset, eg. `0x...`.                                    |
+| `target_currency`| string    | Contract address of the target cryptoasset, eg. `0x...`.                                  |
+| `last_price`    | decimal   | Last transacted price of the base currency based on the given target currency.            |
+| `base_volume`   | decimal   | 24 hour trading volume for the pair (unit in base).                                       |
+| `target_volume` | decimal   | 24 hour trading volume for the pair (unit in target).                                     |
+| `bid`           | decimal   | Current highest bid price.                                                                |
+| `ask`           | decimal   | Current lowest ask price.                                                                 |
+| `high`          | decimal   | Rolling 24-hours highest transaction price.                                               |
+| `low`           | decimal   | Rolling 24-hours lowest transaction price.                                                |
+| `pool_id`       | string    | Pair unique ID.                                       |
+| `liquidity_in_usd`| decimal | Total order book liquidity for the pair                                            |
+
+### Endpoint 2 - /orderbook
+
+The `/orderbook` endpoint provides order book information with an optional depth specified returned for a given market pair/ticker.
+
+#### Request
+
+`GET /orderbook?ticker_id=${tickerId}&depth=${depth}`
+
+#### Input Parameters
+
+| Name       | Type    | Status    | Description                                                              |
+|------------|---------|-----------|--------------------------------------------------------------------------|
+| `ticker_id`| string  | Mandatory | A pair such as `0x..._0x...`, with delimiter between different cryptoassets (contract addresses). |
+| `depth`    | integer | Optional  | Orders depth quantity: [0, 100, 200, 500...]. 0 returns full depth. Depth = 100 means 50 for each bid/ask side. |
+
+#### Response
+
+| Name         | Data Type | Description                                                                               |
+|--------------|-----------|-------------------------------------------------------------------------------------------|
+| `ticker_id`  | string    | A pair such as `0x..._0x...`, with delimiter between different cryptoassets (contract addresses).                   |
+| `timestamp`  | timestamp | Unix timestamp in milliseconds for when the last updated time occurred.                   |
+| `bids`       | array     | An array containing 2 elements. The offer price and quantity for each bid order.          |
+| `asks`       | array     | An array containing 2 elements. The ask price and quantity for each ask order.            |
+
+### Endpoint 3 - /historical_trades
+
+The `/historical_trades` endpoint returns data on historical completed trades for a given market pair. All input parameters are optional except for `ticker_id`.
+
+#### Request
+
+`GET /historical_trades?ticker_id=${tickerId}&limit=${limit}&start_time=${startTime}&end_time=${endTime}&type=${type}`
+
+#### Input Parameters
+
+| Name         | Type     | Status    | Description                                                              |
+|--------------|----------|-----------|--------------------------------------------------------------------------|
+| `ticker_id`  | string   | Mandatory | A pair such as `0x..._0x...`, with delimiter between different cryptoassets (contract addresses). |
+| `limit`      | integer  | Optional  | Number of historical trades to retrieve from the time of query. [0, 200, 500...]. 0 or undefined defaults to 10. |
+| `start_time` | integer  | Optional  | Start time from which to query historical trades from (in seconds).      |
+| `end_time`   | integer  | Optional  | End time for historical trades query (in seconds).                       |
+| `type`       | string   | Optional  | To indicate the nature of trade - buy/sell.                              |
+
+#### Response
+
+| Name             | Data Type | Description                                                                               |
+|------------------|-----------|-------------------------------------------------------------------------------------------|
+| `trade_id`       | string    | A unique ID associated with the trade for the currency pair transaction.                  |
+| `price`          | decimal   | Transaction price of base asset in target currency.                                       |
+| `base_volume`    | decimal   | Transaction amount in base pair volume.                                                   |
+| `target_volume`  | decimal   | Transaction amount in target pair volume.                                                 |
+| `trade_timestamp`| timestamp | Unix timestamp in milliseconds for when the transaction occurred.                         |
+| `type`           | string    | Used to determine the type of the transaction that was completed (buy/sell).              |
+
+### Testing Example
+
+For testing, you can use the following `ticker_id` for the WETH_USDC pair on Arbitrum:
+
+```javascript
+const tickerId = '0x82af49447d8a07e3bd95bd0d56f35241523fbab1_0xaf88d065e77c8cc2239327c5edb3a432268e5831';
+```
+
+Curl Examples
+1. Get Market Information for All Pairs
+```sh
+curl -X GET "https://coingecko.rubicon.finance/tickers" -H "accept: application/json"
+```
+
+2. Get Order Book Depth for a Pair
+```sh
+curl -X GET "https://coingecko.rubicon.finance/orderbook?ticker_id=0x82af49447d8a07e3bd95bd0d56f35241523fbab1_0xaf88d065e77c8cc2239327c5edb3a432268e5831&depth=100" -H "accept: application/json"
+```
+
+3. Get Historical Trade Data for a Pair
+```sh
+curl -X GET "https://coingecko.rubicon.finance/historical_trades?ticker_id=0x82af49447d8a07e3bd95bd0d56f35241523fbab1_0xaf88d065e77c8cc2239327c5edb3a432268e5831"
+```
