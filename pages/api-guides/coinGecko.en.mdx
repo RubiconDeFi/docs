@@ -28,6 +28,7 @@ The `/tickers` endpoint provides 24-hour pricing and volume information on each 
 
 | Name            | Data Type | Description                                                                               |
 |-----------------|-----------|-------------------------------------------------------------------------------------------|
+| `chain`     | string    | Identifier for the blockchain this pair trades on             |
 | `ticker_id`     | string    | Identifier of a ticker with delimiter to separate base/target, always using contract addresses, eg. `0x..._0x...`.             |
 | `base_currency` | string    | Contract address of the base cryptoasset, eg. `0x...`.                                    |
 | `target_currency`| string    | Contract address of the target cryptoasset, eg. `0x...`.                                  |
