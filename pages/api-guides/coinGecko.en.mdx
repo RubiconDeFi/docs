@@ -12,23 +12,29 @@ The CoinGecko Integration API is interacted with through this REST endpoint: `ht
 
 | Goal  | Endpoint                                      |
 | --------------- | -------------------------------------------- |
-| GET Market Info for All Markets (24 Hours)   | `https://coingecko.rubicon.finance/tickers` |
-| GET Current Order Book Depth for a Pair   | `https://coingecko.rubicon.finance/orderbook?ticker_id=${tickerId}&depth=${depth}` |
-| GET Historical Trade Data for a Pair   | `https://coingecko.rubicon.finance/historical_trades?ticker_id=${tickerId}&limit=${limit}&start_time=${startTime}&end_time=${endTime}&type=${type}` |
+| GET Market Info for All Markets (24 Hours)   | `https://coingecko.rubicon.finance/chainID/tickers` |
+| GET Current Order Book Depth for a Pair   | `https://coingecko.rubicon.finance/chainID/orderbook?ticker_id=${tickerId}&depth=${depth}` |
+| GET Historical Trade Data for a Pair   | `https://coingecko.rubicon.finance/chainID/historical_trades?ticker_id=${tickerId}&limit=${limit}&start_time=${startTime}&end_time=${endTime}&type=${type}` |
 
 ### Endpoint 1 - /tickers
 
-The `/tickers` endpoint provides 24-hour pricing and volume information on each market pair available and active in this time period on the exchange.
+The `/tickers` endpoint provides 24-hour pricing and volume information on each market pair available and active in this time period on the specified `chainId`.
 
 #### Request
 
-`GET /tickers`
+`GET chainID/tickers`
+
+#### Input Parameters
+
+| Name       | Type    | Status    | Description                                                              |
+|------------|---------|-----------|--------------------------------------------------------------------------|
+| `chainID`  | integer   | Mandatory | Unique chain ID of the target EVM chain. |
 
 #### Response
 
 | Name            | Data Type | Description                                                                               |
 |-----------------|-----------|-------------------------------------------------------------------------------------------|
-| `chain`     | string    | Identifier for the blockchain this pair trades on             |
+| `chain`     | string    | Identifier for the blockchain this pair trades on.            |
 | `ticker_id`     | string    | Identifier of a ticker with delimiter to separate base/target, always using contract addresses, eg. `0x..._0x...`.             |
 | `base_currency` | string    | Contract address of the base cryptoasset, eg. `0x...`.                                    |
 | `target_currency`| string    | Contract address of the target cryptoasset, eg. `0x...`.                                  |
@@ -44,16 +50,17 @@ The `/tickers` endpoint provides 24-hour pricing and volume information on each 
 
 ### Endpoint 2 - /orderbook
 
-The `/orderbook` endpoint provides order book information with an optional depth specified returned for a given market pair/ticker.
+The `/orderbook` endpoint provides order book information with an optional depth specified returned for a given market pair/ticker and `chainId`.
 
 #### Request
 
-`GET /orderbook?ticker_id=${tickerId}&depth=${depth}`
+`GET chainID/orderbook?ticker_id=${tickerId}&depth=${depth}`
 
 #### Input Parameters
 
 | Name       | Type    | Status    | Description                                                              |
 |------------|---------|-----------|--------------------------------------------------------------------------|
+| `chainID`  | integer   | Mandatory | Unique chain ID of the target EVM chain. |
 | `ticker_id`| string  | Mandatory | A pair such as `0x..._0x...`, with delimiter between different cryptoassets (contract addresses). |
 | `depth`    | integer | Optional  | Orders depth quantity: [0, 100, 200, 500...]. 0 returns full depth. Depth = 100 means 50 for each bid/ask side. |
 
@@ -68,16 +75,17 @@ The `/orderbook` endpoint provides order book information with an optional depth
 
 ### Endpoint 3 - /historical_trades
 
-The `/historical_trades` endpoint returns data on historical completed trades for a given market pair. All input parameters are optional except for `ticker_id`.
+The `/historical_trades` endpoint returns data on historical completed trades for a given market pair and `chainId`. All input parameters are optional except for `chainId` and `ticker_id`.
 
 #### Request
 
-`GET /historical_trades?ticker_id=${tickerId}&limit=${limit}&start_time=${startTime}&end_time=${endTime}&type=${type}`
+`GET chainID/historical_trades?ticker_id=${tickerId}&limit=${limit}&start_time=${startTime}&end_time=${endTime}&type=${type}`
 
 #### Input Parameters
 
 | Name         | Type     | Status    | Description                                                              |
 |--------------|----------|-----------|--------------------------------------------------------------------------|
+| `chainID`  | integer   | Mandatory | Unique chain ID of the target EVM chain. |
 | `ticker_id`  | string   | Mandatory | A pair such as `0x..._0x...`, with delimiter between different cryptoassets (contract addresses). |
 | `limit`      | integer  | Optional  | Number of historical trades to retrieve from the time of query. [0, 200, 500...]. 0 or undefined defaults to 10. |
 | `start_time` | integer  | Optional  | Start time from which to query historical trades from (in seconds).      |
@@ -106,15 +114,15 @@ const tickerId = '0x82af49447d8a07e3bd95bd0d56f35241523fbab1_0xaf88d065e77c8cc22
 Curl Examples
 1. Get Market Information for All Pairs
 ```sh
-curl -X GET "https://coingecko.rubicon.finance/tickers" -H "accept: application/json"
+curl -X GET "https://coingecko.rubicon.finance/42161/tickers"
 ```
 
 2. Get Order Book Depth for a Pair
 ```sh
-curl -X GET "https://coingecko.rubicon.finance/orderbook?ticker_id=0x82af49447d8a07e3bd95bd0d56f35241523fbab1_0xaf88d065e77c8cc2239327c5edb3a432268e5831&depth=100" -H "accept: application/json"
+curl -X GET "https://coingecko.rubicon.finance/42161/orderbook?ticker_id=0x82af49447d8a07e3bd95bd0d56f35241523fbab1_0xaf88d065e77c8cc2239327c5edb3a432268e5831&depth=100"
 ```
 
 3. Get Historical Trade Data for a Pair
 ```sh
-curl -X GET "https://coingecko.rubicon.finance/historical_trades?ticker_id=0x82af49447d8a07e3bd95bd0d56f35241523fbab1_0xaf88d065e77c8cc2239327c5edb3a432268e5831"
+curl -X GET "https://coingecko.rubicon.finance/42161/historical_trades?ticker_id=0x82af49447d8a07e3bd95bd0d56f35241523fbab1_0xaf88d065e77c8cc2239327c5edb3a432268e5831"
 ```
