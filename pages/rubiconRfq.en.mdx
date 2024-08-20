@@ -22,7 +22,7 @@ With a valid API key, all RFQ queries should be sent to the base URL of `https:/
 **Note: in the authentication process we also approve a specific address that is permitted to transact with `RubiconRFQ`; please coordinate with the team to arrange this.**
 
 ### 2. Querying Price Levels
-To query price levels, use following endpoints.
+To query price levels, use the following endpoint:
 
 ```sh
 GET https://rfq.rubicon.finance/price-levels
@@ -56,7 +56,7 @@ The response will have the following structure:
 **Note: quantity `"q"` and price `"p"` are in human-readable amounts represented as a float and directional based on `buyToken` and `sellToken`. The user should be aware of the decimals associated with each token to convert these quantity and price values into uint values as needed.**
 
 ### 3. Sending a Quote for a Match
-To match a quote with the off-chain book, you can use the following endpoints:
+To match a quote with the off-chain book, you can use following endpoints.
 
 #### 3.1. `/match`
 Get a match for a quote with strict `buyAmt` and `sellAmt`.
