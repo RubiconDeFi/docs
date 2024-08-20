@@ -27,7 +27,7 @@ To query price levels, use the following endpoint:
 ```sh
 GET https://rfq.rubicon.finance/price-levels
   ?chainId=<int>
-  &tag=<tag>          # "nickname" of a client
+  &tag=<string>       # "nickname" of a client
   &sellToken=<string> # address of a token to sell
   &buyToken=<string>  # address of a token to buy
   &deadline=<string>  # unix timestamp - a deadline of a quote, used to return orders that will be valid until it 
@@ -173,6 +173,7 @@ wss://rfq.rubicon.finance/ws
 ```
 
 Once the connection is open, you can subscribe to a price-levels data feed by sending a subscribe message:
+```json
 {
   "event": "subscribe",
   "params": {
