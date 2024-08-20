@@ -17,18 +17,20 @@ The Rubicon RFQ System exists to make our market maker's liquidity more accessib
 ### 1. Authentication
 To obtain an API key for authentication, clients need to create a nickname, which will be used in the `tag` field. Then, contact Rubicon to obtain an API key. The API key will be assigned to the `tag` to authenticate requests.
 
-With a valid API key, all RFQ queries should be sent to the base URL of `https://rfq.rubicon.finance` while targetting the relevant endpoint, as described below. **Please note, that in the authentication process we also approve a specific address that is permitted to transact with `RubiconRFQ`; please coordinate with the team to arrange this.**
+With a valid API key, all RFQ queries should be sent to the base URL of `https://rfq.rubicon.finance` while targetting the relevant endpoint, as described below.
+
+**Note: in the authentication process we also approve a specific address that is permitted to transact with `RubiconRFQ`; please coordinate with the team to arrange this.**
 
 ### 2. Querying Price Levels
 To query price levels, use the following endpoint:
 
-```
+```sh
 GET https://rfq.rubicon.finance/price-levels
   ?chainId=<int>
-  &tag=<string> # "nickname" of a client
-  &sellToken=<string>
-  &buyToken=<string>
-  &deadline=<string> # unix timestamp - a deadline of a quote, used to return orders that will be valid until it 
+  &tag=<string>       # "nickname" of a client
+  &sellToken=<string> # address of a token to sell
+  &buyToken=<string>  # address of a token to buy
+  &deadline=<string>  # unix timestamp - a deadline of a quote, used to return orders that will be valid until it 
   --header "X-API-KEY: obtained_key"
 ```
 
@@ -40,62 +42,97 @@ The response will have the following structure:
   "status": "success|fail",
   "chainId": "100",
   "pair": {
-    "base": "0x0000000000000000000000000000000000000000",
-    "quote": "0x0000000000000000000000000000000000000000"
+    "sellToken": "0x0000000000000000000000000000000000000000",
+    "buyToken": "0x0000000000000000000000000000000000000000"
   },
   "levels": [
     {
-      "qMin": "100.10",
       "q": "1000.10",
       "p": "250.50"
     }
   ]
 }
 ```
-**Please note, quantity (q) and price (p) are in human-readable amounts represented as a float and directional based on buyToken and sellToken. The user should be aware of the decimals associated with each token to convert these quantity and price values into uint values as needed. Please also note, that qMin must be taken from each order for that leg to be included in your trade - qMin is a mandatory constraint for any given order and represents the minimum quantity required to take for that leg of the trade to be valid.**
+**Note: quantity `"q"` and price `"p"` are in human-readable amounts represented as a float and directional based on `buyToken` and `sellToken`. The user should be aware of the decimals associated with each token to convert these quantity and price values into uint values as needed.**
 
 ### 3. Sending a Quote for a Match
-To match a quote with the off-chain book, use the following endpoint:
+To match a quote with the off-chain book, you can use following endpoints.
 
-
-```
+#### 3.1. `/match`
+Get a match for a quote with strict `buyAmt` and `sellAmt`.
+```sh
 GET https://rfq.rubicon.finance/match
   ?chainId=<int>
-  &tag=<string> # "nickname" of a client
-  &sellToken=<string>
-  &buyToken=<string>
-  &sellAmt=<string>
-  &buyAmt=<string>
-  &deadline=<string> # unix timestamp - a deadline of a quote, used to return orders that will be valid until it
+  &tag=<string>       # "nickname" of a client
+  &sellToken=<string> # address of token to sell
+  &buyToken=<string>  # address of token to sell
+  &sellAmt=<string>   # amount of 'sellToken'
+  &buyAmt=<string>    # amount of 'buyToken'
+  &deadline=<string>  # unix timestamp - a deadline of a quote, used to return orders that will be valid until it
   --header "X-API-KEY: obtained_key"
 ```
 
-### 4. Getting Match Response
-The server response will have the following structure:
+#### 3.2. `/market-match`
+Get a match for a quote with either `buyAmt` or `sellAmt` specified. Conceptually, this works similarly to a market sell or market buy.
+```sh
+GET https://rfq.rubicon.finance/match
+  ?chainId=<int>
+  &tag=<string>       # "nickname" of a client
+  &sellToken=<string> # address of token to sell
+  &buyToken=<string>  # address of token to sell
 
+  # provide either 'sellAmt' or 'buyAmt'. 
+  &sellAmt=<string>   # amount of 'sellToken'. Use for "market sell"
+  OR
+  &buyAmt=<string>    # amount of 'buyToken'. Use for "market buy"
+
+  &deadline=<string>  # unix timestamp - a deadline of a quote, used to return orders that will be valid until it
+  --header "X-API-KEY: obtained_key"
+```
+
+#### 3.3. Getting Match Response
+Regardless of the `/*match` endpoint you query, the server response will have the following structure:
 
 ```json
 {
-  "orders": [{
-    "encodedOrder": "0x...",
-    "signature": "0x..."
-  }],
-  "quantities": ["0", "...", "n"]
+  "status": "success",
+  "chainId": "100",
+  "response": {
+    "orders": [
+      {
+        "encodedOrder": "0x...",
+        "signature": "0x..."
+      }
+    ],
+    "quantities": [
+      "35219063485254110"
+    ],
+    "deadline": "1230940800"
+  },
+  "pair": {
+    "sellToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    "buyToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1"
+  },
+  "amounts": {
+    "sellAmt": "92399753",
+    "buyAmt": "35219063485254110"
+  },
+  "rfqsig": "0x..."
 }
 ```
 
-### 5. Executing Response Data On-Chain
-**To execute the response data on-chain, first, approve sell tokens to the `RubiconRFQ` contract. This is a very important step and approvals must be in place or else the trade will fail.**
+### 4. Executing Response Data On-Chain
+**Note: to execute the response data on-chain, first, approve sell tokens to the `RubiconRFQ` contract. This is a very important step and approvals must be in place or else the trade will fail.**
 
-Then, call the fill function on the contract for the relevant network you are targetting. Please see below for the deployments on each chain.
+Then, call the `fill` function on the contract for the relevant network you are targetting. Please see below for the deployments on each chain.
 
 The fill function signature:
 
 ```solidity
-function fill(Quote calldata q, Response calldata r) external {}
+function fill(Quote calldata q, Response calldata r, bytes calldata signature) external;
 ```
 
-Where Quote is:
+Where `Quote` is:
 
 ```solidity
 struct Quote {
@@ -105,23 +142,48 @@ struct Quote {
     uint256 buyAmt;
 }
 ```
-And Response is:
+And `Response` is:
 
 ```solidity
 struct Response {
     SignedOrder[] orders;
     uint256[] quantities;
+    uint256 deadline;
 }
 ```
+And the `signature` is the value of the `"rfqsig"` field from the `/*match` response.
 
 ### RFQ Contract Addresses
 Below are the RFQ contract addresses per network:
 
 | Network | Contract Address |
 | ---- | -------------- |
-| OP    | 0xf8C8308a7C89315B8395A945C32E879a1295cD20          | 
-| Base    | 0x6b6B6aA808423FBeCc9cCeb4fDefFb76a550bAe7          | 
-| ARB    | 0x9B848639D3Bed6db856b3A69e3C33FBEbD672e6b          | 
+| OP    | 0x66d1531814DB7a049b0BAaF81Ac62154F6c4a13c          | 
+| Base    | 0xe915B714F23D5EEf44f65053Caa02E38eF897166          | 
+| ARB    | 0x293E354a45a07D25AE1B2F9F00C91115a12986AF          | 
+
+### 5. WebSocket connection (optional)
+It's possible to establish a `WebSocket` connection with the server via the endpoint `wss://rfq.rubicon.finance/ws` to receive price updates more efficiently.
+
+The request for connection establishment should include the `tag` parameter and the `x-api-key` header, filled with the obtained key:
+```sh
+wss://rfq.rubicon.finance/ws
+  ?tag=<tag>
+  --header "X-API-KEY: obtained_key"
+```
+
+Once the connection is open, you can subscribe to a price-levels data feed by sending a subscribe message:
+```json
+{
+  "event": "subscribe",
+  "params": {
+    "chainId": "42161",
+    "sellToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    "buyToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1"
+  }
+}
+```
+The messages sent from the server will follow the same schema as the `/price-levels` endpoint.
 
 ### Contact Information
 For any questions or additional information, feel free to reach out:
