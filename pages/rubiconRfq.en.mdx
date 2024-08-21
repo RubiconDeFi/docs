@@ -153,14 +153,14 @@ struct Response {
 ```
 And the `signature` is the value of the `"rfqsig"` field from the `/*match` response.
 
-### RFQ Contract Addresses
+#### 4.2. RFQ Contract Addresses
 Below are the RFQ contract addresses per network:
 
 | Network | Contract Address |
 | ---- | -------------- |
-| OP    | 0x66d1531814DB7a049b0BAaF81Ac62154F6c4a13c          | 
-| Base    | 0xe915B714F23D5EEf44f65053Caa02E38eF897166          | 
-| ARB    | 0x293E354a45a07D25AE1B2F9F00C91115a12986AF          | 
+| OP   | 0x0218D22B2f134C5b3000DBcB768f71693238c856 | 
+| BASE | 0x6B49A0bD2744ACbDB2a4A901A3D5655323BD567E | 
+| ARB  | 0x7988F58d6708AD5FA7597e0d19Be59Ed75027555 | 
 
 ### 5. WebSocket connection (optional)
 It's possible to establish a `WebSocket` connection with the server via the endpoint `wss://rfq.rubicon.finance/ws` to receive price updates more efficiently.
@@ -168,7 +168,7 @@ It's possible to establish a `WebSocket` connection with the server via the endp
 The request for connection establishment should include the `tag` parameter and the `x-api-key` header, filled with the obtained key:
 ```sh
 wss://rfq.rubicon.finance/ws
-  ?tag=<tag>
+  ?tag=<string>
   --header "X-API-KEY: obtained_key"
 ```
 
