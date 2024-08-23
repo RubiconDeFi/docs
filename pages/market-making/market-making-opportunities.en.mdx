@@ -1,0 +1,92 @@
+---
+title: Overview
+pageTitle: Market Making on Rubicon
+description: Overview of Market Making on Rubicon
+---
+
+# Market Making Overview - Rubicon (Gladius - v4)
+
+## Opportunities
+
+- **24/7 Open-Source Trading**: Rubicon is an open-source and non-custodial trading protocol built on Ethereum Layer 2 (L2) networks. Integrate today to begin market making [by using our API](/api-guides/rubicon-v4/gladius-api).
+
+- **Atomic Network Integrations**: Running a high-frequency, gasless market-making bot on Rubicon allows a user to trade against the entire network (AMMs and other venues) and aggregators integrated with Rubicon automatically for increased fill rates.
+
+- **Earn Rebates**: If a market maker performs sufficient volume in a monthly period, they will earn rebates according to the [Rubicon Liquidity Program](/rubiconLiquidityProgram).
+
+- **Competitive Edge**: Active market makers can outperform passive AMM liquidity providers by adjusting offers in real-time with no gas cost. On Rubicon, makers can profitably provide the Network Best Bid Offer (NBBO) for any asset at any time.
+
+- **Maker Rewards**: In 2024, OP will be granted to market makers that provide liquidity on Optimism at a rate of 2000 per month according to the [DyDx rewards formula](https://docs.dydx.community/governance-documentation/rewards/liquidity-provider-rewards).
+
+- **Governance**: Play an active role in shaping Rubicon market structure and foster progressive decentralization of the protocol. Join the discussion in the **[Forum](https://forum.rubicon.finance/)**.
+
+## Resources
+
+### Open-Source Bots
+
+Rubicon maintains a repository of open-source bots in Typescript that allow for easy integration with the protocol and afford trading opportunities to users. This repo also provides quick start instructions and examples on how to cloud configure a bot - **for those looking for a simple bot to run to farm rewards or earn from spreads this is a great place to start!**
+    - [Source Code - Rubi-Bots-TS](https://github.com/RubiconDeFi/rubi-bots-ts)
+
+### Hummingbot Integration
+
+Rubicon also maintains and is developing our integration with [Hummingbot](https://hummingbot.org/) which provides a host of bot strategies and resources for developers. We currently have a working version that is described here but it is not yet integrated with the main Hummingbot production build or repository - that remains a work in progress.
+
+Please see as follows for a guide to quickstart a Hummingbot instance on Rubicon in its current configuration. Note, some technical competency is assumed here and it will become much easier to use once we are integrated into Hummingbot's production build.
+
+### Quickstart Guide for Rubicon on Hummingbot (Pre-Merge)
+
+To run Hummingbot with Rubicon before the integration is merged into the main Hummingbot repository, follow the steps below:
+
+1. **Clone Repositories**
+
+    First, clone the necessary repositories:
+
+    ```bash
+    git clone https://github.com/rubicondefi/gateway.git
+    ```
+
+2. **Build the Docker Image**
+
+    In the `rubicondefi/gateway` directory, run the following command to build the Docker image:
+
+    ```bash
+    TAG=rubicon make docker
+    ```
+
+3. **Clone Hummingbot Repository**
+
+    In a different directory, clone the Hummingbot repository:
+
+    ```bash
+    git clone https://github.com/rubicondefi/hummingbot.git
+    ```
+
+4. **Build the Hummingbot Docker Image**
+
+    In the `rubicondefi/hummingbot` directory, run the following command to build the Docker image:
+
+    ```bash
+    TAG=rubicon make docker
+    ```
+
+5. **Modify `docker-compose.yml`**
+
+    Open the `docker-compose.yml` file and make the following changes:
+
+    - Replace `hummingbot/hummingbot:latest` with `hummingbot/hummingbot:rubicon`
+    - Replace `hummingbot/gateway:latest` with `hummingbot/gateway:rubicon`
+
+6. **Follow Gateway Setup Instructions**
+
+    After making these changes, follow the standard Hummingbot gateway setup instructions for Docker [here](https://hummingbot.org/gateway/installation/#install-with-docker). Additionally, to configure the wallet and private key for trading it is necessary to follow the [Gateway setup instructions here](https://hummingbot.org/gateway/setup/#listing-dex-connectors). Note that instead of instead of e.g. `gateway connect uniswap` use `gateway connect rubicon`.
+
+Once integrated with Rubicon, you will be able to use Hummingbot's features with the Rubicon protocol to begin trading.
+
+
+### Gladius SDK
+
+The Gladius SDK in Typescript provides a host of tools that aid development on top of Rubicon. [Please see here for more information](https://github.com/RubiconDeFi/gladius-sdk).
+
+## Questions and Support
+
+Ask onboarding questions in the Rubicon **[Discord server](https://discord.com/invite/E7pS24J)** or send a note to **contact@rubicon.finance**.
