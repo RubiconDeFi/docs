@@ -165,8 +165,8 @@ const navigation = [
     title: "Market Making",
     links: [
       {
-        title: "Market Making Overview",
-        href: "/docs/market-making/market-making-overview",
+        title: "Market Making Opportunities",
+        href: "/docs/market-making/market-making-opportunities",
       },
     ],
   },
