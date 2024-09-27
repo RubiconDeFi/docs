@@ -21,7 +21,49 @@ With a valid API key, all RFQ queries should be sent to the base URL of `https:/
 
 **Note: in the authentication process we also approve a specific address that is permitted to transact with `RubiconRFQ`; please coordinate with the team to arrange this.**
 
-### 2. Querying Price Levels
+### 2. Price discovery and market data
+There are several endpoints for discovering price levels and querying market data.
+
+#### 2.1. `/markets`
+Returns all active markets for a specified chain.
+```sh
+GET https://rfq.rubicon.finance/markets
+  ?chainId=<int>
+  &tag=<string>       # "nickname" of a client
+  # OPTIONAL:
+  &deadline=<string>  # returns markets with orders valid until the provided deadline.
+  --header "X-API-KEY: obtained_key"
+```
+Each market contains two sorted arrays, `"asks"` and `"bids"`, where each entry is represented as an array in the format `["price", "quantity"]`. Price levels are aggregated and may internally consist of multiple orders.
+
+```json
+{
+  "status": "success",
+  "chainId": "42161",
+  "markets": {
+    "0x82af49447d8a07e3bd95bd0d56f35241523fbab1_0xaf88d065e77c8cc2239327c5edb3a432268e5831": {
+      "asks": [
+        [
+          "2670.084613",
+          "0.003824848452"
+        ]
+      ],
+      "bids": [
+        [
+          "2661.557342",
+          "0.03029119972"
+        ],
+        [
+          "2659.959768",
+          "0.03030939263"
+        ]
+      ]
+    }
+  }
+}
+```
+
+#### 2.2. `/price-levels`
 To query price levels, use the following endpoint:
 
 ```sh
@@ -34,9 +76,7 @@ GET https://rfq.rubicon.finance/price-levels
   --header "X-API-KEY: obtained_key"
 ```
 
-The response will have the following structure:
-
-
+The response contains an array of price levels for the requested side, where `"q"` represents the quantity at each level, and `"p"` represents the price at each level.
 ```json
 {
   "status": "success|fail",
@@ -53,10 +93,30 @@ The response will have the following structure:
   ]
 }
 ```
-**Note: quantity `"q"` and price `"p"` are in human-readable amounts represented as a float and directional based on `buyToken` and `sellToken`. The user should be aware of the decimals associated with each token to convert these quantity and price values into uint values as needed.**
+
+#### 2.3. `/liquidity`
+Returns resting USD liquidity in active markets for a specified chain.
+```sh
+GET https://rfq.rubicon.finance/liquidity
+  ?chainId=<int>
+  &tag=<string>       # "nickname" of a client
+
+  &deadline=<string>  # optional: returns orders valid until provided deadline.
+  --header "X-API-KEY: obtained_key"
+```
+Each market will contain a USD value of a resting liquidity.
+```json
+{
+  "status": "success",
+  "chainId": "42161",
+  "liquidityUsd": {
+    "0x82af49447d8a07e3bd95bd0d56f35241523fbab1_0xaf88d065e77c8cc2239327c5edb3a432268e5831": "450.6459247259843"
+  }
+}
+```
 
 ### 3. Sending a Quote for a Match
-To match a quote with the off-chain book, you can use following endpoints.
+To match a quote against the off-chain book, you can use following endpoints.
 
 #### 3.1. `/match`
 Get a match for a quote with strict `buyAmt` and `sellAmt`.
@@ -74,6 +134,7 @@ GET https://rfq.rubicon.finance/match
 
 #### 3.2. `/market-match`
 Get a match for a quote with either `buyAmt` or `sellAmt` specified. Conceptually, this works similarly to a market sell or market buy.
+
 ```sh
 GET https://rfq.rubicon.finance/match
   ?chainId=<int>
@@ -86,12 +147,13 @@ GET https://rfq.rubicon.finance/match
   OR
   &buyAmt=<string>    # amount of 'buyToken'. Use for "market buy"
 
+  # OPTIONAL:
   &deadline=<string>  # unix timestamp - a deadline of a quote, used to return orders that will be valid until it
   --header "X-API-KEY: obtained_key"
 ```
 
 #### 3.3. Getting Match Response
-Regardless of the `/*match` endpoint you query, the server response will have the following structure:
+Regardless of the `/*match` endpoint you query, the server response will have the following structure.
 
 ```json
 {
@@ -149,6 +211,14 @@ struct Response {
     SignedOrder[] orders;
     uint256[] quantities;
     uint256 deadline;
+}
+```
+And `SignedOrder` is:
+
+```solidity
+struct SignedOrer {
+    bytes order;
+    bytes sig;
 }
 ```
 And the `signature` is the value of the `"rfqsig"` field from the `/*match` response.
