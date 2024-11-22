@@ -9,29 +9,45 @@ description: Details of the Optimism Liquidity Program
 import { Callout } from "/components/Callout";
 
 <Callout type="fees" title="Subject to Change">
-  NOTICE: The details of the Optimism Liquidity Program are subject to change. Please check back regularly for updates.
+  NOTICE: The details of the Optimism Liquidity Program are subject to change. Please check back regularly for updates. This version effective during Epoch starting 11.27.24.
 </Callout>
 
 ### Program Split Tiers
 
+OP rewards are calculated on a **weekly epoch basis** and distributed periodically on Optimism based on the following criteria.
+
 | Tier | Criteria |
 | ---- | -------------- | 
-| 80%  | Trading (Maker) Volume          |
-| 20%  | Liquidity Rewards System         |
+| 45%  | OP/USDC Maker Score (Based on DyDx Formula) (Classic weighted 50% more than Gladius) |
+| 45%  | OP/USDC Taker Volume |
+| 10%  | Taker Volume for Any Pair |
 
-OP rewards are distributed weekly on Optimism and distributed based on two criteria.
+### Maker Rewards
 
-### Trading (Maker) Volume
+[Please see here for a breakdown of how this math works](https://docs.dydx.community/governance-documentation/rewards/liquidity-provider-rewards).
 
-Any trades through the API where an order is created and someone fills and settles your trade onchain will count as valid volume. In practice, this is all normal trades, with the credit going to the person that traded through the platform (maker/user) not the filler of the trade.
+Maker rewards account for **45%** of the total program distribution. This is based on the DyDx reward formula. Resting orders that qualify and meet the configured criteria will be rewarded. Note that a bid and ask that are resting and meet the criteria are required - **please see the DyDx explainer above.**
+
+- **Classic and Gladius Systems Qualify**:
+  - Orders placed through the Classic system receive a **50% bonus** in reward points.
+  - Orders placed through the Gladius system are credited at their normal rate.
+
+### Taker Rewards
+
+Taker rewards are distributed as follows:
+- **45%** allocated to OP/USDC taker rewards.
+- **10%** allocated to taker rewards across any valid trading pair.
+
+Taker rewards are based on total volume of trades executed by takers on the platform.
 
 ### Liquidity Rewards System
 
-Using the liquidity rewards formula popularized by DyDx, market makers that provide liquidity through resting limit orders near the spread are credited. They must maintain a bid and an ask to be credited. Our system polls randomly once every minute to sample the order book and reward makers maintaining a bid and an ask according to the same formula DyDx uses.
-
-[Please see here for a breakdown of how this math works](https://docs.dydx.community/governance-documentation/rewards/liquidity-provider-rewards). Please see the following tables for the valid trading pairs on Optimism and relevant parameters.
+Using the liquidity rewards formula popularized by DyDx, market makers that provide liquidity through resting limit orders near the spread are credited. They must maintain a bid and an ask to be credited. Our system polls randomly once every minute to sample the order book and reward makers maintaining a bid and an ask according to the same formula DyDx popularized. Note that the system rewards the orders closer to the spread much more creating a competitive environment.
 
 | Valid Market Pairs | Minimum Order Size (Depth) | Minimum Spread |
 | ---- | -------------- | ---------- |
-| WETH/USDC.e  | $100  | 0.003 |
-| WETH/USDC   | $100  | 0.003 |
+| OP/USDC  | $100  | 0.005 |
+
+Classic and Gladius systems are eligible for liquidity rewards, with Classic orders receiving a 50% bonus.
+
+
