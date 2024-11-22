@@ -173,10 +173,10 @@ const navigation = [
   {
     title: "Liquidity Programs",
     links: [
-      // {
-      //   title: "Rubicon Liquidity Program",
-      //   href: "/docs/rubiconLiquidityProgram",
-      // },
+      {
+        title: "Rubicon Liquidity Program",
+        href: "/docs/rubiconLiquidityProgram",
+      },
       {
         title: "OP Liquidity Rewards",
         href: "/docs/opLiquidityRewards", 
