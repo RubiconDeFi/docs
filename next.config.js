@@ -4,6 +4,7 @@ const withNextra = require("nextra")({
 	flexsearch: {
 		codeblock: true,
 	},
+	latex: true,
 });
 
 module.exports = withNextra({

@@ -24,9 +24,9 @@ OP rewards are calculated on a **weekly epoch basis** and distributed periodical
 
 ### Maker Rewards
 
-[Please see here for a breakdown of how this math works](https://docs.dydx.community/governance-documentation/rewards/liquidity-provider-rewards).
+[Please see here for a breakdown of how this math works](/liquidityProviderMath).
 
-Maker rewards account for **45%** of the total program distribution. This is based on the DyDx reward formula. Resting orders that qualify and meet the configured criteria will be rewarded. Note that a bid and ask that are resting and meet the criteria are required - **please see the DyDx explainer above.**
+Maker rewards account for **45%** of the total program distribution. This is based on the liquidity provider reward formula. Resting orders that qualify and meet the configured criteria will be rewarded. Note that a bid and ask that are resting and meet the criteria are required - **please see the formula breakdown above.**
 
 - **Classic and Gladius Systems Qualify**:
   - Orders placed through the Classic system receive a **50% bonus** in reward points.
@@ -42,7 +42,7 @@ Taker rewards are based on total volume of trades executed by takers on the plat
 
 ### Liquidity Rewards System
 
-Using the liquidity rewards formula popularized by DyDx, market makers that provide liquidity through resting limit orders near the spread are credited. They must maintain a bid and an ask to be credited. Our system polls randomly once every minute to sample the order book and reward makers maintaining a bid and an ask according to the same formula DyDx popularized. Note that the system rewards the orders closer to the spread much more creating a competitive environment.
+Using our liquidity rewards formula, market makers that provide liquidity through resting limit orders near the spread are credited. They must maintain a bid and an ask to be credited. Our system polls randomly once every minute to sample the order book and reward makers maintaining a bid and an ask according to the same formula DyDx popularized. Note that the system rewards the orders closer to the spread much more creating a competitive environment.
 
 | Valid Market Pairs | Minimum Order Size (Depth) | Maximum Spread |
 | ---- | -------------- | ---------- |
