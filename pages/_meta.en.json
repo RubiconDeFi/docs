@@ -7,5 +7,6 @@
 	"guides": "Guides",
 	"rubiconLiquidityProgram": "Rubicon Liquidity Program",
 	"rubiconRfq": "Rubicon RFQ",
-	"opLiquidityRewards": "OP Liquidity Rewards"
+	"opLiquidityRewards": "OP Liquidity Rewards",
+	"liquidityProviderMath": "Liquidity Provider Math"
 }
