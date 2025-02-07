@@ -9,7 +9,7 @@ description: Details of the Optimism Liquidity Program
 import { Callout } from "/components/Callout";
 
 <Callout type="fees" title="Subject to Change">
-  NOTICE: The details of the Optimism Liquidity Program are subject to change. Please check back regularly for updates. This version effective during Epoch starting 11.27.24.
+  NOTICE: The details of the Optimism Liquidity Program are subject to change. Please check back regularly for updates. This version effective as of 2.7.25.
 </Callout>
 
 ### Program Split Tiers
@@ -18,27 +18,21 @@ OP rewards are calculated on a **weekly epoch basis** and distributed periodical
 
 | Tier | Criteria |
 | ---- | -------------- | 
-| 45%  | OP/USDC Maker Score (Based on DyDx Formula) (Classic weighted 50% more than Gladius) |
-| 45%  | OP/USDC Taker Volume |
-| 10%  | Taker Volume for Any Pair |
+| 10%  | OP/USDC Maker Score (Based on DyDx Formula) (Classic weighted 50% more than Gladius) |
+| 50%  | Taker Volume (Gladius) |
+| 40%  | OP/USDC LP Staking |
 
-### Maker Rewards
+### Maker Rewards by Order Book Maker Score
 
 [Please see here for a breakdown of how this math works](/liquidityProviderMath).
 
-Maker rewards account for **45%** of the total program distribution. This is based on the liquidity provider reward formula. Resting orders that qualify and meet the configured criteria will be rewarded. Note that a bid and ask that are resting and meet the criteria are required - **please see the formula breakdown above.**
+Maker rewards account for **10%** of the total program distribution. This is based on the liquidity provider reward formula. Resting orders that qualify and meet the configured criteria will be rewarded. Note that a bid and ask that are resting and meet the criteria are required - **please see the formula breakdown above.**
 
 - **Classic and Gladius Systems Qualify**:
   - Orders placed through the Classic system receive a **50% bonus** in reward points.
   - Orders placed through the Gladius system are credited at their normal rate.
 
-### Taker Rewards
-
-Taker rewards are distributed as follows:
-- **45%** allocated to OP/USDC taker rewards.
-- **10%** allocated to taker rewards across any valid trading pair.
-
-Taker rewards are based on total volume of trades executed by takers on the platform.
+Taker rewards are based on total volume of trades executed by takers on the platform through the Gladius system.
 
 ### Liquidity Rewards System
 
@@ -50,4 +44,11 @@ Using our liquidity rewards formula, market makers that provide liquidity throug
 
 Classic and Gladius systems are eligible for liquidity rewards, with Classic orders receiving a 50% bonus.
 
+### Taker Rewards
 
+Taker rewards are distributed as follows, based on liquid USD trading volume through the Gladius system:
+- **50%** allocated to taker rewards across any valid trading pair.
+
+### LP Staking Rewards
+
+LP Staking Rewards will be distributed by staking in the LP feature in the app. This staking contract will be funded for multiple weeks and have a dynamic APR calculation baked in based on USD TVL of the LP and pending rewards. Users can deposit or withdraw at any time. The staking contract used is a fork of the one created by and popularized by Synthetix.
