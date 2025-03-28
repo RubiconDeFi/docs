@@ -4,7 +4,7 @@ pageTitle: Overview
 description: Welcome to the Rubicon docs
 ---
 
-# Rubicon Docs - updates for v4: work in progress!
+# Rubicon Docs
 
 import { Callout } from "/components/Callout";
 import { QuickLinks, QuickLink } from "/components/QuickLinks.jsx";
@@ -30,42 +30,77 @@ import { QuickLinks, QuickLink } from "/components/QuickLinks.jsx";
 	<QuickLink
 		title="APIs"
 		icon="layers"
-		href="/api-guides/rubicon-v4/gladius-api"
+		href="/developers/api-guides/rubicon-gladius/gladius-api"
 		description="Order API, SDKs, and Subgraphs"
 	></QuickLink>
 </QuickLinks>
 
 ## What is Rubicon?
 
-Rubicon is an open trading platform for [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) tokens. It's built on Ethereum networks like L1, Arbitrum, and Optimism. We believe that all of the world's financial assets will be tokenized; Rubicon is the central hub where they will trade in an efficient, transparent, and trustless fashion. The platform is designed to offer the most efficient ERC20 trading venue: traders get the best price possible and market makers get a low-risk, high-opportunity experience.
+Rubicon is an open trading platform for [ERC-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) tokens. We believe that all of the world's financial assets will be tokenized; Rubicon is the central hub where they will trade in an efficient, transparent, and trustless fashion. The platform is designed to offer the most efficient ERC20 trading venue: traders get the best price possible and market makers get a low-risk, high-opportunity experience.
 
 Trade tokens on the [Rubicon App](https://app.rubicon.finance/) with Swaps, Limit Orders, and Market Orders.
 
 ## Protocol Overview
+Rubicon Exchange integrates three core trading mechanisms, providing a comprehensive and efficient trading experience:
+1. **Rubicon Classic** – A fully on-chain order book (CLOB), allowing traders to place limit and market orders with precise execution.
+2. **Rubicon Aquila** – An Automated Market Maker (AMM), facilitating passive liquidity provision and enabling seamless swaps with algorithmically determined pricing.
+3. **Rubicon Gladius** – An intent-based trading system.
 
-### Rubicon (v4)
+The latter is the ultimate execution layer, leveraging every major liquidity source in DeFi:
+- **Native Liquidity** – Direct access to Rubicon Classic’s order book and Rubicon Aquila’s AMM pools.
+- **Off-Chain Liquidity** – Market makers can submit off-chain orders, ensuring optimal pricing.
+- **Network-Wide Liquidity** – Gladius can tap into liquidity from other DEXes, helping capture the best available prices across the ecosystem.
+```mermaid
+flowchart
+    A("Gladius") --> B("Classic (CLOB)") & C("Aquila (AMM)") & D("Network-Wide Liquidity") & E("Off-chain Gladius liquidity")
+    D --> n1(["Dex 1"]) & n2(["..."]) & n3(["Dex n"])
+    B --> n4["asks"] & n5["bids"]
+    C --> n6(["LP 1"]) & n7(["..."]) & n8(["LP n"])
 
-Rubicon pairs offchain efficiency with onchain settlement, decentralization, and transparency. There are no special permissions - everyone enjoys equal root access.
+    style A stroke:none,fill:#ba2f2a,color:#FFFFFF
+    style B stroke:none,fill:#ba2f2a,color:#FFFFFF
+    style C stroke:none,fill:#ba2f2a,color:#FFFFFF    
+    style D stroke:#ba2f2a,fill:#FFFFFF,color:#000000
+    style E stroke:none,fill:#ba2f2a,color:#FFFFFF
+    style n1 stroke:none,fill:#FFCDD2,color:#000000
+    style n2 stroke:none,fill:#BBDEFB,color:#000000
+    style n3 fill:#C8E6C9,stroke:none,color:#000000
+    style n4 stroke:none,fill:#FFA1A1,color:#000000
+    style n5 fill:#C8E6C9,stroke:none,color:#000000
+    style n6 stroke:none,fill:#dd635f,color:#FFFFFF
+    style n7 stroke:none,fill:#dd635f,color:#FFFFFF
+    style n8 stroke:none,fill:#dd635f,color:#FFFFFF   
+```
+By combining CLOB, AMM, and intent-based trading, Rubicon is able to deliver best-in-class execution, price efficiency, and liquidity depth.
 
-Version 4 is also known as Gladius. The core of the protocol is the [`GladiusReactor`](/protocol/rubicon-v4/gladius-reactor) smart contract. This smart contract facilitates the encoding and settlement of trades. Order intents are encoded and matched off chain and settled onchain. This enables an efficient, gasless, and totally non-custodial experience of all traders and market makers.
+### Rubicon Gladius
 
-Offchain efficiency derives from our [API](/api-guides/rubicon-v4/gladius-api) - an open order pool for traders and market makers. Users submit orders as encoded intents where they await execution and settlement by ecosystem actors.
+Gladius pairs offchain efficiency with onchain settlement, decentralization, and transparency. There are no special permissions - everyone enjoys equal root access.
+
+The core of the protocol is the [`GladiusReactor`](/developers/protocol/rubicon-gladius/contract-overview) smart contract. This smart contract facilitates the encoding and settlement of trades. Order intents are encoded and matched off chain and settled onchain. This enables an efficient, gasless, and totally non-custodial experience of all traders and market makers.
+
+Offchain efficiency derives from our [API](/developers/api-guides/rubicon-gladius/gladius-api) - an open order pool for traders and market makers. Users submit orders as encoded intents where they await execution and settlement by ecosystem actors.
+
+### Rubicon Aquila
+
+[Aquila](https://github.com/RubiconDeFi/aquila) is a fork of Uniswap V2 - one of the most widely used and battle-tested AMMs in DeFi. This provides traders and liquidity providers with a familiar, efficient, and trust-minimized way to engage in on-chain swaps.
 
 ### Rubicon Classic
 
-Rubicon Classic is an older version of Rubicon, included in the protocol, that is a standalone, onchain order book protocol. All action takes place directly on the smart contracts.
+Classic is the first version of Rubicon, included in the protocol, that is a standalone, onchain order book protocol. All action takes place directly on the smart contracts.
 
-[**RubiconMarket.sol**](/protocol/rubicon-market/contract-overview) is the core order book contract. It implements order books and a matching engine for peer-to-peer trading of ERC-20 tokens.
+[**RubiconMarket**](/developers/protocol/rubicon-classic/rubicon-market/contract-overview) is the core order book contract. It implements order books and a matching engine for peer-to-peer trading of ERC-20 tokens.
 
-[**RubiconRouter.sol**](/protocol/rubicon-router/rubicon-router) routes token swaps and enables multi-hop swaps if two tokens do not have an underlying order book. It also has helpful view functions for reading data from **RubiconMarket.sol** and contains wrapper functions for handling native ETH throughout the protocol.
+[**RubiconRouter**](/developers/protocol/rubicon-classic/rubicon-router/contract-overview) routes token swaps and enables multi-hop swaps if two tokens do not have an underlying order book. It also has helpful view functions for reading data from **RubiconMarket.sol** and contains wrapper functions for handling native ETH throughout the protocol.
 
-## Order Book Architecture
+#### Order Book Architecture
 
 An [order book](https://en.wikipedia.org/wiki/Order_book) is a list of buy and sell orders for an asset, sorted by price level. It's the best way to reflect supply and demand between two assets. Rubicon provides an efficient order book for high-throughput trading of any ERC20 token pair.
 
 To learn more about Rubicon's market structure and efficiency, visit our docs (TODOD COMING!)
 
-To learn more about Rubicon Classic's order book, visit the [RubiconMarket docs](/protocol/rubicon-market/contract-overview).
+To learn more about Rubicon Classic's order book, visit the [RubiconMarket docs](/developers/protocol/rubicon-classic/rubicon-market/contract-overview).
 
 ## Why is this important?
 

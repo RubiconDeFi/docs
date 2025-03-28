@@ -4,9 +4,7 @@ pageTitle: Fees
 description: Fees on Rubicon
 ---
 
-# Rubicon Market
-
-## Fees
+# Fees
 
 import { Callout } from "/components/Callout";
 
@@ -20,9 +18,9 @@ import { Callout } from "/components/Callout";
   unlikely, it can be queried onchain if active
 </Callout>
 
-### Querying the Fees
+## Querying the Fees
 
-Use these view functions to query the fee values from the RubiconFeeController on any given network.
+Use these view functions to query the fee values from the `RubiconFeeController` on any given network.
 
 ```solidity copy
 function baseFee()
@@ -31,7 +29,7 @@ function baseFee()
     returns (uint256)
 ```
 
-Returns the current protocol fee. The base fee is the fee applied to all trades, unless there is a pair specific fee set. Return value is an integer at this precision (1 / 100,000 = 0.001%). Default value is 10.
+Returns the current protocol fee. The base fee is the fee applied to all trades, unless there is a pair specific fee set. Return value is an integer at this precision $\frac{1}{100000} = 0.001%$. Default value is 10.
 
 ```solidity copy
 function fees(bytes32 pairHash)
@@ -40,4 +38,4 @@ function fees(bytes32 pairHash)
     returns (uint256)
 ```
 
-Returns the current pair-specific fee if any for a given pair hash. Return value is an integer at this precision (1 / 100,000 = 0.001%). Must be set by admin.
+Returns the current pair-specific fee if any for a given pair hash. Return value is an integer at this precision $\frac{1}{100000} = 0.001%$. Must be set by admin.

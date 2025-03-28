@@ -6,13 +6,13 @@ description: Overview and docs for the Rubicon order book contract
 
 # Rubicon Market
 
-## [Contract Source Code](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/RubiconMarket.sol)
+[**Contract Source Code**](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/RubiconMarket.sol)
 
 ## Overview
 
-**RubiconMarket.sol** implements order books and a matching engine for peer-to-peer trading of [ERC-20 tokens](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/).
+`RubiconMarket` implements order books and a matching engine for peer-to-peer trading of [ERC-20 tokens](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/).
 
-An order book is a list of buy and sell orders for an asset, sorted by price level. This contract stores every ERC20/ERC20 order book as two double-linked sorted lists, one for each side of the given market.
+An order book is a list of buy and sell orders for an asset, sorted by price level. This contract stores every `ERC20/ERC20` order book as two double-linked sorted lists, one for each side of the given market.
 
 The contract uses an escrow model for liquidity; when `offer()` is called, tokens are sent to the contract. If/when an order is filled, the contract matches the traders directly and the tokens are sent to each party. When `cancel()` is called, the contract removes the target `offer()` and returns the tokens to the owner.
 
@@ -20,7 +20,7 @@ This contract is a derivative work of MakerDAO's open-source [OasisDEX](https://
 
 ## Functions
 
-### offer()
+#### `offer()`
 
 ```solidity copy
     function offer(
@@ -43,7 +43,7 @@ This contract is a derivative work of MakerDAO's open-source [OasisDEX](https://
 
 Calling the `offer()` function places a limit order on Rubicon. The `pay_amt` quantity of the `pay_gem` token will be sent to the contract, sitting in escrow until the offer is filled or canceled. There are more advanced `offer()` functions that have parameters for specifying the position in the order book or a custom recipient address for the filled offer.
 
-### cancel()
+#### `cancel()`
 
 ```solidity copy
     function cancel(uint id)
@@ -58,7 +58,7 @@ Calling the `offer()` function places a limit order on Rubicon. The `pay_amt` qu
 
 Cancels an `offer()` on the order book and returns the tokens to the owner. The `can_cancel` modifier checks that the target order is active and is owned by the caller.
 
-### batchOffer()
+#### `batchOffer()`
 
 ```solidity copy
     function batchOffer(
@@ -71,7 +71,7 @@ Cancels an `offer()` on the order book and returns the tokens to the owner. The 
 
 Use `batchOffer()` to place multiple offers in a single transaction. The function takes four arrays as parameters: `payAmts`, `payGems`, `buyAmts`, and `buyGems`. The arrays must be the same length and the order of the elements must match. The function will loop through each element in the arrays and place an offer with the corresponding parameters.
 
-### batchCancel()
+#### `batchCancel()`
 
 ```solidity copy
     function batchCancel(uint[] calldata ids) external
@@ -79,7 +79,7 @@ Use `batchOffer()` to place multiple offers in a single transaction. The functio
 
 Use `batchCancel()` to cancel multiple offers in a single transaction. The function takes an array of `offer()` ids as a parameter. The function will loop through each element in the array and cancel the corresponding offer.
 
-### batchRequote()
+#### `batchRequote()`
 
 ```solidity copy
     function batchRequote(
@@ -93,7 +93,7 @@ Use `batchCancel()` to cancel multiple offers in a single transaction. The funct
 
 Use `batchRequote()` to cancel and replace multiple offers in a single transaction. The function takes five arrays as parameters: `ids`, `payAmts`, `payGems`, `buyAmts`, and `buyGems`. The arrays must be the same length and the order of the elements must match. The function will loop through each element in the arrays and cancel the corresponding offer. Then, it will place new offers with the corresponding parameters.
 
-### buyAllAmount()
+#### `buyAllAmount()`
 
 ```solidity copy
      function buyAllAmount(
@@ -113,7 +113,7 @@ Use `batchRequote()` to cancel and replace multiple offers in a single transacti
 
 Attempts to trade `buy_amt` quantity of `buy_gem` tokens for at most the `max_fill_amount` quantity of `pay_gem` tokens. Transaction will revert if the trader would spend more than the specified maximum amount. This is a "Fill-or-Kill" buy order.
 
-### sellAllAmount()
+#### `sellAllAmount()`
 
 ```solidity copy
      function sellAllAmount(
@@ -137,7 +137,7 @@ Attempts to trade `pay_amt` quantity of `pay_gem` tokens for at least the `min_f
 
 Use these view functions to read the state of the order book contract. **RubiconRouter.sol** also has [many helpful view functions](/protocol/rubicon-router/rubicon-router#view-functions) for reading the state of **RubiconMarket.sol**.
 
-### getBuyAmountWithFee()
+#### `getBuyAmountWithFee()`
 
 ```solidity copy
     function getBuyAmountWithFee(
@@ -149,7 +149,7 @@ Use these view functions to read the state of the order book contract. **Rubicon
 
 Returns `buy_amt`, amount of `buy_gem` tokens to send to the contract to receive the `pay_amt` amount of the `pay_gem` token. Also returns `approvalAmount`, the amount of `pay_gem` tokens to approve for the interaction, accounting for fees.
 
-### getPayAmountWithFee()
+#### `getPayAmountWithFee()`
 
 ```solidity copy
     function getPayAmountWithFee(
@@ -161,7 +161,7 @@ Returns `buy_amt`, amount of `buy_gem` tokens to send to the contract to receive
 
 Returns `pay_amt`, the amount of `pay_gem` tokens to send to the contract to receive the `buy_amt` amount of the `buy_gem` token. Also returns `approvalAmount`, the amount of `buy_gem` tokens to approve for the interaction, accounting for fees.
 
-### getBuyAmount()
+#### `getBuyAmount()`
 
 ```solidity copy
     function getBuyAmount(
@@ -173,7 +173,7 @@ Returns `pay_amt`, the amount of `pay_gem` tokens to send to the contract to rec
 
 Returns the amount of `buy_gem` tokens received if a specified amount of `pay_gem` tokens are spent.
 
-### getPayAmount()
+#### `getPayAmount()`
 
 ```solidity copy
 function getPayAmount(
@@ -185,7 +185,7 @@ function getPayAmount(
 
 Returns the amount of `pay_gem` tokens needed to buy a specified amount of `buy_gem` tokens.
 
-### getBestOffer()
+#### `getBestOffer()`
 
 ```solidity copy
 function getBestOffer(ERC20 pay_gem, ERC20 buy_gem)
@@ -198,7 +198,7 @@ Returns the ID of the offer at the top of the order book.
 
 Ex. Calling this function with WETH as `pay_gem` and USDC as `buy_gem` will return the best ask on WETH/USDC. Switching the tokens will return the best bid.
 
-### getWorseOffer()
+#### `getWorseOffer()`
 
 ```solidity copy
 function getWorseOffer(uint256 id)
@@ -209,7 +209,7 @@ function getWorseOffer(uint256 id)
 
 Returns the next worse offer in the sorted list. The worse offer is the higher one if the target order is an ask, and a lower one if it's a bid. In both cases, it will return a newer one if they are equal.
 
-### getOfferCount()
+#### `getOfferCount()`
 
 ```solidity copy
 function getOfferCount(ERC20 sell_gem, ERC20 buy_gem)
@@ -220,7 +220,7 @@ function getOfferCount(ERC20 sell_gem, ERC20 buy_gem)
 
 Returns the number of offers in the order book for a specified pair.
 
-### protocolFee()
+#### `protocolFee()`
 
 ```solidity copy
     function protocolFee() 
@@ -229,9 +229,9 @@ Returns the number of offers in the order book for a specified pair.
         returns (uint256)
 ```
 
-Returns the current protocol fee. Return value is an integer at this precision (1 / 100,000 or 0.001%).
+Returns the current protocol fee. Return value is an integer at this precision $\frac{1}{100000} or 0.001%$.
 
-### makerFee()
+#### `makerFee`()
 
 ```solidity copy
 function makerFee() 
@@ -245,7 +245,7 @@ Returns the current maker fee. Return value is an integer at this precision (1 /
 ## Events
 
 ```solidity copy
-event emitOffer(
+    event emitOffer(
         bytes32 indexed id,
         bytes32 indexed pair,
         address indexed maker,

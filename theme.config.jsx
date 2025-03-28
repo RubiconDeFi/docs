@@ -89,7 +89,7 @@ const i18n = [
 	// { locale: "ja", text: "日本語" },
 	// { locale: "ko", text: "한국어" },
 	// { locale: "ru", text: "Русский" },
-	{ locale: "vi", text: "Tiếng việt" },
+	// { locale: "vi", text: "Tiếng việt" },
 	// { locale: "zh", text: "中文" },
 ];
 
@@ -139,5 +139,5 @@ export default {
 	primaryHue: 18,
 	//Add a default site localization switch
 	//i18n: i18n,
-	// ...
+	// ...    
 };
