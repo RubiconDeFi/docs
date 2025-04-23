@@ -1,8 +1,9 @@
 {
 	"index": "Overview",    
         "developers": "Developers",
-        "governance": "Governance",
 	"guides": "Guides",
+        "rubi": "RUBI",
         "roadmap": "Roadmap",
+        "risks": "Risks",
         "faq": "FAQ"
 }
