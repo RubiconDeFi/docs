@@ -1,12 +1,9 @@
 {
-	"index": "Overview",
-	"faq": "FAQ",
-	"protocol": "Protocol",
-	"api-guides": "API",
-	"market-making": "Market Making",
+	"index": "Overview",    
+        "developers": "Developers",
 	"guides": "Guides",
-	"rubiconLiquidityProgram": "Rubicon Liquidity Program",
-	"rubiconRfq": "Rubicon RFQ",
-	"opLiquidityRewards": "OP Liquidity Rewards",
-	"liquidityProviderMath": "Liquidity Provider Math"
+        "rubi": "RUBI",
+        "roadmap": "Roadmap",
+        "risks": "Risks",
+        "faq": "FAQ"
 }

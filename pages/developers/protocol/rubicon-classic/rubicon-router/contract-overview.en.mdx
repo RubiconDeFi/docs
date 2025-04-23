@@ -5,21 +5,21 @@ description: Overview and docs for the Rubicon Router contract
 ---
 # Rubicon Router
 
-## [Contract Source Code](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/utilities/RubiconRouter.sol)
+[**Contract Source Code**](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/utilities/RubiconRouter.sol)
 
 ## Overview
 
-**RubiconRouter.sol** is a high-level contract that adds convenient functionality for interacting with low-level Rubicon smart contracts.
+`RubiconRouter` is a high-level contract that adds convenient functionality for interacting with low-level Rubicon smart contracts.
 
-It primarily serves as a router for ERC-20/ERC-20 token swaps on **RubiconMarket.sol**, and enables multi-hop swaps if two tokens do not have an underlying order book. 
+It primarily serves as a router for ERC-20/ERC-20 token swaps on `RubiconMarket`, and enables multi-hop swaps if two tokens do not have an underlying order book. 
 
 The contract has wrapper functions for handling native ETH throughout the protocol. This includes functions for buying and swapping ETH with/for ERC-20 tokens, and for depositing/withdrawing ETH in Rubicon Pools.
 
-It also has helpful view functions for reading order book data from the low-level **RubiconMarket.sol** contract.
+It also has helpful view functions for reading order book data from the low-level `RubiconMarket` contract.
 
 ## Functions
 
-### swap()
+#### `swap()`
 
 ```solidity copy
 function swap(
@@ -39,7 +39,7 @@ function swap(
 
 Swaps `pay_amt` quantity of tokens for at least `buy_amt_min` quantity of the last token in the specified `route`.
 
-### multiswap()
+#### `multiswap()`
 
 ```solidity copy
     function multiswap(
@@ -59,7 +59,7 @@ Swaps `pay_amt` quantity of tokens for at least `buy_amt_min` quantity of the la
 
 Swaps tokens across multiple `routes` of token addresses with a minimum received quantity. It enables token swaps across multiple order books on RubiconMarket, in case the tokens do not have an existing order book.
 
-### swapWithETH()
+#### `swapWithETH()`
 
 ```solidity copy
     function swapWithETH(
@@ -79,7 +79,7 @@ Swaps tokens across multiple `routes` of token addresses with a minimum received
 
 Swaps `pay_amt` quantity of ETH for at least `buy_amt_min` quantity of the last token in the specified `route`.
 
-### swapForETH()
+#### `swapForETH()`
 
 ```solidity copy
     function swapForETH(
@@ -97,7 +97,7 @@ Swaps `pay_amt` quantity of ETH for at least `buy_amt_min` quantity of the last 
 
 Swaps the `pay_amt` quantity of the first token in the `route` for at least `buy_amt_min` quantity of ETH.
 
-### buyAllAmountWithETH()
+#### `buyAllAmountWithETH()`
 
 ```solidity copy
  function buyAllAmountWithETH(
@@ -115,7 +115,7 @@ Swaps the `pay_amt` quantity of the first token in the `route` for at least `buy
 
 Attempts to buy `buy_amt` tokens of the `buy_gem` token for at most the `max_fill_amount` quantity of ETH. Transaction will revert if the caller would spend more than the specified maximum amount.
 
-### buyAllAmountForETH()
+#### `buyAllAmountForETH()`
 
 ```solidity copy
 function buyAllAmountForETH(
@@ -133,7 +133,7 @@ function buyAllAmountForETH(
 
 Attempts to buy `buy_amt` ETH for at most the `max_fill_amount quantity` of `pay_gem` tokens. Transaction will revert if the caller would spend more than the specified maximum amount.
 
-### sellAllAmountWithETH()
+#### `sellAllAmountWithETH()`
 
 ```solidity copy
 function sellAllAmountWithETH(
@@ -152,7 +152,7 @@ function sellAllAmountWithETH(
 Attempts to sell `pay_amt` ETH for at least the `min_fill_amount` quantity of `buy_gem` tokens. Transaction will revert if the caller would receive less than the specified minimum amount.
 
 
-### sellAllAmountForETH()
+#### `sellAllAmountForETH()`
 
 ```solidity copy
     function sellAllAmountForETH(
@@ -173,7 +173,7 @@ Attempts to sell `pay_amt` tokens of the `pay_gem` token for at least the `min_f
 
 ## View Functions
 
-### getExpectedSwapFill()
+#### `getExpectedSwapFill()`
 
 ```solidity copy
  function getExpectedSwapFill(
@@ -191,7 +191,7 @@ Attempts to sell `pay_amt` tokens of the `pay_gem` token for at least the `min_f
 
 Uses the same parameters as `swap()` and returns the expected amount received.
 
-### getExpectedMultiswapFill()
+#### `getExpectedMultiswapFill()`
 
 ```solidity copy
     function getExpectedMultiswapFill(
@@ -209,7 +209,7 @@ Uses the same parameters as `swap()` and returns the expected amount received.
 
 Uses the same parameters as `multiswap()` and returns the expected amount received.
 
-### getBookFromPair()
+#### `getBookFromPair()`
 
 ```solidity copy
     function getBookFromPair(
@@ -225,7 +225,7 @@ Uses the same parameters as `multiswap()` and returns the expected amount receiv
 
 Returns all outstanding offers on the book for a given token pair. The `asset`/`quote` pair ordering will affect the sorted return values - asset should be the top of the pair: for example, (ETH, USDC) will return (ETH asks, USDC bids)
 
-### getOffersFromPair()
+#### `getOffersFromPair()`
 
 ```solidity copy
     function getOffersFromPair(
@@ -241,7 +241,7 @@ Returns all outstanding offers on the book for a given token pair. The `asset`/`
 
 Returns offers from one side of the specified order book.
 
-### getBookDepth()
+#### `getBookDepth()`
 
 ```solidity copy
     function getBookDepth(
@@ -252,7 +252,7 @@ Returns offers from one side of the specified order book.
 
 Returns depth of one side of the order book and the ID of the best `offer()`.
 
-### getOfferIDsFromPair()
+#### `getOfferIDsFromPair()`
 
 ```solidity copy
     function getOfferIDsFromPair(
@@ -263,7 +263,7 @@ Returns depth of one side of the order book and the ID of the best `offer()`.
 
 Returns all `offer()` IDs from the `tokenIn`/`tokenOut` pair.
 
-### getBestOfferAndInfo()
+#### `getBestOfferAndInfo()`
 
 ```solidity copy
     function getBestOfferAndInfo(

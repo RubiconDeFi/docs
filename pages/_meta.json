@@ -1,8 +1,9 @@
 {
-	"index": "Overview",
-	"faq": "FAQ",
-	"protocol": "Protocol",
-	"api-guides": "API",
-	"market-making": "Market Making",
-	"guides": "Guides"
+	"index": "Overview",    
+        "developers": "Developers",
+	"guides": "Guides",
+        "rubi": "RUBI",
+        "risks": "Risks",
+        "roadmap": "Roadmap",
+        "faq": "FAQ"
 }

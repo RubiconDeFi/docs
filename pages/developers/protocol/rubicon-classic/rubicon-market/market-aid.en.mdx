@@ -6,31 +6,31 @@ description: Helper contract for advanced trading on Rubicon
 
 # Market Aid
 
-## [Contract Source Code](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/utilities/MarketAid.sol)
+[**Contract Source Code**](https://github.com/RubiconDeFi/rubi-protocol-v2/blob/master/contracts/utilities/MarketAid.sol)
 
 ## Overview
 
-**MarketAid.sol** is a helper contract for advanced trading and market making on **RubiconMarket.sol**. Think of it as a middle-layer contract that allows traders to make larger, more efficient, and more complex transactions on the Rubicon order books.
+`MarketAid` is a helper contract for advanced trading and market making on `RubiconMarket`. Think of it as a middle-layer contract that allows traders to make larger, more efficient, and more complex transactions on the Rubicon order books.
 
-Users need to create a **MarketAid.sol** by using the  instance of MarketAid, If you have any questions or trouble with MarketAid, join our [Discord server](https://discord.com/invite/E7pS24J), our team is happy to help you get started with automated trading on Rubicon!
+Users need to create a `MarketAid` by using the  instance of `MarketAid`, If you have any questions or trouble with it, join our [Discord server](https://discord.com/invite/E7pS24J), our team is happy to help you get started with automated trading on Rubicon!
 
 ## Disclaimer
 
-**MarketAid.sol** is in beta and for sophisticated developers and users only. Use it at your own risk.
+`MarketAid` is in beta and for sophisticated developers and users only. Use it at your own risk.
 
 ## Quick Start
 
-To get started, create your own **MarketAid.sol** instance, fund the contract with ERC-20 tokens, and send your first batch of orders to `RubiconMarket.sol`! You can use `ethers.js` to integrate this into an existing bot, and we are working on tutorials to make it even easier! Let's get started:
+To get started, create your own `MarketAid` instance, fund the contract with ERC-20 tokens, and send your first batch of orders to `RubiconMarket`! You can use `ethers.js` to integrate this into an existing bot, and we are working on tutorials to make it even easier! Let's get started:
 
 1. Create a new instance of the `MarketAid` contract
    1. Deploy a `MarketAid` instance by calling `createMarketAidInstance()` on the `MarketAidFactory` contract. This will spawn a new instance of `MarketAid` that is permissioned to the caller of `createMarketAidInstance()` and automatically approve them as a strategist with access to the contract.
-2. Fund your MarketAid instance with the ERC-20s you want to trade (WETH,USDC, DAI, etc.)
+2. Fund your `MarketAid` instance with the ERC-20s you want to trade (WETH,USDC, DAI, etc.)
 
-   1. Your MarketAid instance can be queried via `getUserMarketAid()` on `MarketAidFactory` or by reading the event emitted from the `createMarketAidInstance()` call.
+   1. Your `MarketAid` instance can be queried via `getUserMarketAid()` on `MarketAidFactory` or by reading the event emitted from the `createMarketAidInstance()` call.
    2. Verify you control the contract first via Etherscan by checking the `admin` variable is your address and that you are also an `approvedStrategist` .
    3. Verify you are sending funds to the right address!
 
-3. Send batches of Rubicon orders from your MarketAid contract using the functions described below
+3. Send batches of Rubicon orders from your `MarketAid` contract using the functions described below
 
 Note: The owner of a `MarketAid` instance can approve additional addresses to use and access the contract (multiple addresses can clear the `onlyApprovedStrategist` check)
 
@@ -38,20 +38,20 @@ Note: The owner of a `MarketAid` instance can approve additional addresses to us
 
 Make sure to check the following:
 
-- Where is my MarketAid instance?
+- Where is my `MarketAid` instance?
   - Query with `getUserMarketAid()` -> returns an array of all instances you have created
-- Your MarketAid instance has approved the contracts you want to interact with
+- Your `MarketAid` instance has approved the contracts you want to interact with
   - Otherwise, transactions will. Using `placeMarketMakingTrades()` will automatically approve the `RubiconMarket` contract
 - You are the admin of your Market Aid instance
   - Query with `admin()` on your instance -> returns the EOA that owns the instance
-- Any EOA you are trying to manage an ERC20 pair with, via MarketAid is _an approved strategist_
+- Any EOA you are trying to manage an ERC20 pair with, via `MarketAid` is _an approved strategist_
   - Main security check in the contract, admin is auto-approved as a strategist
 
 ## Functions (In Progress)
 
 Generally, each of the inputs is the exact same as one would place on the low-level RubiconMarket: the raw uint values of the ERC20s you want to bid and/or ask for when placing offers ( `offer()` ). In order to batch, pass in the values for all the offers as arrays, with all like-variables (e.g. ask numerators) paired together. The arrays passed in must match in legth - this can be helpful when placing a number of offers at once with different prices. Note the use of `formatUnits()` and `parseUnits()` through `ethers` helps with numbers and ERC-20 values when dealing with human number `=` wei conversions.
 
-An important concept is that each order placed through MarketAid (via `placeMarketMakingTrades` ) creates a unique ID that can identify a market maker's outstanding orders. The outstanding book can be queried at any time for any given EOA via `getOutstandingStrategistTrades()` - this is helpful to manage an outstanding book and get the list of unique IDs or `strategistTrades` a given user controls. A market maker can query their book, then requote ( `batchRequoteOffers` ) or cancel ( `scrubStrategistTrades` ) them as needed. Note that fill automatically accrues to the `MarketAid` instance that a user controls.
+An important concept is that each order placed through `MarketAid` (via `placeMarketMakingTrades` ) creates a unique ID that can identify a market maker's outstanding orders. The outstanding book can be queried at any time for any given EOA via `getOutstandingStrategistTrades()` - this is helpful to manage an outstanding book and get the list of unique IDs or `strategistTrades` a given user controls. A market maker can query their book, then requote ( `batchRequoteOffers` ) or cancel ( `scrubStrategistTrades` ) them as needed. Note that fill automatically accrues to the `MarketAid` instance that a user controls.
 
 - placeMarketMakingTrades
   - Place a BID and/or an ASK in a single unique "strategistTrade"
@@ -60,7 +60,7 @@ An important concept is that each order placed through MarketAid (via `placeMark
 - getOutstandingStrategistTrades _view_
   - Returns the unique IDs of a user's outstanding (batch) offers
 - getStrategistTotalLiquidity _view_
-  - Returns the total ERC-20 book value amount a user controls across the market AND the value sitting on the MarketAid instance
+  - Returns the total ERC-20 book value amount a user controls across the market AND the value sitting on the `MarketAid` instance
 - requote
   - Single requote of a strategistTrade (bid and/or ask pair) to a new pair that generates a new unique id
 - batchRequoteOffers
