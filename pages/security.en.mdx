@@ -1,0 +1,104 @@
+---
+title: Security
+pageTitle: Security
+description: Security measures and best practices for the Rubicon protocol
+---
+
+import { Callout } from "/components/Callout";
+
+# Security Overview
+
+<Callout type="warning">
+While we implement extensive security measures, DeFi interactions carry substantial risks. Please review our [Risk Disclaimer](/risks) before using the protocol.
+</Callout>
+
+## Best Practices 🔐
+
+We strongly recommend following security best practices when interacting with Rubicon:
+- Use a hardware wallet or multi-signature wallet for significant positions
+- Always clear-sign your transactions and verify the contract addresses
+- Follow proper wallet security hygiene
+
+## Protocol Security Architecture 🏗️
+
+Rubicon's security is built around our three-layer liquidity stack. Each component undergoes rigorous testing and auditing.
+
+---
+
+### Rubicon Gladius ⚔️
+
+Our next-generation intent-based trading system. Built as a derivative fork of Uniswap X with extended functionality for partial fill limit orders.
+
+#### Audits
+Please review our current security audits on the [Audits Page](/developers/protocol/audits).
+
+#### Expected Interactions
+Gladius uses a signature-based intent trading system:
+
+1. **Initial Setup**
+   - One-time approval of the [Permit2](https://github.com/Uniswap/permit2) contract (a widely-used, shared contract across DeFi)
+   - No other contract approvals needed
+   - Note: Native ETH is not supported as an input - users must wrap to WETH first (hence "Wrap and Swap" or "Wrap and Trade" UI prompts)
+
+2. **Trading Flow**
+   - Each trade is a gasless signature (intent to trade)
+   - Signatures include time duration and slippage parameters
+   - Orders typically execute via dutch auction pricing or limit orders
+   - Your order is either filled within your specified terms or nothing happens
+
+3. **Execution Process**
+   - Signatures are broadcast to the filler network
+   - First executor to include your order in a block executes the trade
+   - Executors can be market makers, bots, or other traders
+   - Partial fills are possible for limit orders optionally
+
+<Callout type="warning">
+When operating trading bots on Rubicon, exercise extreme caution with bot hot key security for order signing.
+</Callout>
+
+#### Addresses
+See our [Gladius Deployments](/developers/deployments#rubicon-gladius-deployments) page.
+
+---
+
+### Rubicon Classic 📚
+
+Our fully on-chain order book system for peer-to-peer trading, live on Optimism since 2021 with continuous auditing and iteration in production.
+
+#### Audits
+Please review our current security audits on the [Audits Page](/developers/protocol/audits).
+
+#### Expected Interactions
+When using Classic, you should expect:
+1. Initial token approvals: Approve the Market or Router contract to spend your tokens (not needed for native ETH inputs)
+2. Transaction execution: Direct wallet transaction for order placement/execution
+
+#### Addresses
+See our [Classic Deployments](/developers/deployments#rubicon-classic-deployments) page.
+
+---
+
+### Aquila AMM 🌊
+
+Aquila is our automated market maker system, **a direct fork of Uniswap V2.** We've made minimal, namesake-only changes to this battle-tested AMM codebase.
+
+#### Audits
+While Aquila itself is currently unaudited, it is a direct fork of the extensively audited Uniswap V2 protocol. All contracts are verified on-chain and open source.
+
+#### Expected Interactions
+When using Aquila, you should expect:
+1. Initial token approvals: You'll need to approve the Router or Pair contracts to spend your tokens (not needed for native ETH inputs)
+2. Transaction execution: After approval, a direct wallet transaction for the swap/add/remove liquidity
+
+#### Addresses
+All contracts are verified and open source. See our [Aquila Deployments](/developers/deployments#rubicon-aquila-deployments) page.
+
+---
+
+## Bug Bounty Program 🐛
+
+We actively encourage responsible disclosure of security vulnerabilities and possibly compensate security researchers for their efforts.
+
+<Callout>
+While we are in the process of establishing a public third-party bug bounty program, please report any security concerns to [contact@rubicon.finance](mailto:contact@rubicon.finance). Valid reports are eligible for bounties, which can be paid out directly or through the [Rubicon Forum](https://forum.rubicon.finance/) DAO process.
+</Callout> 
