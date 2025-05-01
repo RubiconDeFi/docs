@@ -1,6 +1,12 @@
 {
-	"overview": "Overview",
-	"deployments": "Deployments",
+	"overview": {
+		"title": "Overview",
+		"display": "visible"
+	},
+	"deployments": {
+		"title": "Deployments",
+		"display": "visible"
+	},
 	"tokenomics": "Tokenomics",
 	"incentives": "Incentives"
 }
