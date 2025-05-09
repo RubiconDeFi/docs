@@ -1,10 +1,10 @@
 {
-	"index": "Overview",    
-        "developers": "Developers",
+	"index": "Overview",
+	"developers": "Developers",
 	"guides": "Guides",
-        "rubi": "RUBI",
-        "risks": "Risks",
-        "roadmap": "Roadmap",
-        "security": "Security",
-        "faq": "FAQ"
+	"rubi": "RUBI",
+	"roadmap": "Roadmap",
+	"risks": "Risks",
+	"security": "Security",
+	"faq": "FAQ"
 }
